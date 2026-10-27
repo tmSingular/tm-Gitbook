@@ -1,11 +1,11 @@
 $schema: https://api.gitbook.com/gitbook-docs.yaml
 site:
-  title: Developer Portal (v2-draft)
+  title: Developer Portal
   structure:
     - type: space
       key: space-1
-      title: Developer Portal v2
-      path: developer-portal-v2
+      title: Developer Portal
+      path: singular-developer-portal
       default: true
       content:
-        directory: ./developer-portal-v2
+        directory: ./singular-developer-portal
