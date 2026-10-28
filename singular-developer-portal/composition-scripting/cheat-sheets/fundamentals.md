@@ -358,8 +358,8 @@ console.log(wiDom);
 Returns the widget type specific properties as a JSON object.
 
 ```javascript
-const propsText= wiTitle.getPayload();
-console.log(props.Text);
+const propsText = wiTitle.getPayload();
+console.log(propsText);
 ```
 
 {% code title="Debug console" %}
@@ -409,12 +409,12 @@ console.log("posX = %d, posY = %d", posX, posY);
 ```
 {% endcode %}
 
-#### `getRotationZ()`
+#### `getRotateZ()` <a href="#getrotationz" id="getrotationz"></a>
 
 Returns the `rotationZ` value in degrees.
 
 ```javascript
-const rotZ = wiText.getRotationZ();
+const rotZ = wiText.getRotateZ();
 console.log("rotZ = %d", rotZ);
 ```
 
@@ -445,7 +445,7 @@ console.log("sizeX = %d, sizeY = %d", sizeX, sizeY );
 Returns the visibility as a boolean.
 
 ```javascript
-const isVisible = wiText.getVisibilty();
+const isVisible = wiText.getVisibility();
 console.log("isVisible =", isVisible );
 ```
 
@@ -491,7 +491,7 @@ wiText.setPositionY(50);
 Sets the `rotationZ` value in degrees.
 
 ```javascript
-wiText.setRotationZ(180);
+wiText.setRotateZ(180);
 ```
 
 #### `setSizeX()`, `setSizeY()`
@@ -654,7 +654,9 @@ console.log("Singular window name:", singularWindow);
 
 #### `comp.addListener`(eventType, callbackFunction)
 
-The `addListener()` method attaches an event handler to the composition without overwriting existing event handlers. You can add multiple event handlers for the same event type.
+Use `comp.addListener(eventType, callbackFunction)` to handle composition events. Keep related behavior for the same composition and event type in one callback, and merge new logic into that callback when extending a script. Do not assume that registering another callback creates an independent subscription or preserves an existing handler.
+
+The callback receives `(event, msg, e)`. Events can propagate from child compositions to their parents. Call `e.stopPropagation()` only when the event should stop at the current composition; parent scripts may need to receive it. For reactive content, apply the current values once in `init()` as well as when the relevant event arrives.
 
 The first parameter defines the type of the event. Event types include:
 

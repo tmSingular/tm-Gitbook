@@ -29,8 +29,8 @@ Do you need help integrating Singular into your project? If so, please email Tho
 
 * [Singular.live news](https://www.singular.live/resources/news): Get news and updates about the Singular.live platform.
 * [Beta access](https://beta.singular.live/): Be the first to try out new features.
-* [Newsletter archive](https://www.singular.live/resources/newsletter-archive): Explore past newsletters and announcements.
-* [Join the Singular Technology Partner Program](https://www.singular.live/company/partner-program#join): Discuss your project with Singular.live R\&D.
+* [Newsletter archive](https://www.singular.live/news): Explore past newsletters and announcements.
+* [Join the Singular Technology Partner Program](https://www.singular.live/contact?tab=partner): Discuss your project with Singular.live R\&D.
 * Become a Singular Certified Partner: Email **jeff(at)singular.live**.
 
 ### Learning resources

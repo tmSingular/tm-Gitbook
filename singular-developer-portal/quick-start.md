@@ -35,7 +35,7 @@ In this step, you'll get the output URL of the UNO Lowers | Momentum control app
     <figure><img src=".gitbook/assets/Getting the Output URL.gif" alt=""><figcaption><p>Locating the output URL</p></figcaption></figure>
 4. Paste the Output URL into your internet browser.
 
-The webpage should look like the image below. Keep this tab open for steps three and four to see how the APIs change the overlay.
+The webpage should look like the image below. Keep this tab open for steps three, four, and five to see how the APIs change the overlay.
 
 <figure><img src=".gitbook/assets/Quick start 4 (1).png" alt=""><figcaption><p>UNO Lowers | Momentum overlay output</p></figcaption></figure>
 
@@ -62,19 +62,18 @@ This quick start makes API calls using [Postman](https://www.postman.com) and cU
 5.  Click **Save** and **Send** to return a payload for the UNO Lowers | Momentum control app.
 
     <figure><img src=".gitbook/assets/Saving and sending a request.png" alt=""><figcaption><p>Saving and sending a request</p></figcaption></figure>
-6. Inspect the payload and notice that this control app is set up so the API can access its color, text, and In/Out state. In particular, we'll use this snippet from in the next step:
+6. Locate the `Lower - Header` sub-composition in the response array and copy its `subCompositionId` for steps four and five. Its payload contains `Header` and `Main Text`. To match names to IDs, use the [composition model guide](rest-api/how-to-guides/get-a-compositions-sub-composition-ids-and-names-and-their-payload-structures.md). An example response entry is shown below; use the ID from your own response:
 
 ```json
 {
-        "subCompositionId": "57d57254-f15b-42ca-b68e-75b69875f5ea",
-        "subCompositionName": "Lower - Header",
-        "mainComposition": false,
-        "state": "In",
-        "payload": {
-            "Header": "HEADER",
-            "Main Text": "MAIN LINE OF TEXT"
-        }
-    }
+  "subCompositionId": "57d57254-f15b-42ca-b68e-75b69875f5ea",
+  "mainComposition": false,
+  "state": "Out2",
+  "payload": {
+    "Header": "HEADER",
+    "Main Text": "MAIN LINE OF TEXT"
+  }
+}
 ```
 {% endtab %}
 
@@ -83,7 +82,7 @@ This quick start makes API calls using [Postman](https://www.postman.com) and cU
 
 {% code overflow="wrap" %}
 ```bash
-curl --location --request GET 'https://app.singular.live/apiv2/controlapps/:appToken/control'
+curl --location --request GET "https://app.singular.live/apiv2/controlapps/:appToken/control"
 ```
 {% endcode %}
 
@@ -93,146 +92,101 @@ curl --location --request GET 'https://app.singular.live/apiv2/controlapps/:appT
 
 3\. Back in your text editor, replace `:appToken` in the cURL request with the actual Shared App Token.
 
-4\. Open the Command Prompt in Windows or Terminal in Mac.
+4\. Open Terminal on macOS/Linux or PowerShell/Command Prompt on Windows. On Windows, replace `curl` with `curl.exe` to call cURL rather than a PowerShell alias. Run each command below as one line.
 
 5\. Paste the updated cURL request into the command line and press enter. \
-The payload (in JSON) should look like this:&#x20;
+The response is a JSON array. This excerpt shows the `Lower - Header` entry; your IDs and current state may differ:
 
 ```json
-[{
-	"compositionId": "-MwbugjuLzQ1fYlGAczq",
-	"compositionName": null,
-	"mainComposition": true,
-	"animation": {
-		"state": "Out1"
-	},
-	"controlNode": {
-		"payload": {
-			"Accent Text Color": {
-				"a": 1,
-				"b": 255,
-				"g": 255,
-				"r": 255
-			},
-			"Dropline Color": {
-				"a": 1,
-				"b": 66,
-				"g": 66,
-				"r": 66
-			},
-			"Primary Color": {
-				"a": 1,
-				"b": 255,
-				"g": 255,
-				"r": 255
-			},
-			"Primary Text Color": {
-				"a": 1,
-				"b": 51,
-				"g": 51,
-				"r": 51
-			},
-			"Secondary Color": {
-				"a": 1,
-				"b": 0,
-				"g": 0,
-				"r": 180
-			}
-		}
-	}
-}, {
-	"compositionId": "57d57254-f15b-42ca-b68e-75b69875f5ea",
-	"compositionName": "Lower - Header",
-	"animation": {
-		"state": "Out2"
-	},
-	"controlNode": {
-		"payload": {
-			"Header": "HEADER",
-			"Main Text": "MAIN LINE OF TEXT"
-		}
-	}
-}, {
-	"compositionId": "6cb2b49c-03e1-499b-89b1-93664560e92b",
-	"compositionName": "Lower - Header + Dropline",
-	"animation": {
-		"state": "Out2"
-	},
-	"controlNode": {
-		"payload": {
-			"Dropline": "DROPLINE MESSAGE",
-			"Header": "HEADER",
-			"Main Text": "MAIN LINE OF TEXT"
-		}
-	}
-}, {
-	"compositionId": "f771e339-dde9-45ef-a8a4-5545f0bde56c",
-	"compositionName": "Lower - Breaking News",
-	"animation": {
-		"state": "In"
-	},
-	"controlNode": {
-		"payload": {
-			"Header": "HEADER",
-			"Text 1": "BREAKING NEWS",
-			"Text 2": "MAIN LINE OF TEXT"
-		}
-	}
-}]
+[
+  {
+    "subCompositionId": "57d57254-f15b-42ca-b68e-75b69875f5ea",
+    "mainComposition": false,
+    "state": "Out2",
+    "payload": {
+      "Header": "HEADER",
+      "Main Text": "MAIN LINE OF TEXT"
+    }
+  }
+]
 ```
 
-6\. Inspect the payload and notice that this control app is set up so the API can access its color, text, and In/Out state.&#x20;
+6\. Copy your `Lower - Header` sub-composition's ID for steps four and five. Its payload contains `Header` and `Main Text`. Use the [composition model guide](rest-api/how-to-guides/get-a-compositions-sub-composition-ids-and-names-and-their-payload-structures.md) to match names to IDs if needed.
 {% endtab %}
 {% endtabs %}
 
-### 4. Use the API to change an overlay's text <a href="#id-9mqbwnx4ntkp" id="id-9mqbwnx4ntkp"></a>
+### 4. Use the API to change an overlay's text <a href="#id-update-overlay-text" id="id-update-overlay-text"></a>
 
-In this step, you'll change the text in the one of UNO Lowers | Momentum's overlays.
+In this step, you'll change the text in the `Lower - Header` overlay and take it In so the change is visible. Both Postman and cURL send the same JSON array. Replace the sample `subCompositionId` below with your own ID from step three.
+
+{% hint style="info" %}
+The examples use the response shape in [Get a control app's control data](rest-api/api-reference/get-control-app-details/get-a-control-apps-control-data.md). If your GET response instead uses `compositionId`, `controlNode.payload`, and `animation.state`, map those to `subCompositionId`, `payload`, and `state` in the PATCH request. Do not send the entire GET response as a PATCH body.
+{% endhint %}
 
 {% tabs %}
 {% tab title="Postman" %}
 1.  Navigate to **Collections** > **Singular REST API** > **Singular API v2** > **App Instance API (Token)** > **Send Data to Control App** >**Update Control App Content**.&#x20;
 
     <figure><img src=".gitbook/assets/Finding the Update Control App Content request.png" alt=""><figcaption><p>Finding the Update Control App Content request</p></figcaption></figure>
-2. Update `:appToken` in the URL as you did in [step 3.4](quick-start.md#_9mqbwnx4ntkp).
-3.  Select the Body tab and replace the JSON date with the code snippet from step 3.6 between the square brackets.
+2. Update `:appToken` in the URL as you did in [step 3.4](quick-start.md#id-9mqbwnx4ntkp).
+3. Select **Body** > **raw** > **JSON** and replace the body with this request. Use your own sub-composition ID:
+
+    ```json
+    [
+      {
+        "subCompositionId": "57d57254-f15b-42ca-b68e-75b69875f5ea",
+        "state": "In",
+        "payload": {
+          "Header": "HEADER",
+          "Main Text": "MAIN LINE OF TEXT"
+        }
+      }
+    ]
+    ```
 
     <figure><img src=".gitbook/assets/Updating the request body.png" alt=""><figcaption><p>Updating the request body</p></figcaption></figure>
 4.  In the JSON payload, change the text for `"HEADER"` and `"MAIN LINE OF TEXT"` to something else.
 
     <figure><img src=".gitbook/assets/Updating the sub-composition text.png" alt=""><figcaption><p>Updating the sub-composition's text fields</p></figcaption></figure>
 5. Click **Save**.
-6. With the output URL window from [step two](quick-start.md#_8c38ihv7lccy) visible, press **Send** and watch the text change in the web browser.
+6. With the output URL window from [step two](quick-start.md#id-8c38ihv7lccy) visible, press **Send** and watch the text change in the web browser.
 {% endtab %}
 
 {% tab title="cURL" %}
-In the payload from the `GET`**Control App Control** request in [step three](quick-start.md#_9mqbwnx4ntkp), this is the sub-composition that you'll update:
+1. Create a file named `update-content.json` in your current terminal directory. Paste in this request body, replace `subCompositionId` with your ID from step three, and change `Header` and `Main Text` to the text you want to display. Save it as UTF-8:
 
-<pre class="language-json"><code class="lang-json">{
-<strong>    "subCompositionId": "57d57254-f15b-42ca-b68e-75b69875f5ea",
-</strong>    "state": "In",
+```json
+[
+  {
+    "subCompositionId": "57d57254-f15b-42ca-b68e-75b69875f5ea",
+    "state": "In",
     "payload": {
-        "Header": "HEADER",
-        "Main Text": "MAIN LINE OF TEXT"
+      "Header": "HEADER",
+      "Main Text": "MAIN LINE OF TEXT"
     }
-}
-</code></pre>
+  }
+]
+```
 
-1\. Paste the following cURL request into your text editor:
+2. Replace `:appToken` in the command below with your Shared App Token. Run the command from the directory containing `update-content.json`.
+
+**macOS/Linux (Bash):**
 
 {% code overflow="wrap" %}
 ```bash
-curl --location --request PATCH 'https://app.singular.live/apiv2/controlapps/:appToken/control'
---header 'Content-Type: application/json'
---data-raw '[ { "subCompositionId": "57d57254-f15b-42ca-b68e-75b69875f5ea", "mainComposition": false, "state": "In", "payload": { "Header": "HEADER", "Main Text": "MAIN LINE OF TEXT" } } ]'
+curl --location --request PATCH "https://app.singular.live/apiv2/controlapps/:appToken/control" --header "Content-Type: application/json" --data-binary "@update-content.json"
 ```
 {% endcode %}
 
-&#x20;2\. Replace `:appToken` with the actual Shared App Token you got in [step 3.2](quick-start.md#_9mqbwnx4ntkp).
+**Windows (PowerShell or Command Prompt):**
 
-3\. Find the key-value pairs `"Header":"HEADER"` and `"Text 2":"MAIN LINE OF TEXT"` and change the current values (`"HEADER", "MAIN LINE OF TEXT"`) to the text of your choice.
+{% code overflow="wrap" %}
+```powershell
+curl.exe --location --request PATCH "https://app.singular.live/apiv2/controlapps/:appToken/control" --header "Content-Type: application/json" --data-binary "@update-content.json"
+```
+{% endcode %}
 
-4\. With the output URL window from [step two](quick-start.md#_8c38ihv7lccy) visible, copy your updated `PATCH` request and past it into the command line and press enter. Then, watch the text update in the web browser.
+3. With the output URL window from [step two](quick-start.md#id-8c38ihv7lccy) visible, send the request and confirm that the overlay is In and shows your new text.
 {% endtab %}
 {% endtabs %}
 
@@ -245,46 +199,45 @@ In this step, you'll animate the same overlay in and out.
 1.  Navigate to the **Update Control App Animation State** request and select the **Body** tab.
 
     <figure><img src=".gitbook/assets/Finding the Update Control App Animation State request.png" alt=""><figcaption><p>Finding the Update Control App Animation State request</p></figcaption></figure>
-2. Update `:appToken` in the URL as you did in [step 3.4](quick-start.md#_9mqbwnx4ntkp) and 4.2.
-3.  Change the value of `subCompositionId` to `"57d57254-f15b-42ca-b68e-75b69875f5ea"`, from the previous request, and value of `"state"` to `"In"` or `"Out"` to animate this overlay in or out respectively.
+2. Update `:appToken` in the URL as you did in [step 3.4](quick-start.md#id-9mqbwnx4ntkp) and 4.2.
+3. Use your sub-composition ID from step three. Set `state` to `"Out"` and send the request to take the overlay Out; then set it to `"In"` and send it again to bring the overlay back In.
 
     <figure><img src=".gitbook/assets/Updating an overlay&#x27;s animation state.png" alt=""><figcaption><p>Updating an overlay's animation state</p></figcaption></figure>
-4. With the output URL window from [step two](quick-start.md#_8c38ihv7lccy) visible, press **Save** and **Send** and then watch the overlay change its animation state.
+4. With the output URL window from [step two](quick-start.md#id-8c38ihv7lccy) visible, press **Save** and **Send** and then watch the overlay change its animation state.
 {% endtab %}
 
 {% tab title="cURL" %}
-In the payload from the `GET`**Control App Control** request in [step three](quick-start.md#_9mqbwnx4ntkp), this is the sub-composition that you'll update to trigger an overlay in and out.
+1. Create `update-state.json` in your current terminal directory with this body. Replace the sample `subCompositionId` with your own ID from step three and save it as UTF-8:
 
 ```json
-{
+[
+  {
     "subCompositionId": "57d57254-f15b-42ca-b68e-75b69875f5ea",
-    "state": "In",
-    "payload": {
-        "Header": "HEADER",
-        "Main Text": "MAIN LINE OF TEXT"
-    }
-}
+    "state": "Out"
+  }
+]
 ```
 
-1\. Paste the following cURL request into your text editor:
+2. Replace `:appToken` with your Shared App Token and run the appropriate command as one line from the directory containing `update-state.json`.
+
+**macOS/Linux (Bash):**
 
 {% code overflow="wrap" %}
 ```bash
- curl --location --request PATCH 'https://app.singular.live/apiv2/controlapps/:appToken/control'
---header 'Content-Type: application/json'
---data-raw '[ { "subCompositionId": "57d57254-f15b-42ca-b68e-75b69875f5ea", "state": "In" } ]'
+curl --location --request PATCH "https://app.singular.live/apiv2/controlapps/:appToken/control" --header "Content-Type: application/json" --data-binary "@update-state.json"
 ```
 {% endcode %}
 
-2\. Replace `:appToken` with the actual Shared App Token you got in [step 3.2](quick-start.md#_9mqbwnx4ntkp).
+**Windows (PowerShell or Command Prompt):**
 
-3\. Find the key-value pair `"state": "In"` and change the value to `"Out"`.
+{% code overflow="wrap" %}
+```powershell
+curl.exe --location --request PATCH "https://app.singular.live/apiv2/controlapps/:appToken/control" --header "Content-Type: application/json" --data-binary "@update-state.json"
+```
+{% endcode %}
 
-4\. With the output URL window from [step two](quick-start.md#_8c38ihv7lccy) visible, copy your updated `PATCH` request, paste it into the command line, and press enter. Then, watch the overlay go to its Out state.
-
-5\. Using the same API request, change the`"state"` value to `"Out"`.
-
-6\. With the output URL window from [step two](quick-start.md#_8c38ihv7lccy) visible, copy your updated `PATCH` request, paste it into the command line, and press enter. Then, watch the overlay go to its Out state.
+3. Confirm that the overlay animates Out in the output URL window.
+4. Change `"state": "Out"` to `"state": "In"` in `update-state.json`, save the file, and run the same command again. Confirm that the overlay animates back In.
 {% endtab %}
 {% endtabs %}
 

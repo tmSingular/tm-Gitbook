@@ -40,7 +40,7 @@ Get reference to the receiving composition and send data by calling its updateCo
 
 {% code title="Root Script" %}
 ```javascript
-((function() {
+(function() {
 
   return {
 
