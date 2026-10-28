@@ -8,4 +8,4 @@ site:
       path: singular-developer-portal
       default: true
       content:
-        directory: ./singular-developer-portal
+        directory: ./developer-portal-v2
