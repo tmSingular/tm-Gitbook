@@ -3,8 +3,8 @@ site:
   title: Developer Portal v2 (draft)
   structure:
     - type: space
-      key: space-1
-      title: Developer Portal v2 (draft)
+      key: published
+      title: Developer Portal
       path: singular-developer-portal
       default: true
       content:
