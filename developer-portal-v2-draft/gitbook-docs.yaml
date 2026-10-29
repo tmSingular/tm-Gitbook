@@ -1,0 +1,11 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+site:
+  title: Developer Portal v2 (draft)
+  structure:
+    - type: space
+      key: in-progress
+      title: Developer Portal v2 (draft)
+      path: developer-portal-v2
+      default: true
+      content:
+        directory: ./developer-portal-v2-draft
