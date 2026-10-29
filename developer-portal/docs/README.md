@@ -1,5 +1,5 @@
 ---
-description: An introduction to the Singular Developer Portal
+description: An introduction to the Singular Developer Portal.
 ---
 
 # Portal overview
