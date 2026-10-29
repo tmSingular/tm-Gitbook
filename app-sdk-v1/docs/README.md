@@ -6,8 +6,6 @@ coverY: 0
 ---
 
 # Singular App SDK
-updated: Oct.2026
-by: tm
 
 Welcome to the Singular.live App SDK documentation!
 
