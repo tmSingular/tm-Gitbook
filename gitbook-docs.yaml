@@ -9,10 +9,4 @@ site:
       default: true
       content:
         directory: ./singular-developer-portal
-    - type: space
-      key: in-progress
-      title: Developer Portal v2 (draft)
-      path: developer-portal-v2
-      default: false
-      content:
-        directory: ./developer-portal-v2-draft
+
