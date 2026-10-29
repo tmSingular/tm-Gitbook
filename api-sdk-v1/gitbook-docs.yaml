@@ -1,0 +1,11 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+site:
+  title: App SDK v1
+  structure:
+    - type: space
+      key: space-1
+      title: App SDK v1
+      path: app-sdk-v2
+      default: true
+      content:
+        directory: ./docs-app-sdk-v1
