@@ -1,11 +1,11 @@
 $schema: https://api.gitbook.com/gitbook-docs.yaml
 site:
-  title: Developer Portal v2 (draft)
+  title: App SDK v1
   structure:
     - type: space
-      key: in-progress
-      title: Developer Portal v2 (draft)
-      path: developer-portal-v2
+      key: space-1
+      title: App SDK v1
+      path: app-sdk-v2
       default: true
       content:
-        directory: ./developer-portal-v2-draft
+        directory: ./app-sdk-v2
