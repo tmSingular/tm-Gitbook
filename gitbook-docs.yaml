@@ -3,15 +3,9 @@ site:
   title: Developer Portal v2 (draft)
   structure:
     - type: space
-      key: published
-      title: Developer Portal
-      path: singular-developer-portal
-      default: true
-      content:
-        directory: ./singular-developer-portal
-    - type: space
       key: in-progress
       title: Developer Portal v2 (draft)
       path: developer-portal-v2
+      default: true
       content:
         directory: ./developer-portal-v2-draft
