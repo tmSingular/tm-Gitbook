@@ -8,4 +8,4 @@ site:
       path: developer-portal-v2
       default: true
       content:
-        directory: ./developer-portal-v2-draft
+        directory: ./docs
