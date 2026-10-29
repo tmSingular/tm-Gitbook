@@ -9,11 +9,3 @@ site:
       default: true
       content:
         directory: ./singular-developer-portal
-    - type: space
-      key: in-progress
-      title: Developer Portal v2 (draft)
-      path: developer-portal-v2
-      hidden: true
-      content:
-        directory: ./developer-portal-v2-draft
-
