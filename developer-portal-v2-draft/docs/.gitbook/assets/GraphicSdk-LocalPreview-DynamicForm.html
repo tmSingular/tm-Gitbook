@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Graphic SDK - Local Preview with Dynamic Form</title>
+  <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
+  <!-- Include the Singular Graphics SDK JavaScript library -->
+  <script src="https://app.singular.live/libs/singulargraphics/1.0.0/singulargraphics.js"></script>
+  <style>
+    body {
+      background-color: #f4f4f6;
+      font-family: "Roboto", Arimo, sans-serif;
+      color: #26283a;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    h2 {
+      font-size: 15px;
+      margin: 0 0 10px 0;
+      color: #515477;
+    }
+
+    .layout {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #d9d9e3;
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    .controls-panel {
+      width: 360px;
+      flex-shrink: 0;
+    }
+
+    .preview-panel {
+      flex: 1;
+      min-width: 480px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #515477;
+      margin: 12px 0 4px 0;
+    }
+
+    label:first-child {
+      margin-top: 0;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    textarea,
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 32px;
+      padding: 2px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    input[type="checkbox"] {
+      width: auto;
+      margin-right: 6px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      margin: 12px 0 4px 0;
+    }
+
+    .checkbox-row label {
+      margin: 0;
+    }
+
+    button {
+      background: #4a4de7;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 4px;
+      margin-right: 6px;
+    }
+
+    button:disabled {
+      background: #b3b4e8;
+      cursor: not-allowed;
+    }
+
+    button.secondary {
+      background: #6c6f8c;
+    }
+
+    #id-app-token {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .row>* {
+      flex: 1;
+    }
+
+    #id-status {
+      margin-top: 14px;
+      font-size: 12px;
+      background: #f0f0f6;
+      border: 1px solid #dcdcec;
+      border-radius: 4px;
+      padding: 8px;
+      min-height: 16px;
+      word-break: break-word;
+    }
+
+    #id-form-container {
+      margin-top: 4px;
+    }
+
+    .field-block {
+      border-bottom: 1px dashed #e4e4ee;
+      padding-bottom: 8px;
+    }
+
+    .anim-buttons {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid #e4e4ee;
+    }
+
+    iframe#SingularOverlay {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: solid 1px #ccc;
+      background: #000;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #8a8ca6;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Singular Graphic SDK — Local Preview</h1>
+
+  <div class="layout">
+
+    <!-- ============ LEFT: CONTROLS ============ -->
+    <div class="panel controls-panel">
+
+      <h2>1. App token</h2>
+      <label for="id-app-token">App Token</label>
+      <input type="text" id="id-app-token" placeholder="Enter app token" value="">
+      <button type="button" id="id-btn-load" onclick="loadCompositionClick()">Load Composition</button>
+
+      <h2 style="margin-top:18px;">2. Subcomposition</h2>
+      <label for="id-subcomp-select">Select a subcomposition</label>
+      <select id="id-subcomp-select" onchange="onSubcompSelected()" disabled>
+        <option value="">— load a composition first —</option>
+      </select>
+
+      <div class="anim-buttons">
+        <button type="button" class="secondary" onclick="animationToClick('In')" id="id-btn-anim-in" disabled>Anim
+          In</button>
+        <button type="button" class="secondary" onclick="animationToClick('Out')" id="id-btn-anim-out" disabled>Anim
+          Out</button>
+      </div>
+
+      <h2 style="margin-top:18px;">3. Control node fields</h2>
+      <div id="id-form-container">
+        <div class="hint">Select a subcomposition to see its exposed fields.</div>
+      </div>
+      <button type="button" onclick="sendPayloadClick()" id="id-btn-send" disabled style="margin-top:10px;">Send to
+        Preview</button>
+
+      <div id="id-status">Status: idle</div>
+    </div>
+
+    <!-- ============ RIGHT: PREVIEW ============ -->
+    <div class="panel preview-panel">
+      <h2>Preview</h2>
+      <iframe id="SingularOverlay" src="https://app.singular.live/singularplayer/client"></iframe>
+    </div>
+
+  </div>
+
+  <script>
+    /* ===========================================================================
+       State
+    =========================================================================== */
+    let overlay = undefined;
+    let elStatus, elToken, elSelect, elFormContainer;
+    let elBtnLoad, elBtnSend, elBtnAnimIn, elBtnAnimOut;
+
+    let compMain = undefined;          // main composition object (from SDK)
+    let selectedComp = undefined;      // currently selected sub/main composition object (from SDK)
+    let subCompList = [];              // flat, depth-annotated tree walk: [{id, name, depth}]
+    let modelById = {};                // fields definitions per composition id, from REST /model
+    let currentFields = [];            // fields for the currently selected subcomposition
+
+    /* ===========================================================================
+       Setup
+    =========================================================================== */
+    window.onload = () => {
+      elStatus = document.querySelector("#id-status");
+      elToken = document.querySelector("#id-app-token");
+      elSelect = document.querySelector("#id-subcomp-select");
+      elFormContainer = document.querySelector("#id-form-container");
+      elBtnLoad = document.querySelector("#id-btn-load");
+      elBtnSend = document.querySelector("#id-btn-send");
+      elBtnAnimIn = document.querySelector("#id-btn-anim-in");
+      elBtnAnimOut = document.querySelector("#id-btn-anim-out");
+
+      overlay = SingularGraphics("SingularOverlay");
+
+      overlay.addListener("error", (event, msg) => {
+        setStatus("ERROR: " + (msg && msg.error ? msg.error.message : JSON.stringify(msg)), true);
+      });
+
+      overlay.addListener("payload_changed", (event, msg) => {
+        // Keep the form in sync if the payload changes underneath us
+        // (e.g. someone else pushed content via REST while we're looking at this subcomp).
+        if (selectedComp && msg && msg.compId === selectedComp.id) {
+          refreshFormValues();
+        }
+      });
+    };
+
+    function setStatus(msg, isError) {
+      elStatus.style.color = isError ? "#b00020" : "#26283a";
+      elStatus.textContent = "Status: " + msg;
+      console.log(isError ? "[ERROR] " : "[STATUS] ", msg);
+    }
+
+    /* ===========================================================================
+       Step 1 — Load composition + fetch model
+    =========================================================================== */
+    function loadCompositionClick() {
+      const appToken = elToken.value.trim();
+      if (!appToken) {
+        setStatus("Please enter an app token.", true);
+        return;
+      }
+
+      elBtnLoad.disabled = true;
+      resetFormUI();
+      setStatus("Fetching composition...");
+
+      const apiURL = "https://app.overlays.uno/apiv2/controlapps/" + appToken;
+
+      fetch(apiURL, { method: "GET", redirect: "follow" })
+        .then((response) => {
+          if (!response.ok) throw new Error("Failed to fetch composition (HTTP " + response.status + ")");
+          return response.json();
+        })
+        .then((result) => {
+          if (!result || !result.compositionJson) throw new Error("Response did not contain compositionJson.");
+          loadCompositionUrl(result.compositionJson, appToken);
+        })
+        .catch((error) => {
+          setStatus("Error fetching composition: " + error.message, true);
+          elBtnLoad.disabled = false;
+        });
+    }
+
+    function loadCompositionUrl(compositionUrl, appToken) {
+      overlay.loadComposition(compositionUrl, (isSuccess) => {
+        elBtnLoad.disabled = false;
+
+        if (!isSuccess) {
+          setStatus("Composition failed to load in the preview player.", true);
+          return;
+        }
+
+        setStatus("Composition loaded. Fetching control node model...");
+        compMain = overlay.getMainComposition();
+
+        // Reset all subcompositions to Out so the preview starts clean
+        compMain.listSubcompositions().forEach((c) => {
+          compMain.getSubcompositionById(c.id).jumpTo("Out");
+        });
+
+        fetchAppModel(appToken);
+      });
+    }
+
+    // GET https://app.singular.live/apiv2/controlapps/:appToken/model
+    function fetchAppModel(appToken) {
+      const modelURL = "https://app.singular.live/apiv2/controlapps/" + appToken + "/model";
+
+      fetch(modelURL, { method: "GET", redirect: "follow" })
+        .then((response) => {
+          if (!response.ok) throw new Error("Failed to fetch model (HTTP " + response.status + ")");
+          return response.json();
+        })
+        .then((model) => {
+          modelById = indexModelById(model);
+          populateSubcompSelect();
+          setStatus("Ready.");
+        })
+        .catch((error) => {
+          // Model fetch is only needed to know each field's *type* for the form.
+          // We can still let the user pick a subcomposition and fall back to
+          // whatever the running composition reports via getModel()/getControlNode().
+          setStatus("Composition loaded, but couldn't fetch /model (" + error.message + "). Falling back to live composition data.", true);
+          modelById = {};
+          populateSubcompSelect();
+        });
+    }
+
+    // The /model endpoint returns a JSON ARRAY containing one root node, e.g.:
+    //   [{ id, name, model: [ {id, title, type, ...}, ... ], subcompositions: [ <same shape>, ... ] }]
+    // Subcompositions nest recursively (a subcomposition can have its own
+    // subcompositions, e.g. "Lower Third" -> "Logo (optional)"), and each
+    // node's "id" matches the runtime composition/subcomposition id used by
+    // the Graphics SDK (compMain.id, and the ids returned by
+    // listSubcompositions()). So we flatten the whole tree into a flat
+    // { [id]: fields[] } map, keyed by id rather than by name — ids are
+    // guaranteed unique across the tree, names are not.
+    function indexModelById(model) {
+      const out = {};
+      if (!model) return out;
+
+      const rootNode = Array.isArray(model) ? model[0] : model;
+      if (!rootNode) return out;
+
+      (function walk(node) {
+        if (!node || !node.id) return;
+        out[node.id] = node.model || [];
+        (node.subcompositions || []).forEach(walk);
+      })(rootNode);
+
+      return out;
+    }
+
+    /* ===========================================================================
+       Step 2 — Subcomposition selector
+    =========================================================================== */
+    function populateSubcompSelect() {
+      elSelect.innerHTML = "";
+
+      // Only show the root and its direct children — nested subcompositions
+      // (e.g. "Lower Third" -> "Logo (optional)") are left out of the list.
+      subCompList = []; // flat [{id, name, depth}], root included, in display order
+
+      (function walk(compObj, depth, label) {
+        subCompList.push({ id: compObj.id, name: label, depth: depth });
+        if (depth >= 1) return; // stop after first-level subcompositions
+
+        const children = compObj.listSubcompositions(); // [{id, name}] — direct children only
+        children.forEach((c) => {
+          const childComp = compMain.getCompositionById(c.id);
+          if (childComp) walk(childComp, depth + 1, c.name);
+        });
+      })(compMain, 0, "(Main composition)");
+
+      subCompList.forEach((entry) => {
+        const opt = document.createElement("option");
+        opt.value = entry.id;
+        opt.textContent = (entry.depth > 0 ? "— ".repeat(entry.depth) : "") + entry.name;
+        elSelect.appendChild(opt);
+      });
+
+      elSelect.disabled = false;
+      elSelect.value = compMain.id;
+      onSubcompSelected();
+    }
+
+    function onSubcompSelected() {
+      const value = elSelect.value;
+      selectedComp = compMain.getCompositionById(value) || (value === compMain.id ? compMain : undefined);
+
+      if (!selectedComp) {
+        setStatus("Could not resolve the selected subcomposition.", true);
+        return;
+      }
+
+      elBtnAnimIn.disabled = false;
+      elBtnAnimOut.disabled = false;
+      elBtnSend.disabled = false;
+
+      currentFields = resolveFieldsForSelection(value);
+      buildForm(currentFields);
+      refreshFormValues();
+    }
+
+    function resolveFieldsForSelection(selectedId) {
+      // Prefer the fields we parsed from the REST /model response (has field "type"),
+      // matched by id — ids from /model line up 1:1 with the SDK's compId/subcomposition ids.
+      if (modelById[selectedId]) {
+        return modelById[selectedId];
+      }
+
+      // Fallback: ask the live composition itself for its control node model.
+      const controlNode = typeof selectedComp.getControlNode === "function" ? selectedComp.getControlNode() : undefined;
+      if (controlNode && controlNode.model && controlNode.model.fields) {
+        return Object.keys(controlNode.model.fields).map((id) => controlNode.model.fields[id]);
+      }
+
+      return [];
+    }
+
+    /* ===========================================================================
+       Step 3 — Dynamic form
+    =========================================================================== */
+    function resetFormUI() {
+      elSelect.innerHTML = '<option value="">— load a composition first —</option>';
+      elSelect.disabled = true;
+      elBtnAnimIn.disabled = true;
+      elBtnAnimOut.disabled = true;
+      elBtnSend.disabled = true;
+      elFormContainer.innerHTML = '<div class="hint">Select a subcomposition to see its exposed fields.</div>';
+      selectedComp = undefined;
+      currentFields = [];
+    }
+
+    function buildForm(fields) {
+      elFormContainer.innerHTML = "";
+
+      if (!fields || fields.length === 0) {
+        elFormContainer.innerHTML = '<div class="hint">No exposed control node fields for this subcomposition.</div>';
+        return;
+      }
+
+      fields.forEach((field) => {
+        // Some fields (e.g. internal helper fields like "tickerMessages",
+        // "numMessages", "requestInterval") come back with hidden: true —
+        // they're not meant to be edited directly, so skip them in the form.
+        if (field.hidden === true) return;
+
+        const fieldId = field.id || field.title;
+        const fieldTitle = field.title || field.id;
+        const fieldType = field.type || "text";
+
+        const wrap = document.createElement("div");
+        wrap.className = "field-block";
+        wrap.dataset.fieldId = fieldId;
+        wrap.dataset.fieldType = fieldType;
+
+        if (fieldType === "checkbox") {
+          const row = document.createElement("div");
+          row.className = "checkbox-row";
+          const input = document.createElement("input");
+          input.type = "checkbox";
+          input.id = "field-" + fieldId;
+          const label = document.createElement("label");
+          label.htmlFor = input.id;
+          label.textContent = fieldTitle;
+          row.appendChild(input);
+          row.appendChild(label);
+          wrap.appendChild(row);
+
+        } else {
+          const label = document.createElement("label");
+          label.htmlFor = "field-" + fieldId;
+          label.textContent = fieldTitle + "  (" + fieldType + ")";
+          wrap.appendChild(label);
+
+          let input;
+
+          switch (fieldType) {
+            case "textarea":
+              input = document.createElement("textarea");
+              input.rows = 2;
+              break;
+
+            case "number":
+            case "counter":
+            case "normalizednumber":
+              input = document.createElement("input");
+              input.type = "number";
+              // normalizednumber uses low/high; plain "number" fields use min/max/step directly
+              // (e.g. {"id":"Active Topic","min":"0","max":"6"} or {"id":"Lower Third Width","step":0.1}).
+              if (fieldType === "normalizednumber") {
+                if (field.low !== undefined) input.min = field.low;
+                if (field.high !== undefined) input.max = field.high;
+              } else {
+                if (field.min !== undefined) input.min = field.min;
+                if (field.max !== undefined) input.max = field.max;
+              }
+              if (field.step !== undefined) input.step = field.step;
+              break;
+
+            case "color":
+              input = document.createElement("input");
+              input.type = "color";
+              break;
+
+            case "selection":
+              input = document.createElement("select");
+              const options = field.selections || field.options || [];
+              options.forEach((o) => {
+                const opt = document.createElement("option");
+                opt.value = o.id;
+                opt.textContent = o.title || o.id;
+                input.appendChild(opt);
+              });
+              break;
+
+            case "datetime":
+              input = document.createElement("input");
+              input.type = "datetime-local";
+              break;
+
+            default:
+              // A "text" field with a rows > 1 property (e.g. "Location") is meant
+              // to be multi-line even though its type isn't literally "textarea".
+              if (fieldType === "text" && field.rows && field.rows > 1) {
+                input = document.createElement("textarea");
+                input.rows = Math.min(field.rows, 6);
+              } else {
+                // image, audio, video, data, jsonfile, json, gradient, table,
+                // location, button, timecontrol, metricfont, and anything unknown
+                // fall back to a plain text input holding a JSON/string representation.
+                input = document.createElement("input");
+                input.type = "text";
+              }
+          }
+
+          input.id = "field-" + fieldId;
+          wrap.appendChild(input);
+        }
+
+        elFormContainer.appendChild(wrap);
+      });
+    }
+
+    // Pulls the live payload for the selected composition and fills the form inputs.
+    function refreshFormValues() {
+      if (!selectedComp) return;
+
+      const payload = selectedComp.getPayload2() || {};
+
+      currentFields.forEach((field) => {
+        const fieldId = field.id || field.title;
+        const fieldType = field.type || "text";
+        const el = document.getElementById("field-" + fieldId);
+        if (!el) return;
+
+        const value = payload[fieldId];
+        if (value === undefined) return;
+
+        if (fieldType === "checkbox") {
+          el.checked = !!value;
+        } else if (fieldType === "color" && value && typeof value === "object") {
+          el.value = rgbToHex(value);
+        } else if (fieldType === "datetime") {
+          const ts = typeof value === "number" ? value : Date.parse(value);
+          if (!isNaN(ts)) el.value = toDatetimeLocalString(ts);
+        } else if (typeof value === "object") {
+          el.value = JSON.stringify(value);
+        } else {
+          el.value = value;
+        }
+      });
+    }
+
+    function rgbToHex(rgb) {
+      const c = (n) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, "0");
+      return "#" + c(rgb.r || 0) + c(rgb.g || 0) + c(rgb.b || 0);
+    }
+
+    function toDatetimeLocalString(ts) {
+      const d = new Date(ts);
+      const pad = (n) => String(n).padStart(2, "0");
+      return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) +
+        "T" + pad(d.getHours()) + ":" + pad(d.getMinutes());
+    }
+
+    /* ===========================================================================
+       Step 4 — Send payload to the local preview (via SDK, not REST)
+    =========================================================================== */
+    function sendPayloadClick() {
+      if (!selectedComp) return;
+
+      const payload = {};
+
+      currentFields.forEach((field) => {
+        const fieldId = field.id || field.title;
+        const fieldType = field.type || "text";
+        const el = document.getElementById("field-" + fieldId);
+        if (!el) return;
+
+        if (fieldType === "checkbox") {
+          payload[fieldId] = el.checked;
+        } else if (fieldType === "number" || fieldType === "counter" || fieldType === "normalizednumber") {
+          payload[fieldId] = el.value === "" ? 0 : parseFloat(el.value);
+        } else if (fieldType === "datetime") {
+          payload[fieldId] = el.value ? new Date(el.value).getTime() : Date.now();
+        } else if (fieldType === "color") {
+          payload[fieldId] = el.value; // hex string; SDK's checkDataType() will convert it
+        } else {
+          // For text/json/table/location/etc. the field may expect a raw string
+          // or a JSON string — pass through what the user typed as-is.
+          payload[fieldId] = el.value;
+        }
+      });
+
+      selectedComp.setPayload(payload);
+      setStatus("Payload sent to preview for \"" + (elSelect.options[elSelect.selectedIndex].textContent) + "\".");
+    }
+
+    /* ===========================================================================
+       Step 5 — Animation buttons
+    =========================================================================== */
+    function animationToClick(toState) {
+      if (!selectedComp) return;
+      selectedComp.playTo(toState);
+      setStatus("Playing \"" + toState + "\" animation on \"" + (elSelect.options[elSelect.selectedIndex].textContent) + "\".");
+    }
+  </script>
+
+</body>
+
+</html>

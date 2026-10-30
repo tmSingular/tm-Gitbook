@@ -7,3 +7,7 @@ Embed and control Singular output from a host web page.
 - [Composition object](https://developer.singular.live/software-development-kits/graphics-sdk/reference/composition-object)
 - [Sequencer object](https://developer.singular.live/software-development-kits/graphics-sdk/reference/sequencer-object)
 - [Guides and examples](https://developer.singular.live/software-development-kits/graphics-sdk/guides-and-examples)
+
+## Local preview example
+
+Try [Local preview with a dynamic control form](graphics-sdk/examples/local-preview-dynamic-form.md) to load a composition from a Control App, generate inputs from its model, and send edits to an embedded Player. Includes the downloadable HTML, a walkthrough, and known field-type limitations.

@@ -7,4 +7,4 @@ Select the reference for the interface your integration uses. Published referenc
 - [Graphics SDK](graphics-sdk.md)
 - [Overlay SDK](overlay-sdk.md)
 - [Widget SDK](widget-sdk.md)
-- [App SDK: access and availability](app-sdk.md)
+- [App SDK](app-sdk.md)

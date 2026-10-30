@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>App SDK: native form</title>
+<label>Composition node <select id="target"></select></label>
+<button id="apply" disabled>Apply to output</button>
+<p id="status" role="status">Waiting for the hosted App SDK.</p>
+<div id="form" style="height:480px"></div>
+<script>
+let disposeCurrentApp = function () {};
+function singularAppInit(app) {
+  disposeCurrentApp();
+  const select = document.getElementById("target");
+  const apply = document.getElementById("apply");
+  const status = document.getElementById("status");
+  const container = document.getElementById("form");
+  let formHandle = null, target = null, draft = null, generation = 0;
+  let committed = {};
+  function clearForm() {
+    generation++;
+    apply.disabled = true;
+    target = null;
+    draft = null;
+    if (formHandle) formHandle.destroy();
+    formHandle = null;
+  }
+  disposeCurrentApp = function () {
+    clearForm();
+    select.onchange = apply.onclick = null;
+  };
+  select.replaceChildren();
+  apply.onclick = null;
+  apply.disabled = true;
+  const output = app.getOutputByName("Default");
+  const main = output && output.getComposition();
+  if (!main) {
+    status.textContent = "Assign a composition to Default first.";
+    return;
+  }
+  // Root and direct children only. IDs are resolved on their parent.
+  const targets = new Map([[main.id, main]]);
+  for (const item of main.listSubcompositions()) {
+    const child = main.getSubcompositionById(item.id);
+    if (child) targets.set(child.id, child);
+  }
+  for (const [id, node] of targets) {
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = node.name;
+    select.appendChild(option);
+  }
+  function chooseTarget() {
+    clearForm();
+    const chosen = targets.get(select.value);
+    const controlNode = chosen && chosen.getControlNode();
+    if (!controlNode || !controlNode.model) {
+      status.textContent = "This node has no editable control node.";
+      return;
+    }
+    target = chosen;
+    committed = Object.assign({}, controlNode.payload || {});
+    const ownGeneration = generation;
+    formHandle = app.createSingularForm(window, container, controlNode,
+      function (event) {
+        if (generation !== ownGeneration || target !== chosen) return;
+        if (event.event === "change" && event.payload &&
+            typeof event.payload === "object") {
+          draft = Object.assign({}, draft || committed, event.payload);
+          apply.disabled = false;
+        }
+      }, { refId: main.getRefId() });
+    status.textContent = "Edit fields, then Apply. Switching nodes discards pending edits.";
+  }
+  select.onchange = chooseTarget;
+  apply.onclick = function () {
+    if (!target || !draft) return;
+    target.setPayload(draft);
+    committed = Object.assign({}, draft);
+    draft = null;
+    apply.disabled = true;
+    status.textContent = "Payload sent; verify the output.";
+  };
+  chooseTarget();
+}
+window.addEventListener("beforeunload", function () { disposeCurrentApp(); });
+</script>
+</html>

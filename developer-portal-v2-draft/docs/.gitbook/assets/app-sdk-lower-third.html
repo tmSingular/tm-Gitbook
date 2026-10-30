@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>App SDK: lower third</title>
+<label>Name <input id="name" value=""></label>
+<button id="apply" disabled>Apply</button>
+<button id="in" disabled>In</button>
+<button id="out" disabled>Out</button>
+<p id="status" role="status">Waiting for the hosted App SDK.</p>
+<script>
+function singularAppInit(app) {
+  const status = document.getElementById("status");
+  const input = document.getElementById("name");
+  const apply = document.getElementById("apply");
+  const inButton = document.getElementById("in");
+  const outButton = document.getElementById("out");
+  apply.disabled = inButton.disabled = outButton.disabled = true;
+  apply.onclick = inButton.onclick = outButton.onclick = null;
+  const output = app.getOutputByName("Default");
+  const main = output && output.getComposition();
+  const child = main && main.getSubcompositionByName("Lower Third");
+  if (!child) {
+    status.textContent = "Assign Default and add a Lower Third child.";
+    return;
+  }
+  const model = child.getModel() || [];
+  if (!model.some(field => field.id === "Name" && field.type === "text")) {
+    status.textContent = "Lower Third requires a text control with ID Name.";
+    return;
+  }
+  const payload = child.getPayload2() || {};
+  input.value = payload.Name == null ? "" : String(payload.Name);
+  apply.onclick = function () {
+    child.setPayload({ Name: input.value });
+    status.textContent = "Payload sent; verify the output.";
+  };
+  inButton.onclick = function () { child.playTo("In"); };
+  outButton.onclick = function () { child.playTo("Out"); };
+  apply.disabled = inButton.disabled = outButton.disabled = false;
+  status.textContent = "Ready. Apply changes the shared app composition.";
+}
+</script>
+</html>
