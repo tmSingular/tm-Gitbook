@@ -4,6 +4,8 @@ description: "Guides, scripting, APIs, SDKs, and operations for Singular develop
 
 # Singular Developer Portal
 
+Last modified: **2026-10-30 14:14 CET (Europe/Berlin)**
+
 Build graphics in Composer, connect data, add runtime logic, and integrate overlays with your applications. Start with the integration chooser, or go directly to the guides and reference you need.
 
 - [Start here](start-here/README.md)

@@ -2,8 +2,8 @@
 
 This hosted example reads the current lower-third text, lets the operator edit a draft, and sends it only when Apply is pressed. In and Out animate the child independently of editing. It checks its configuration before enabling the buttons.
 
-{% file src="../../../.gitbook/assets/app-sdk-lower-third.html" %}
-Download the complete hosted app HTML.
+{% file src="../../../.gitbook/assets/app-sdk-lower-third.zip" %}
+Download the complete hosted app HTML as a ZIP archive.
 {% endfile %}
 
 ## Run it
@@ -11,7 +11,7 @@ Download the complete hosted app HTML.
 1. Follow [environment setup](../prepare-your-environment.md).
 2. Assign a composition to the test app output named `Default`.
 3. Add a direct child named `Lower Third` with a **text** control ID `Name`. Bind the control to the intended text widget in Composer.
-4. Save the downloaded file as `source/app.html`, deploy it, and open the development instance.
+4. Extract the ZIP and save its HTML file as `source/app.html`, deploy it, and open the development instance.
 5. Change the text, press Apply, then In. Confirm Out plays the exit animation.
 
 The hosted runtime calls `singularAppInit`; the file intentionally has no local bootstrap credentials. For a local adaptation, use [Hosted and local development](../hosted-and-local-development.md).

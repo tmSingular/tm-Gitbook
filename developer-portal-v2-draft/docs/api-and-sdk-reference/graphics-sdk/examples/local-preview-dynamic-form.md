@@ -2,17 +2,17 @@
 
 Load a Control App's composition into an embedded Singular Player, generate HTML inputs from its control model, and try payload changes and In/Out animations in the local preview. This example is useful for exploring a composition's fields or building a preview tool outside a hosted Control App.
 
-{% file src="../../../.gitbook/assets/GraphicSdk-LocalPreview-DynamicForm.html" %}
-Download the original dynamic preview example.
+{% file src="../../../.gitbook/assets/GraphicSdk-LocalPreview-DynamicForm.zip" %}
+Download the original dynamic preview example as a ZIP archive.
 {% endfile %}
 
-The download is the supplied `GraphicSdk-LocalPreview-DynamicForm.html`, preserved unchanged. It uses Graphics SDK 1.0.0, REST reads, and plain browser JavaScript. It does not use the App SDK or Firebase.
+The ZIP contains the supplied `GraphicSdk-LocalPreview-DynamicForm.html`, preserved unchanged. It uses Graphics SDK 1.0.0, REST reads, and plain browser JavaScript. It does not use the App SDK or Firebase.
 
 ## Prerequisites and running
 
 Use a test Control App with an extracted composition, readable model, and an app token you are authorized to use. The sample's input label is **App Token**; it expects a Control App REST token, not a deployment key or virtual app key. Use a modern browser with network access to the SDK, Player, and API services.
 
-Save the HTML in a local folder and serve that folder over HTTP. For example, from that folder, if Python is installed:
+Extract the ZIP and save the HTML in a local folder and serve that folder over HTTP. For example, from that folder, if Python is installed:
 
 ```sh
 python -m http.server 8000

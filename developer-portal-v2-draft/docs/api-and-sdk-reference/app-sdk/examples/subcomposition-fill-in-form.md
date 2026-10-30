@@ -2,13 +2,13 @@
 
 Render a native Singular form for the root or one of its direct children, collect a local draft, and apply it to the selected node only on command. This is an App SDK example; the [Graphics SDK dynamic form](../../graphics-sdk/examples/local-preview-dynamic-form.md) uses a different runtime and edits a local Player.
 
-{% file src="../../../.gitbook/assets/app-sdk-native-form.html" %}
-Download the complete hosted app HTML.
+{% file src="../../../.gitbook/assets/app-sdk-native-form.zip" %}
+Download the complete hosted app HTML as a ZIP archive.
 {% endfile %}
 
 ## Run it
 
-Assign a composition with editable controls to the test app's `Default` output. Save the download as `source/app.html`, [deploy](../deployment-and-versioning.md), and open the development instance. Select a node, edit its native form, and press Apply to output. The form container has an explicit height so its iframe is visible.
+Assign a composition with editable controls to the test app's `Default` output. Extract the ZIP and save its HTML file as `source/app.html`, [deploy](../deployment-and-versioning.md), and open the development instance. Select a node, edit its native form, and press Apply to output. The form container has an explicit height so its iframe is visible.
 
 ## Selection and draft lifecycle
 
