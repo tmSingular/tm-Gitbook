@@ -51,3 +51,7 @@ Candidate fix: each of the three file blocks now links to a ZIP containing its o
 Official references:
 - https://gitbook.com/docs/create-content/blocks/insert-files
 - https://gitbook.com/docs/docs-as-code/git-sync/troubleshooting
+
+## CodePen preview update
+
+The user confirmed that synchronization succeeded after switching the downloads to ZIP archives. At the user's request, the Graphics SDK dynamic-form page now uses the existing repository's `@iframe-embed/iframe-embed` integration syntax to embed their CodePen preview and links to their CodePen editor. Removed the Graphics SDK ZIP download and its extraction instructions; the two separate hosted App SDK example downloads remain unchanged. The original Graphics HTML source remains available for the existing local syntax checks.

@@ -2,23 +2,23 @@
 
 Load a Control App's composition into an embedded Singular Player, generate HTML inputs from its control model, and try payload changes and In/Out animations in the local preview. This example is useful for exploring a composition's fields or building a preview tool outside a hosted Control App.
 
-{% file src="../../../.gitbook/assets/GraphicSdk-LocalPreview-DynamicForm.zip" %}
-Download the original dynamic preview example as a ZIP archive.
-{% endfile %}
+## Interactive preview
 
-The ZIP contains the supplied `GraphicSdk-LocalPreview-DynamicForm.html`, preserved unchanged. It uses Graphics SDK 1.0.0, REST reads, and plain browser JavaScript. It does not use the App SDK or Firebase.
+{% @iframe-embed/iframe-embed url="https://es-d-29450230820261101-01a085b3-1482-72b9-9c80-3ff0f81307a2.codepen.dev/" width="100%" height="900" aspectRatio="" borderWidth="1" borderColor="#cccccc" %}
+
+[Open the preview in a new tab](https://es-d-29450230820261101-01a085b3-1482-72b9-9c80-3ff0f81307a2.codepen.dev/).
+
+## Code example
+
+[View and edit the code example on CodePen](https://codepen.io/editor/Singular/pen/01a085b3-1482-72b9-9c80-3ff0f81307a2).
+
+The example uses Graphics SDK 1.0.0, REST reads, and plain browser JavaScript. It does not use the App SDK or Firebase.
 
 ## Prerequisites and running
 
-Use a test Control App with an extracted composition, readable model, and an app token you are authorized to use. The sample's input label is **App Token**; it expects a Control App REST token, not a deployment key or virtual app key. Use a modern browser with network access to the SDK, Player, and API services.
+Use a test Control App with an extracted composition, readable model, and an app token you are authorized to use. The sample's input label is **App Token**; it expects a Control App REST token, not a deployment key or virtual app key. Use a modern browser with network access to CodePen, the SDK, Player, and API services.
 
-Extract the ZIP and save the HTML in a local folder and serve that folder over HTTP. For example, from that folder, if Python is installed:
-
-```sh
-python -m http.server 8000
-```
-
-Open `http://localhost:8000/GraphicSdk-LocalPreview-DynamicForm.html`. Enter your test app token, click **Load Composition**, select the root or a direct child, edit visible fields, and click **Send to Preview**. Use In and Out to test the selected node's animation. Local HTTP serving does not bypass API authentication or CORS.
+In the preview above, enter your test app token and click **Load Composition**. Select the root or a direct child, edit visible fields, and click **Send to Preview**. Use In and Out to test the selected node's animation. You can also open the preview in a separate tab for more space. API authentication and CORS still apply when running on CodePen.
 
 ## How it works
 

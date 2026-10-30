@@ -10,4 +10,4 @@ Embed and control Singular output from a host web page.
 
 ## Local preview example
 
-Try [Local preview with a dynamic control form](graphics-sdk/examples/local-preview-dynamic-form.md) to load a composition from a Control App, generate inputs from its model, and send edits to an embedded Player. Includes the downloadable HTML, a walkthrough, and known field-type limitations.
+Try [Local preview with a dynamic control form](graphics-sdk/examples/local-preview-dynamic-form.md) to load a composition from a Control App, generate inputs from its model, and send edits to an embedded Player. Includes an interactive CodePen preview, a link to the source code, a walkthrough, and known field-type limitations.
