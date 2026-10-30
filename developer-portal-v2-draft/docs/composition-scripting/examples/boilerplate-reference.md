@@ -1,6 +1,6 @@
 # Boilerplate Reference
 
-Quick-copy templates for each script type.
+Use one IIFE for the chosen script type. These are independent templates, not blocks to combine verbatim. `init` is required; include `close` whenever resources need cleanup. Use ES2017-compatible source unless a newer engine is guaranteed.
 
 ## Global script
 
@@ -8,47 +8,25 @@ Quick-copy templates for each script type.
 (function() {
   return {
     init: function(context) {
-      // context.global — shared storage
-      // context.utils  — utility functions
+      // Merge shared helpers into an intentional versioned namespace.
     },
     close: function() {
-      // Clean up timers, intervals, open requests
+      // Release resources this Global Script owns.
     }
   };
 })();
 ```
 
-## Root / sub-composition script
+## Root or sub-composition script
 
 ```javascript
 (function() {
   return {
     init: function(comp, context) {
-      // comp    — this composition object
-      // context — context.global and context.utils
-
-      comp.addListener('payload_changed', (event, msg, e) => {
-        e.stopPropagation();
-      });
-
-      comp.addListener('state_changed', (event, msg, e) => {
-        e.stopPropagation();
-      });
-
-      comp.addListener('timeline_event', (event, msg, e) => {
-        e.stopPropagation();
-      });
-
-      comp.addListener('datanode_payload_changed', (event, msg, e) => {
-        e.stopPropagation();
-      });
-
-      comp.addListener('message', (event, msg, e) => {
-        e.stopPropagation();
-      });
+      // Resolve targets and apply the initial presentation.
     },
     close: function(comp, context) {
-      // Clean up timers, intervals, open requests, data streams
+      // Release only owned listeners, streams, requests, timers, and frames.
     }
   };
 })();
@@ -60,16 +38,14 @@ Quick-copy templates for each script type.
 (function() {
   return {
     init: function(graphics, overlay) {
-      graphics.addListener('message',                    (event, msg) => {});
-      graphics.addListener('state_changed',              (event, msg) => {});
-      graphics.addListener('payload_changed',            (event, msg) => {});
-      graphics.addListener('datanode_payload_changed',   (event, msg) => {});
-      graphics.addListener('error',                      (event, msg) => {});
-
-      if (overlay) {
-        overlay.addListener((event, msg) => {});
-      }
+      // SDK objects for the advanced host/video integration.
+      // overlay can be absent; check it before use.
     },
-    close: function() {}
+    close: function() {
+      // Use that SDK's documented cleanup contract for owned resources.
+    }
   };
+})();
 ```
+
+Boilerplates deliberately register no no-op listeners: those would consume event slots and could replace existing behavior. [The reactive example](../how-to-guides/react-to-control-node-changes.md) shows an owned listener and cleanup. In-script `removeListener(eventType)` differs from host SDK removal; do not interchange them.

@@ -1,9 +1,9 @@
 # Handle interactive events
 
-Configure the intended interactive area in Composer, then handle its messages in the script responsible for that behavior.
+Configure an interactive widget/group area in Composer and send a message to composition JavaScript for the intended interaction. The incoming message is not the browser DOM event itself.
 
-- [Published interaction setup guide](https://developer.singular.live/singular-basics/building-overlays-in-composer/how-to-make-overlays-interactive)
-- [Event listeners](../api-reference/event-listeners.md)
-- [Interactive overlay example](../examples/interactive-overlay-with-button-events.md)
+Interactive messages use `msg.type` (for example `mousedown`) and `msg.params`, which identifies the originating tile/group with `type`, `id`, `name`, and `compId`. Filter actual IDs from inspection. Do not reuse this envelope for Timer or other widget messages.
 
-Check the event's source identity and payload before acting. Decide whether parent compositions need to receive the event before stopping propagation.
+For a native Button Control Node, use the complete [button example](../examples/interactive-overlay-with-button-events.md). It uses the separate `button_clicked` event and public button ID. A widget/group pointer interaction needs the `message` route described here; adapt it using the actual Composer-configured interaction and inspected source ID.
+
+Register one owned `message` slot, preserve unrelated routes in that callback, and stop propagation only when parents must not consume the interaction. Verify wrong-source rejection, repeated events, output state, and the actual interactive host.

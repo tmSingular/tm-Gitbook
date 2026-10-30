@@ -1,69 +1,43 @@
 # Event listeners
 
-Use `comp.addListener(eventType, callback)` to react to events. Multiple listeners for the same event type are supported.
+Register an in-script handler with `comp.addListener(eventType, callback)`.
 
-Always call `e.stopPropagation()` to prevent events from bubbling up to parent compositions unintentionally.
+## Registration and ownership
 
-| Event type                 | Triggered when                                                             |
-| -------------------------- | -------------------------------------------------------------------------- |
-| `payload_changed`          | A control node on this comp or a child changes                             |
-| `state_changed`            | The animation state reaches `In`, `Out`, `Out1`, or `Out2`                 |
-| `timeline_event`           | An animation starts or stops                                               |
-| `button_clicked`           | A button control node is clicked                                           |
-| `datanode_payload_changed` | A data node on this comp or a child changes                                |
-| `message`                  | The Graphics SDK, a widget, or an interactive event sends a custom message |
+There is **one handler slot per target composition and event type**. Registering again for the same pair replaces the previous handler. Combine related behavior in the existing callback; registering on a child from root can replace that child's handler too.
+
+`comp.removeListener(eventType)` removes that target's entire event slot. It is not callback-specific removal. Do not pass a second callback argument as though it protects another owner's handler. Only remove a slot your script owns.
+
+Uninstalling a composition script clears slots keyed to that composition before `close()`; it does not automatically remove listeners it registered on other compositions. Prefer local ownership and explicit coordination rather than cross-composition registrations. For shared root coordination, extend the root's existing handler.
+
+## Callback and propagation
 
 ```javascript
-// React to control node changes
-comp.addListener('payload_changed', (event, msg, e) => {
-  // Filter to only this composition's events (not bubbled from children)
-  if (msg.compositionId === comp.id) {
-    const p = comp.getPayload2();
-    console.log("Payload changed:", p);
-  }
-  e.stopPropagation();
-});
-
-// React to animation state changes
-comp.addListener('state_changed', (event, msg, e) => {
-  if (msg.compositionId === comp.id) {
-    console.log("State is now:", msg.state); // "In", "Out", "Out1", "Out2"
-  }
-  e.stopPropagation();
-});
-
-// React to animation start and stop
-comp.addListener('timeline_event', (event, msg, e) => {
-  if (msg.compositionId === comp.id) {
-    const m = msg.message;
-    console.log(m.event);       // "start" or "stop"
-    console.log(m.targetState); // "In" or "Out"
-    console.log(m.timeline);    // "In", "Out", etc.
-    console.log(m.currentTime); // seconds elapsed
-  }
-  e.stopPropagation();
-});
-
-// React to a button control node click
-comp.addListener('button_clicked', (event, msg, e) => {
-  if (msg.compositionId === comp.id) {
-    console.log("Button clicked:", msg.buttonId);
-  }
-  e.stopPropagation();
-});
-
-// React to data node changes
-comp.addListener('datanode_payload_changed', (event, msg, e) => {
-  console.log("Data node payload:", msg.payload);
-  e.stopPropagation();
-});
-
-// React to custom messages from widgets or interactive events
-comp.addListener('message', (event, msg, e) => {
-  if (msg.params && msg.params.compId === comp.id) {
-    console.log("Message type:", msg.type);   // "mousedown", "mouseenter", etc.
-    console.log("Widget name:", msg.params.name);
-  }
-  e.stopPropagation();
+comp.addListener("message", function(event, msg, propagationEvent) {
+  // event is the event-name string; msg contains that event's data.
+  // Stop propagation only if parents must not receive this message.
 });
 ```
+
+Composition-script callbacks receive three arguments. Host-page Player SDK callbacks receive `(event, msg)`, without a propagation object. Descendant events normally bubble to parent compositions until a handler calls `propagationEvent.stopPropagation()`.
+
+Filter source identity according to each event's envelope. A root listener cannot assume all events arrive: descendants can stop them. Avoid applying a `msg.compositionId === comp.id` filter to local theme/payload synchronization; it can suppress live editor updates. Instead, reread the owning composition's authoritative payload and apply it initially and after changes.
+
+## Event reference
+
+| Event | Relevant message data | Notes |
+|---|---|---|
+| `payload_changed` | Composition identity and partial/new payload information | Read complete values through `comp.getPayload2()` |
+| `timeline_event` | `compositionId`, `message.event`, `message.targetState` | `start`, `stop`, or `jump`; use for animation timing |
+| `state_changed` | `compositionId`, `state` | Settled internal state; may include `Out1` |
+| `button_clicked` | `buttonId`; composition identity fields depend on the event | Match the actual public button ID; do not infer it from its display title |
+| `datanode_payload_changed` | Composition identity and data-node payload | Separate from ordinary Control Node values |
+| `message` | Event-specific envelope, often `params` | Interactive, widget, host, and Timer messages differ |
+
+Interactive messages use `msg.type` for the interaction type and `msg.params` for source identity, including `id`, `name`, `compId`, and `type`. Metric Text bounds use `msg.params.data.event === "bounds"` and route by the originating tile ID. [Timer messages](timer-controls.md) use a stable Control Node key and `data.type === "timerChanged"`.
+
+## Reactive local input
+
+The complete [reactive-control example](../how-to-guides/react-to-control-node-changes.md) registers one handler, initializes once, rereads current values on updates, and releases only its owned slot. It deliberately permits parent propagation.
+
+See [Animation control](animation-control.md) for the full start/stop/jump behavior. Never infer a single universal source envelope from one event example.

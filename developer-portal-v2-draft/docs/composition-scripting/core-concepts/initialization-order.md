@@ -1,10 +1,18 @@
 # Initialization order
 
-Scripts initialise **bottom-up** — from the deepest child sub-composition up to the root — in this sequence:
+The runtime initializes scripts in this order:
 
-1. Overlay script
-2. Global script
-3. Sub-composition scripts (deepest child first, up to root's direct children)
-4. Root script
+1. Overlay script.
+2. Global script.
+3. Sub-composition scripts, from deepest child toward parent.
+4. Root script.
 
-This means by the time the root script runs, all sub-composition scripts are already initialised and their composition objects are accessible. Widgets are also fully loaded before any script runs.
+Widgets are loaded and initialized before their composition scripts run. Children can consume global helpers; root initialization can call functions exposed by child scripts.
+
+Initialization is not a guarantee that every asynchronous asset, metric font, repeated template instance, or layout measurement is ready. Use the widget's documented messages and verify its actual rendered state.
+
+Apply the first presentation explicitly in `init()` and handle later input changes. Reloading a preview to see a new value does not test reactive behavior in the same running instance.
+
+- [Lifecycle](lifecycle.md)
+- [How scripts communicate](how-scripts-communicate.md)
+- [Verification](../debugging-verification-and-deployment/verification.md)

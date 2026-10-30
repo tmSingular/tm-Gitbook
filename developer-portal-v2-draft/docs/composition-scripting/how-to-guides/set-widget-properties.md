@@ -1,84 +1,29 @@
 # Set widget properties
 
-## Text widget properties
+Select the target's loaded [widget payload contract](../api-reference/widget-payloads/README.md). Send only intended content fields, preserving unrelated fields and complete font/template definitions.
+
+Fragments inside an owning composition's `init(comp)`; each destination must be unlinked:
 
 ```javascript
-// Lower Script
-(function() {
-  return {
-    init: function(comp, context) {
-
-      const wiTitle    = comp.findWidget("lowerTitle")[0];
-      const wiSubtitle = comp.findWidget("lowerSubtitle")[0];
-
-      // Single-line text
-      wiTitle.setPayload({ "text": "This is the new title" });
-
-      // Multi-line text — use \n for line breaks
-      wiSubtitle.setPayload({ "text": "Line 1\nLine 2" });
-
-      // HTML-styled text — wrap in <html> tags
-      wiTitle.setPayload({ "text": "<html>First <b>LAST</b></html>" });
-
-    },
-    close: function(comp, context) {}
-  };
-})();
+const title = comp.findWidget('Title')[0];
+if (!title) throw new Error('Title was not found');
+title.setPayload({ text: 'Updated title' });
 ```
-
-## Image widget properties
 
 ```javascript
-// Lower Script
-(function() {
-  return {
-    init: function(comp, context) {
-
-      const wiLogo = comp.findWidget("lowerLogo")[0];
-
-      // Read the current image URL
-      const currentUrl = wiLogo.getPayload().image;
-      console.log(currentUrl);
-
-      // Set a new image URL
-      wiLogo.setPayload({
-        "image": "https://example.com/new-logo.png"
-      });
-
-    },
-    close: function(comp, context) {}
-  };
-})();
+const image = comp.findWidget('Logo')[0];
+if (!image) throw new Error('Logo was not found');
+image.setPayload({ image: 'https://example.com/logo.png', objectFit: 'contain' });
 ```
 
-## **Table widget** properties
-
-The table widget's `tableContent` property must be a **JSON-stringified** object containing a `content` array. Each item in the array is one row.
+The image URL is an illustrative placeholder; replace it with a trusted accessible asset and verify loading in the Player.
 
 ```javascript
-// Standings Script
-(function() {
-  return {
-    init: function(comp, context) {
-
-      const wiTable = comp.findWidget("standingsTable")[0];
-
-      const tableData = [
-        { "Position": 1, "Name": "The Winner",   "Points": 987 },
-        { "Position": 2, "Name": "Silver Medal",  "Points": 876 },
-        { "Position": 3, "Name": "Bronze Medal",  "Points": 765 },
-        { "Position": 4, "Name": "4th Place",     "Points": 654 },
-        { "Position": 5, "Name": "5th Place",     "Points": 543 }
-      ];
-
-      // Must be JSON.stringify'd
-      wiTable.setPayload({
-        "tableContent": JSON.stringify({ "content": tableData })
-      });
-
-    },
-    close: function(comp, context) {}
-  };
-})();
+const table = comp.findWidget('Results Table')[0];
+if (!table) throw new Error('Results Table was not found');
+table.setPayload({ tableContent: JSON.stringify({ content: [{ label: 'First' }] }) });
 ```
 
+The Table template must expose the exact `label` public control ID. Keep its Composer-authored template relationship. For tile dimensions, use `setSizeX/Y()`, not a guessed content field named width/height.
+
+After changing a value, check readback and actual rendering separately. [Table/Grid](../api-reference/widget-payloads/table-and-grid.md), font loading, and image loading can require asynchronous readiness.

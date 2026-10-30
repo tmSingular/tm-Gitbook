@@ -1,29 +1,21 @@
 # Read and update control nodes
 
-Control nodes are the operator-facing fields on a sub-composition. Read them with `getPayload2()` (returns a plain object) and write them with `setPayload()`.
+Use public Control Node IDs when reading or writing a payload; the UI title, internal stable key, and widget tile ID are not interchangeable.
+
+Fragment inside `init(comp)`:
 
 ```javascript
-// Lower Script
-(function() {
-  return {
-    init: function(comp, context) {
-
-      // Read as a plain JSON object (preferred)
-      const p = comp.getPayload2();
-      console.log(p);
-      // > { "Title": "Breaking News", "Subtitle": "...", "Station Logo": "https://..." }
-
-      // Update control nodes
-      comp.setPayload({
-        "Title": "New Title",
-        "Subtitle": "Line 1\nLine 2",
-        "Station Logo": "https://example.com/logo.png"
-      });
-
-    },
-    close: function(comp, context) {}
-  };
-})();
+const values = comp.getPayload2() || {};
+const title = values['Title'];
+const fields = comp.getModel() || [];
+const titleField = fields.filter(function(field) { return field.id === 'Title'; })[0];
+if (!titleField) throw new Error('Title control was not found');
 ```
 
-> `getPayload()` returns an array of `{ key, value }` pairs. `getPayload2()` returns a plain object and is almost always preferable.
+`getPayload()` provides key/value pairs; `getPayload2()` is convenient for named inputs. Model getters are read-only. Normalized Number reads are raw percentages; Timer reads are formatted strings. See [normalized numbers](../api-reference/normalized-numbers.md) and [Timer controls](../api-reference/timer-controls.md).
+
+`comp.setPayload({ Title: 'Updated' })` writes a runtime Control Node value when the integration intentionally requires that consumer. It does not write the widget directly or synchronize output-side changes into the Control App operator UI.
+
+For fetched or derived presentation, prefer [unlinked widget writes](set-widget-properties.md). For reactive transformations, use [React to control node changes](react-to-control-node-changes.md). Native Timer command objects are a distinct justified use of `setPayload`.
+
+Avoid changing operator values in `init()` without an explicit design requirement, and avoid writing the same control unconditionally from its own change handler.

@@ -1,11 +1,15 @@
 # Debugging with Chrome DevTools
 
-Open Chrome DevTools with `F12`. To find your composition script file:
+Open browser developer tools for the script editor or actual output host. Select the Player/frame context that runs the composition script rather than assuming the top-level page is the right execution context.
 
-1. Press `Ctrl+P` (Windows) or `Cmd+P` (Mac) in the Sources panel.
-2. Type the name of your sub-composition script.
-3. Set breakpoints and inspect variables as normal.
-4. Save your script in the editor and the output will reload, hitting your breakpoints.
+1. Find the relevant script in Sources using its composition/script name.
+2. Set a breakpoint in `init()` and in the callback responsible for the behavior.
+3. Inspect expected target identity, input type, and branch execution.
+4. Trigger a later input change without reloading and observe that callback.
+5. Inspect requests and asset failures separately from payload delivery.
 
-***
+Keyboard shortcuts vary by browser/OS; use the developer-tools UI if a shortcut differs. Avoid retaining private tokens, full feed payloads, or raw errors containing credential-bearing URLs in logs.
 
+The Player can catch script exceptions internally, so an absent browser `pageerror` or console error is not proof of successful execution. Confirm the branch ran and place a sanitized diagnostic after a suspected call. Use [the debugging ladder](../debugging-verification-and-deployment/debugging.md).
+
+Do not inject diagnostic overlays into the editor DOM or outside a widget's owned runtime root; they can outlive a script swap and obstruct the operator.

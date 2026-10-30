@@ -1,13 +1,12 @@
 # What is composition scripting?
 
-Composition scripting lets you embed JavaScript directly into a Singular overlay. Because overlays are an HTML/CSS layer rendered on top of video, scripting gives you full programmatic control over content, layout, animation, and interactivity — without deploying anything to a web server.
+Composition scripting adds JavaScript behavior to a rendered Singular graphic. Use it for data interpretation, formatting, derived widget content, event-driven actions, and intentional coordination between compositions.
 
-**Common uses:**
+Prefer native links for an unchanged one-to-one input and native Timeline/Update motion for authored animation. Add a script when it owns a clearly defined transformation or behavior.
 
-* Format and transform incoming data (dates, colours, tri-codes, unit symbols)
-* Trigger animations based on logic (e.g. play an animation when a team scores)
-* Define lookup tables
-* Read from and write to external servers or data streams
-* Build interactive viewer experiences
-* Create custom animation sequences and transitions
+Scripts run in the Composition Script editor preview and Player, not the ordinary Composer canvas. Saving script text and observing runtime behavior are separate checks.
 
+- [Your first script](your-first-script.md)
+- [Script types](../core-concepts/script-types.md)
+- [Data ownership](../core-concepts/data-ownership.md)
+- [Host boundaries](../core-concepts/host-boundaries.md)

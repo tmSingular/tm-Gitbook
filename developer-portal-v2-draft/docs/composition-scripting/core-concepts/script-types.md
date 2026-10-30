@@ -1,82 +1,19 @@
 # Script types
 
-There are four script types. You will typically work with the global and root/sub-composition scripts; the overlay script is only needed for advanced player integrations.
+Scripts return a lifecycle object from an immediately invoked function expression (IIFE). Preserve the wrapper and the signature for the chosen type when editing an existing script.
 
-## **Global script**
+| Type | Initialization | Responsibility |
+|---|---|---|
+| Global | `init(context)` | Shared variables and small library functions via `context.global` |
+| Root | `init(comp, context)` | Root inputs and intentional coordination of descendants |
+| Sub-composition | `init(comp, context)` | Local controls, widgets, and behavior |
+| Overlay | `init(graphics, overlay)` | Advanced host/video integration; `overlay` may be absent |
 
-Runs once and exposes shared variables and helper functions to all other scripts via the `context.global` object.
+`init()` is required. The runtime permits omitting `close()`, but implement cleanup whenever the script owns listeners, streams, requests, timers, or frames. Root and sub-composition lifecycle functions can receive `(comp, context)`; a closure also lets `close()` release stored handles.
 
-```javascript
-(function() {
-  return {
+Global context belongs to that loaded output instance; it is not a cross-client database or persistent Control App state. An Overlay script is not a root script, and its SDK objects do not expose the in-script widget API.
 
-    // Called after the script is evaluated.
-    // context.global: shared storage across all scripts
-    // context.utils: Singular utility functions
-    init: function(context) {
-      context.global.myLookupTable = {
-        "NYC": "New York",
-        "LAX": "Los Angeles"
-      };
-    },
-
-    // Called when the script is unloaded (e.g. tab closed).
-    // Clean up timers, intervals, and open connections here.
-    close: function() {}
-  };
-})();
-```
-
-## **Root and sub-composition scripts**
-
-The most commonly used script type. The root script orchestrates the composition — fetching data, interpreting it, and distributing it to sub-compositions. Sub-composition scripts handle their own local scope.
-
-```javascript
-(function() {
-  return {
-
-    // comp: the composition object this script is attached to
-    // context: access to context.global and context.utils
-    init: function(comp, context) {
-      console.log("Initialising:", comp.name);
-    },
-
-    close: function(comp, context) {
-      // Clean up timers, intervals, open fetch/XHR requests
-    }
-  };
-})();
-```
-
-## **Overlay script**
-
-Provides the interface for communicating with a parent web page, a video player embed, or a native iOS/Android app. Only needed for specific expert integrations.
-
-```javascript
-(function() {
-  return {
-
-    // graphics: Graphics SDK object
-    // overlay: Overlay SDK object (only present when using the Overlay SDK)
-    init: function(graphics, overlay) {
-
-      graphics.addListener('message', (event, msg) => {
-        console.log("Graphics SDK message", event, msg);
-      });
-
-      graphics.addListener('error', (event, msg) => {
-        console.error("Graphics SDK error", event, msg);
-      });
-
-      if (overlay) {
-        overlay.addListener((event, msg) => {
-          console.log("Overlay SDK message", event, msg);
-        });
-      }
-    },
-
-    close: function() {}
-  };
-})();
-```
-
+- [Boilerplate Reference](../examples/boilerplate-reference.md)
+- [Initialization order](initialization-order.md)
+- [Lifecycle](lifecycle.md)
+- [Host boundaries](host-boundaries.md)
