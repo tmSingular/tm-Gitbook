@@ -4,7 +4,7 @@ Load a Control App's composition into an embedded Singular Player, generate HTML
 
 ## Interactive preview
 
-{% @iframe-embed/iframe-embed url="https://es-d-29450230820261101-01a085b3-1482-72b9-9c80-3ff0f81307a2.codepen.dev/" width="100%" height="900" aspectRatio="" borderWidth="1" borderColor="#cccccc" %}
+{% @iframe-embed/iframe-embed url="https://es-d-29450230820261101-01a085b3-1482-72b9-9c80-3ff0f81307a2.codepen.dev/" width="100%" height="475" aspectRatio="" borderWidth="1" borderColor="#cccccc" %}
 
 [Open the preview in a new tab](https://es-d-29450230820261101-01a085b3-1482-72b9-9c80-3ff0f81307a2.codepen.dev/).
 
