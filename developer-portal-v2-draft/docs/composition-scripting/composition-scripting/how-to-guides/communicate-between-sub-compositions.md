@@ -1,73 +1,23 @@
 # Communicate between sub-compositions
 
-In this setup root owns standalone `Title` input; child `Lower` owns an unlinked Metric Text widget named `Title`. The child exposes a custom function; root forwards initial and later values. These are two separate scripts, not two blocks pasted into one script.
+Use a root-owned coordinator to distribute shared styling to sub-compositions. Each child exposes an application-defined `updateStyle(rootPayload)` function and maps the relevant colors onto its own widgets.
 
-## Child script: Lower
+Keep editorial content local: names, roles, titles, and headlines belong to their owning sub-compositions. Local native Control Node links can continue updating text while the script owns separate color and fill fields.
 
-```javascript
-(function() {
-  let compStored = null;
-  let wiTitle = null;
-  let update = null;
-  let closed = true;
-  return {
-    init: function(compCurrent) {
-      compStored = compCurrent;
-      wiTitle = compCurrent.findWidget('Title')[0];
-      closed = false;
-      update = function(value) {
-        if (closed) return;
-        wiTitle.setPayload({ text: value == null ? '' : String(value) });
-      };
-      compCurrent.updateContent = update;
-    },
-    close: function() {
-      closed = true;
-      if (compStored && compStored.updateContent === update) {
-        delete compStored.updateContent;
-      }
-      compStored = null;
-      wiTitle = null;
-      update = null;
-    }
-  };
-})();
-```
+## Complete worked example
 
-## Root script
+The [How scripts communicate](../core-concepts/how-scripts-communicate.md) page contains the setup and all three simplified scripts:
 
-This example owns root's `payload_changed` slot; merge it into any existing coordinator.
+1. [Lower Third receiver](../core-concepts/how-scripts-communicate.md#1-lower-third-exposes-its-update-function) applies text, background, and accent colors.
+2. [Headline receiver](../core-concepts/how-scripts-communicate.md#2-headline-exposes-the-same-interface) applies text and background colors.
+3. [Root distributor](../core-concepts/how-scripts-communicate.md#3-root-distributes-initial-and-later-shared-styles) reads root payload once per dispatch, calls both receivers, and forwards initial as well as later style values.
 
-```javascript
-(function() {
-  let compStored = null;
-  let compLower = null;
-  let closed = true;
-  function apply() {
-    if (!closed) compLower.updateContent((compStored.getPayload2() || {}).Title);
-  }
-  return {
-    init: function(compCurrent) {
-      compStored = compCurrent;
-      const compMatches = compCurrent.find('Lower');
-      compLower = compMatches[0];
-      closed = false;
-      compCurrent.addListener('payload_changed', apply);
-      apply();
-    },
-    close: function() {
-      const wasActive = !closed;
-      closed = true;
-      if (wasActive && compStored) compStored.removeListener('payload_changed');
-      compStored = null;
-      compLower = null;
-    }
-  };
-})();
-```
+## Integration notes
 
-Children initialize before root, but still validate the exposed function. `updateContent` is application code, not a built-in API. The child removes it only if it still owns that exact function.
+- Child scripts initialize before root. Expose the shared interface during each child’s `init`.
+- Register only root’s own `payload_changed` handler. Registering on a child can replace that child’s handler. Merge routing into any existing root handler.
+- Treat the supplied root payload as read-only, including nested color objects. Receivers should not change shared inputs or write them back into Control Nodes.
+- These snippets assume the documented setup and normal Player lifecycle. The intentionally empty `close` functions keep the communication mechanism visible; explicit module replacement or externally retained callbacks need an application lifecycle design.
+- For direct one-to-one delivery, prefer native links when they already express the required ownership. Use script coordination for deliberate module interfaces and derived styling.
 
-For helpers used across scripts, merge a small versioned namespace into the existing Global Script. For example, a custom `context.global.nameFormatting = { version: 1, ... }` can hold deterministic formatting functions; do not overwrite another library or treat that illustrative namespace as a built-in feature.
-
-Verify initial forwarding, later root updates without reload, child visibility, and cleanup. Parent coordination cannot rely on events a descendant deliberately stops.
+Verify initial theme application, live root color changes, unchanged local text, local content edits/clearing, and independent animation behavior in the target Player. Static or mocked checks do not establish native-link or actual app-output delivery.

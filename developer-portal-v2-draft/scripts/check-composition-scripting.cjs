@@ -88,10 +88,24 @@ check('button public ID and source filtering; repeated toggles',()=>{
  c.emit('button_clicked',{buttonId:'Toggle',compId:c.id});assert.equal(output.payload.text,'Enabled');
  c.emit('button_clicked',{buttonId:'Toggle',compositionId:c.id});assert.equal(output.payload.text,'Disabled');s.close();
 });
-check('communication: child init before root, initial and live forwarding, owned function cleanup',()=>{
- const output=widget('title'),child=comp({Title:output},{},'child');const childScript=load('how-to-guides/communicate-between-sub-compositions.md',0);childScript.init(child,{});
- const c=comp({}, {Title:'Initial'},'root',{}, {Lower:child});const rootScript=load('how-to-guides/communicate-between-sub-compositions.md',1);rootScript.init(c,{});assert.equal(output.payload.text,'Initial');
- c.payload.Title='Changed';c.emit('payload_changed');assert.equal(output.payload.text,'Changed');rootScript.close();childScript.close();assert.equal(child.updateContent,undefined);
+check('communication: initial/live shared styling preserves local content and child ownership',()=>{
+ const fullName=widget('fullName',{text:'Ada Lovelace'}),role=widget('role',{text:'Analyst'}),lowerBackground=widget('lowerBg'),accent=widget('accent');
+ const title=widget('headline',{text:'Election results'}),headlineBackground=widget('headlineBg');
+ const lower=comp({'Full Name':fullName,Role:role,Background:lowerBackground,Accent:accent},{'Full Name':'Ada Lovelace',Role:'Analyst'},'lower');
+ const headline=comp({Headline:title,Background:headlineBackground},{Headline:'Election results'},'headline');
+ const article='core-concepts/how-scripts-communicate.md';
+ const lowerScript=load(article,0),headlineScript=load(article,1);lowerScript.init(lower,{});headlineScript.init(headline,{});
+ const textColor={r:255,g:255,b:255,a:1},backgroundColor={r:18,g:52,b:86,a:1},accentColor={r:255,g:170,b:0,a:1};
+ const root=comp({}, {'Text Color':textColor,'Background Color':backgroundColor,'Accent Color':accentColor},'root',{}, {'Lower Third':lower,Headline:headline});
+ const rootScript=load(article,2);rootScript.init(root,{});
+ assert.deepEqual(fullName.payload.color,textColor);assert.deepEqual(headlineBackground.payload.fillGradient,backgroundColor);assert.deepEqual(accent.payload.fillGradient,accentColor);
+ assert.equal(fullName.payload.text,'Ada Lovelace');assert.equal(title.payload.text,'Election results');
+ root.payload['Text Color']={r:9,g:8,b:7,a:0.5};root.emit('payload_changed',{compositionId:'different-editor-envelope'});
+ assert.equal(fullName.payload.color.a,0.5);assert.equal(title.payload.color.r,9);assert.equal(role.payload.text,'Analyst');
+ title.setPayload({text:''});headline.payload.Headline='';root.emit('payload_changed',{compositionId:headline.id});assert.equal(title.payload.text,'');
+ root.payload['Accent Color']={r:99,g:2,b:3,a:1};root.emit('payload_changed');assert.equal(accent.payload.fillGradient.r,99);assert.equal(title.payload.color.r,9);
+ assert.deepEqual(Object.keys(lower.handlers),[]);assert.deepEqual(Object.keys(headline.handlers),[]);assert.equal(lower.payload['Full Name'],'Ada Lovelace');assert.equal(root.payload.Firstname,undefined);
+ rootScript.close();lowerScript.close();headlineScript.close();
 });
 check('normalized values use current metadata and valid decimal inputs',()=>{
  const source=blocks('api-reference/normalized-numbers.md')[0]+'\nmapped;';
