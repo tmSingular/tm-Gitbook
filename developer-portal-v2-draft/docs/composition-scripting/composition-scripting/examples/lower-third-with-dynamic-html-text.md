@@ -28,7 +28,6 @@ The example escapes input before adding bold markup, initializes from current in
     init: function(compCurrent) {
       compStored = compCurrent;
       wiOutput = compCurrent.findWidget('Full name')[0];
-      if (!wiOutput) throw new Error('Full name widget was not found');
       closed = false;
       compCurrent.addListener('payload_changed', apply);
       apply();

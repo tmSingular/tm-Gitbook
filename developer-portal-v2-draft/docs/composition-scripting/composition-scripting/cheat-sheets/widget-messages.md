@@ -43,7 +43,6 @@ Complete root/sub-composition script. Setup: exactly one Metric Text-family widg
   return {
     init: function(compCurrent) {
       const wiMatches = compCurrent.findWidget("Label");
-      if (wiMatches.length !== 1) throw new Error("Expected exactly one Label");
       compStored = compCurrent;
       wiLabel = wiMatches[0];
       active = true;
@@ -80,7 +79,7 @@ Fragment inside `init(compCurrent)`, after registering the shared message handle
 
 ```javascript
 const wiMatches = compCurrent.findWidget("News crawl");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one News crawl");
+
 const wiTicker = wiMatches[0];
 wiTicker.setPayload({ emitEvents: true });
 wiTicker.setPayload({ text: "First headline\nSecond headline", loopActive: false });

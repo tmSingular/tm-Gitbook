@@ -21,7 +21,6 @@ The following recipe requests a restart through a temporary speed change at the 
     init: function(compCurrent) {
       compStored = compCurrent;
       wiTicker = compCurrent.findWidget('Text Ticker')[0];
-      if (!wiTicker) throw new Error('Text Ticker was not found');
       closed = false;
       compCurrent.addListener('payload_changed', apply);
       compCurrent.addListener('timeline_event', function(event, msg) {

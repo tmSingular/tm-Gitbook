@@ -22,7 +22,7 @@ Fragment inside `init(compCurrent)`; `Title` is an unlinked Metric Text or Text 
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Title");
-if (wiMatches.length !== 1) throw new Error('Expected one "Title" widget');
+
 const wiTitle = wiMatches[0];
 wiTitle.setPayload({ text: "Hello" });
 wiTitle.setSizeX(50);

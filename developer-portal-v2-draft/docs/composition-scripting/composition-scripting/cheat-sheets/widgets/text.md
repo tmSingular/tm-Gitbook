@@ -39,7 +39,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Text");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Text");
+
 const wiText = wiMatches[0];
 const current = wiText.getPayload() || {};
 wiText.setPayload({ text: "Hello", color: "#ffffff" });

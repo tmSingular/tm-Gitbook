@@ -27,7 +27,6 @@ The complete script validates nonnegative integer scores, preserves the last goo
     init: function(compCurrent, context) {
       wiHome = compCurrent.findWidget('Home score')[0];
       wiAway = compCurrent.findWidget('Away score')[0];
-      if (!wiHome || !wiAway) throw new Error('Score widgets are missing');
       closed = false;
       wiHome.setPayload({ text: '--' });
       wiAway.setPayload({ text: '--' });
@@ -36,13 +35,10 @@ The complete script validates nonnegative integer scores, preserves the last goo
         if (status === 'message') {
           const data = message && message.payload;
           if (!data || !validScore(data.home) || !validScore(data.away)) {
-            console.warn('Invalid score data');
             return;
           }
           write(wiHome, data.home);
           write(wiAway, data.away);
-        } else if (status === 'error') {
-          console.warn('Score stream error');
         }
       });
     },

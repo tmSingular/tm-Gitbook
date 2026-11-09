@@ -22,7 +22,6 @@ The script owns local `message` and `payload_changed` slots; merge existing hand
       compStored = compCurrent;
       wiLabel = compCurrent.findWidget('Label')[0];
       wiReadout = compCurrent.findWidget('Width Readout')[0];
-      if (!wiLabel || !wiReadout) throw new Error('Bounds example widgets are missing');
       closed = false;
       compCurrent.addListener('message', function(event, msg) {
         if (closed || event !== 'message') return;

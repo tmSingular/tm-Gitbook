@@ -8,7 +8,7 @@ Fragment inside `init(compCurrent)`. Use an unlinked Text or Metric Text widget 
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Title");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Title");
+
 const wiTitle = wiMatches[0];
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, function(character) {

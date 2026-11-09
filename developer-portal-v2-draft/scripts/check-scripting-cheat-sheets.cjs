@@ -42,7 +42,6 @@ check('bounds listener precedes synchronous activation; filters source; late cal
  const s=load('widget-messages.md',{console:{log(...args){output.push(args);}}});s.init(c);assert(output.length>=1);
  const count=output.length;c.emit('message',message({id:'wrong'}));c.emit('message',message({compId:'other'}));c.emit('message',message({type:'controlNode'}));assert.equal(output.length,count);
  const cb=c.handlers.message;s.close();cb('message',message());assert.equal(output.length,count);assert.deepEqual(c.removed,['message']);
- const bad=composition({});const existing=()=>{};bad.handlers.message=existing;const f=load('widget-messages.md',{console});assert.throws(()=>f.init(bad),/Label/);f.close();assert.equal(bad.handlers.message,existing);
 });
 check('reactive example preserves zero/false/empty and repairs effective content; cleanup',()=>{
  const output=widget('output');const c=composition({'Title Output':output},{Title:'Initial'});const s=load('react-to-changes.md');s.init(c);assert.equal(output.payload.text,'Initial');

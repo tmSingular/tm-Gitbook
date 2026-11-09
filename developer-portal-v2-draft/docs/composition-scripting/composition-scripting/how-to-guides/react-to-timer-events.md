@@ -19,7 +19,6 @@ For a simple formatted readout, a native text link is preferable. This example i
     init: function(compCurrent) {
       compStored = compCurrent;
       wiReadout = compCurrent.findWidget('Timer Readout')[0];
-      if (!wiReadout) throw new Error('Timer Readout was not found');
       closed = false;
       compCurrent.addListener('message', function(event, msg) {
         if (closed) return;

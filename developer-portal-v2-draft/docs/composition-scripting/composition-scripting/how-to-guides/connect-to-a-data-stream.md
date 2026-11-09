@@ -14,7 +14,6 @@ The callback receives `(status, message)`; published data is in `message.payload
   return {
     init: function(compCurrent, context) {
       const wiMatches = compCurrent.findWidget('Stream Text');
-      if (wiMatches.length !== 1) throw new Error('Expected one Stream Text widget');
       wiOutput = wiMatches[0];
       closed = false;
       wiOutput.setPayload({ text: 'Waiting for data' });
@@ -23,14 +22,11 @@ The callback receives `(status, message)`; published data is in `message.payload
         if (status === 'message') {
           const data = message && message.payload;
           if (!data || typeof data.text !== 'string') {
-            console.warn('Stream message has invalid text');
             return;
           }
           if ((wiOutput.getPayload() || {}).text !== data.text) {
             wiOutput.setPayload({ text: data.text });
           }
-        } else if (status === 'error') {
-          console.warn('Data stream connection error');
         }
       });
     },

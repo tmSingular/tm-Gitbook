@@ -11,17 +11,7 @@
 
 The Player catches some script exceptions internally. Missing a later log is only a clue: first check branch execution and log collection. A browser-level error listener does not necessarily see every script failure.
 
-Use sanitized diagnostic labels around a suspect call:
-
-```javascript
-try {
-  applyPresentation(); // Your existing update function.
-  console.log('Presentation update completed');
-} catch (error) {
-  console.error('Presentation update failed');
-}
-```
-
+Use optional styled diagnostics at deliberate reporting points. The [reportOnce best-practice example](../examples/report-once.md) shows how to avoid repeating the same message on every update.
 Do not print private tokens, arbitrary raw errors, or full payloads. Keep diagnostics inside the owned script/runtime surface; avoid adding nodes to `document.body`, editor DOM, or another widget's root.
 
 ## Common causes

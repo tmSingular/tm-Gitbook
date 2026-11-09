@@ -1,15 +1,15 @@
 # Find sub-compositions and widgets
 
-Inspect the owning composition, names, and IDs first. Lookup methods return arrays; handle missing and ambiguous results before calling an object method.
+Inspect the owning composition, names, and IDs first. Lookup methods return arrays. This example assumes the documented composition/widget names exist and resolve uniquely.
 
 Fragment inside root `init(compCurrent)`:
 
 ```javascript
 const compLowers = compCurrent.find('Lower');
-if (compLowers.length !== 1) throw new Error('Expected one Lower composition');
+
 const compLower = compLowers[0];
 const wiTitles = compLower.findWidget('Team 1', 'Name');
-if (wiTitles.length !== 1) throw new Error('Expected one Name in Team 1');
+
 wiTitles[0].setPayload({ text: 'Home' });
 ```
 

@@ -19,11 +19,10 @@ function widget(id,initial={}){return{id,payload:{...initial},writes:[],getPaylo
 function composition(widgets={},payload={},id='local',groups={},children={}){return{id,name:id,payload,handlers:{},removed:[],findWidget(n){return widgets[n]?[widgets[n]]:[];},findGroup(n){return groups[n]?[groups[n]]:[];},find(n){return children[n]?[children[n]]:[];},getPayload2(){return{...this.payload};},getState(){return'Out';},addListener(e,cb){this.handlers[e]=cb;},removeListener(e){this.removed.push(e);delete this.handlers[e];},emit(e,msg,propagation={stopPropagation(){throw new Error('Unexpected stop');}}){if(this.handlers[e])this.handlers[e](e,msg,propagation);}};}
 function run(name,globals={},replacement){const source=snippets.get(name);assert(source,'Missing example '+name);return vm.runInNewContext(replacement?replacement(source):source,globals);}
 function check(name,fn){fn();fixtures++;console.log('PASS '+name);}
-check('input initialization, second update, clearing, false/zero and failed-init cleanup',()=>{
+check('input initialization, second update, clearing, false/zero and cleanup',()=>{
  const wi=widget('name'),comp=composition({'Full Name':wi},{Firstname:'Ada',Lastname:'Lovelace'});const script=run('local-inputs');script.init(comp);assert.equal(wi.payload.text,'Ada Lovelace');
  comp.payload={Firstname:0,Lastname:false};comp.emit('payload_changed',{compositionId:'editor-different'});assert.equal(wi.payload.text,'0 false');comp.payload={Firstname:'',Lastname:''};comp.emit('payload_changed',{});assert.equal(wi.payload.text,'');
  const late=comp.handlers.payload_changed;script.close();comp.payload.Firstname='Late';late();assert.equal(wi.payload.text,'');assert.deepEqual(comp.removed,['payload_changed']);
- const bad=composition();const owner=()=>{};bad.handlers.payload_changed=owner;const failed=run('local-inputs');assert.throws(()=>failed.init(bad),/Full Name/);failed.close();assert.equal(bad.handlers.payload_changed,owner);
 });
 check('timeline and settled state have separate outputs; child events ignored; cleanup',()=>{
  const wiStatus=widget('status'),wiState=widget('state');const comp=composition({'Animation Status':wiStatus,'Settled State':wiState});const script=run('animation-events');script.init(comp);assert.equal(wiState.payload.text,'Out');
@@ -48,8 +47,8 @@ check('single widget router catches synchronous bounds and rejects other identit
  comp.emit('message',msg('other',{event:'bounds',widthPx:1}));comp.emit('message',msg('label',{event:'bounds',widthPx:1},'other'));assert.equal(output.length,count);
  const late=comp.handlers.message;script.close();late('message',msg('clock',{type:'timeChanged',time:3}));assert.equal(output.length,count);assert.deepEqual(comp.removed,['message']);
 });
-check('global helper preserves unrelated namespace and consumer handles missing version',()=>{
- const context={global:{unrelated:42}};run('global-formatters').init(context);assert.equal(context.global.unrelated,42);const wi=widget('full');const comp=composition({'Full Name':wi},{Firstname:' Ada ',Lastname:''});run('use-global-formatters',{compCurrent:comp,context});assert.equal(wi.payload.text,'Ada');context.global.portalFormattersV1.version=2;assert.throws(()=>run('use-global-formatters',{compCurrent:comp,context}),/incompatible/);
+check('global helper preserves unrelated namespace and formats consumer inputs',()=>{
+ const context={global:{unrelated:42}};run('global-formatters').init(context);assert.equal(context.global.unrelated,42);const wi=widget('full');const comp=composition({'Full Name':wi},{Firstname:' Ada ',Lastname:''});run('use-global-formatters',{compCurrent:comp,context});assert.equal(wi.payload.text,'Ada');
 });
 check('date fragment enforces milliseconds number and explicitly chooses UTC',()=>{
  const wi=widget('start');const comp=composition({'Start Time':wi},{'Start Timestamp':1893456000000});let utcCalled=false;
@@ -68,5 +67,14 @@ check('stream status is independent; invalid/error preserves content; empty clea
 check('runtime diagnostics allowlist and display-variant fallback/copy read',()=>{
  const output=[];const context={utils:{getSingularWindow(){return'app_output';},getDisplayVariant(){return undefined;}}};const comp=composition({'Variant Info':widget('variant')});run('runtime-diagnostics',{compCurrent:comp,context,console:{log(...a){output.push(a);}}});assert.equal(output.length,0);context.utils.getSingularWindow=()=> 'script_editor';run('runtime-diagnostics',{compCurrent:comp,context,console:{log(...a){output.push(a);}}});assert.equal(output.length,1);
  run('display-variant',{compCurrent:comp,context});assert.equal(comp.findWidget('Variant Info')[0].payload.text,'No variant | nominal resolution: not configured');context.utils.getDisplayVariant=()=>({name:'Portrait',resolution:{width:1080,height:1920}});run('display-variant',{compCurrent:comp,context});assert(comp.findWidget('Variant Info')[0].payload.text.startsWith('Portrait | nominal resolution:'));
+});
+check('reportOnce uses styled console.log, deduplicates stable keys, and supports disabling',()=>{
+ const text=fs.readFileSync(path.join(base,'../examples/report-once.md'),'utf8');
+ const source=[...text.matchAll(/```javascript\s*\n([\s\S]*?)```/g)][0][1];
+ const entries=[];const logger={log(...args){entries.push(args);}};
+ const script=vm.runInNewContext(source,{console:logger});const wi=widget('title');script.init(composition({Title:wi}));
+ assert.equal(wi.payload.text,'Ready');assert.equal(entries.length,1);assert(entries[0][0].startsWith('%c'));assert.equal(entries[0][1],'color: #c62828');
+ const warning=vm.runInNewContext(source,{console:logger});warning.init(composition());assert.equal(entries.length,2);assert.equal(entries[1][1],'color: #b36b00');
+ const disabled=vm.runInNewContext(source.replace('const diagnosticsEnabled = true','const diagnosticsEnabled = false'),{console:logger});disabled.init(composition());assert.equal(entries.length,2);
 });
 console.log(JSON.stringify({javascriptBlocks:syntax,relativeLinks:links,behaviorFixtures:fixtures,scope:'Syntax, links, and mocked control flow; not live Player or third-party library acceptance'},null,2));

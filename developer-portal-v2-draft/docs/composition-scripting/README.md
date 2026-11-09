@@ -18,3 +18,7 @@ Use camelCase with `comp` for composition objects, `wi` for widgets, and `gr` fo
 ## Variable declarations
 
 Use `const` for bindings that are not reassigned and `let` for bindings that change. Do not use `var`. Mutating an object or array does not require `let`; reassigning or clearing a retained reference does. Apply this convention to all new script examples.
+
+## Diagnostics in examples
+
+Examples assume their documented setup and omit defensive exception handling and repeated warnings. Add optional application diagnostics using [reportOnce](examples/report-once.md) when needed. Event routing, cleanup, and topic-specific value handling remain part of the examples.

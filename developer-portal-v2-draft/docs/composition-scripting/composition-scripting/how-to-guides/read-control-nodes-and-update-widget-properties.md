@@ -6,7 +6,7 @@ For a one-time transformation inside `init(compCurrent)`:
 
 ```javascript
 const wiMatches = compCurrent.findWidget('Full name');
-if (wiMatches.length !== 1) throw new Error('Expected one Full name widget');
+
 const payload = compCurrent.getPayload2() || {};
 const first = payload.Firstname == null ? '' : String(payload.Firstname);
 const last = payload.Lastname == null ? '' : String(payload.Lastname);

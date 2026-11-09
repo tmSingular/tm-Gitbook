@@ -29,7 +29,6 @@ Complete root/sub-composition script. Setup: an existing Button with public ID T
   return {
     init: function(compCurrent) {
       const wiMatches = compCurrent.findWidget("Readout");
-      if (wiMatches.length !== 1) throw new Error("Expected exactly one Readout");
       compStored = compCurrent;
       wiReadout = wiMatches[0];
       active = true;

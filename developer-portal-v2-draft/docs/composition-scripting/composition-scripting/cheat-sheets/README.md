@@ -15,7 +15,7 @@ Find a short example for the operation you need. Examples run inside composition
 
 ## Before copying code
 
-1. Identify the owning composition, exact widget type/version, and public Control Node IDs. Names can be duplicated; the examples reject ambiguous widget lookups.
+1. Identify the owning composition, exact widget type/version, and public Control Node IDs. Names can be duplicated; these examples assume their documented names resolve uniquely.
 2. Keep one writer per destination. Update a linked property through its defining Control Node, or leave the destination unlinked for script-owned presentation. Do not compete with Timeline/Update animation.
 3. Check units and shapes. Tile geometry differs from widget content; opacity uses 0–100 while color alpha uses 0–1.
 4. A fragment labeled `init(compCurrent)` belongs inside your existing script wrapper. Merge listener logic into existing handlers: each composition/event pair has one slot. Use ES2017-compatible JavaScript.

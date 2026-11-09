@@ -19,7 +19,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Image");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Image");
+
 const wiImage = wiMatches[0];
 const current = wiImage.getPayload() || {};
 wiImage.setPayload({ image: "https://example.com/photo.jpg", objectFit: "cover", shift: -20, flipX: true });

@@ -6,13 +6,13 @@ Fragments inside an owning composition's `init(compCurrent)`; each destination m
 
 ```javascript
 const wiTitle = compCurrent.findWidget('Title')[0];
-if (!wiTitle) throw new Error('Title was not found');
+
 wiTitle.setPayload({ text: 'Updated title' });
 ```
 
 ```javascript
 const wiImage = compCurrent.findWidget('Logo')[0];
-if (!wiImage) throw new Error('Logo was not found');
+
 wiImage.setPayload({ image: 'https://example.com/logo.png', objectFit: 'contain' });
 ```
 
@@ -20,7 +20,7 @@ The image URL is an illustrative placeholder; replace it with a trusted accessib
 
 ```javascript
 const wiTable = compCurrent.findWidget('Results Table')[0];
-if (!wiTable) throw new Error('Results Table was not found');
+
 wiTable.setPayload({ tableContent: JSON.stringify({ content: [{ label: 'First' }] }) });
 ```
 

@@ -21,11 +21,9 @@ Fragment inside `init(compCurrent, context)`:
 
 ```javascript
 const compMatches = compCurrent.find("Lower");
-if (compMatches.length !== 1) {
-  throw new Error('Expected exactly one sub-composition named "Lower"');
-}
+
 const wiTitles = compMatches[0].findWidget("Title");
-if (wiTitles.length !== 1) throw new Error('Expected one "Title" widget');
+
 wiTitles[0].setPayload({ text: "Updated title" });
 ```
 

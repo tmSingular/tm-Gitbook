@@ -20,7 +20,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Current Date and Time");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Current Date and Time");
+
 const wiClock = wiMatches[0];
 const current = wiClock.getPayload() || {};
 wiClock.setPayload({ offset: 0, format: "YYYY-MM-DD HH:mm:ss", frequency: "1000", timezone: "0", leadingZeros: true, language: "en" });

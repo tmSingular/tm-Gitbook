@@ -14,7 +14,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Gradient");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Gradient");
+
 const wiGradient = wiMatches[0];
 const current = wiGradient.getPayload() || {};
 wiGradient.setPayload({ css_string: "background: linear-gradient(90deg, #ff0000 0%, #0000ff 100%);" });

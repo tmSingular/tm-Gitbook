@@ -11,6 +11,7 @@ for(const file of walk(root).filter(f=>f.endsWith('.md'))) {
   for(const m of fs.readFileSync(file,'utf8').matchAll(/```javascript\s*\n([\s\S]*?)```/g)) {
     new vm.Script(m[1],{filename:file});parsed++;
     assert(!/\bvar\s+[A-Za-z_$]/.test(m[1]),'Use const/let instead of var in '+file);
+    assert(!/\bthrow\s|console\.(?:warn|error)\s*\(|\.catch\s*\(|\bcatch\s*\(/.test(m[1]),'Keep explicit error handling out of focused examples: '+file);
     assert(!/\?\.|\?\?/.test(m[1]),'Post-ES2017 syntax in '+file);
   }
 }
@@ -31,15 +32,13 @@ function comp(widgets={},payload={},id='local',groups={},children={}) {
 function load(file,index=0,globals={}) {return vm.runInNewContext(blocks(file)[index],{console:silent,...globals});}
 function check(name,fn) {fn();checks++;console.log('PASS '+name);}
 
-check('reactive input: initial, live, empty, effective-state repair, late and failed-init cleanup',()=>{
+check('reactive input: initial, live, empty, effective-state repair and late cleanup',()=>{
  const output=widget('output'),c=comp({Output:output},{'Public Value':'Initial'});
  const s=load('how-to-guides/react-to-control-node-changes.md');s.init(c,{});assert.equal(output.payload.text,'Initial');
  c.payload['Public Value']=0;c.emit('payload_changed',{compositionId:'different-editor-envelope'});assert.equal(output.payload.text,'0');
  output.payload.text='Reapplied model';c.emit('payload_changed');assert.equal(output.payload.text,'0');
  c.payload['Public Value']='';c.emit('payload_changed');assert.equal(output.payload.text,'');
  const old=c.handlers.payload_changed;s.close();old();assert.equal(output.payload.text,'');assert.deepEqual(c.removed,['payload_changed']);
- const bad=comp();bad.handlers.payload_changed=()=>{};const oldHandler=bad.handlers.payload_changed;
- const failure=load('how-to-guides/react-to-control-node-changes.md');assert.throws(()=>failure.init(bad,{}),/Output/);failure.close();assert.equal(bad.handlers.payload_changed,oldHandler);
 });
 check('stream message envelope, invalid input, second update and late callback',()=>{
  const output=widget('stream'),c=comp({'Stream Text':output});let callback,closed=0;
@@ -94,12 +93,11 @@ check('communication: child init before root, initial and live forwarding, owned
  const c=comp({}, {Title:'Initial'},'root',{}, {Lower:child});const rootScript=load('how-to-guides/communicate-between-sub-compositions.md',1);rootScript.init(c,{});assert.equal(output.payload.text,'Initial');
  c.payload.Title='Changed';c.emit('payload_changed');assert.equal(output.payload.text,'Changed');rootScript.close();childScript.close();assert.equal(child.updateContent,undefined);
 });
-check('normalized values use current metadata and reject nondecimal/invalid values',()=>{
+check('normalized values use current metadata and valid decimal inputs',()=>{
  const source=blocks('api-reference/normalized-numbers.md')[0]+'\nmapped;';
  const field={id:'Scale',type:'normalizednumber',low:0,high:200};const c={getModel(){return[field];},getPayload2(){return{Scale:25};}};
  assert.equal(vm.runInNewContext(source,{compCurrent:c}),50);field.high=400;assert.equal(vm.runInNewContext(source,{compCurrent:c}),100);
  for(const value of ['25.0',' 2.5e1 ',25]){c.getPayload2=()=>({Scale:value});assert.equal(vm.runInNewContext(source,{compCurrent:c}),100);}
- for(const value of ['0x10','25px','',null,true,[],Infinity,-1,101]){c.getPayload2=()=>({Scale:value});assert.throws(()=>vm.runInNewContext(source,{compCurrent:c}),/Invalid/);}
 });
 check('legacy ticker initial/update text, own In filtering, speed request and cleanup',()=>{
  const ticker=widget('ticker',{speed:20}),c=comp({'Text Ticker':ticker},{Messages:'First'});const s=load('examples/text-ticker-that-restarts-on-the-in-animation.md');s.init(c,{});assert.equal(ticker.payload.text,'First');

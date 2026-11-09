@@ -14,7 +14,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("HTML");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one HTML");
+
 const wiPanel = wiMatches[0];
 const current = wiPanel.getPayload() || {};
 wiPanel.setPayload({ source: '<div style="color:white;background:#123456">Updated <strong>panel</strong></div>' });

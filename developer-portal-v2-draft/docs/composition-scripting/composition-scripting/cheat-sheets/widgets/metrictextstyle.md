@@ -25,7 +25,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Metric Text Style");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Metric Text Style");
+
 const wiTitle = wiMatches[0];
 const current = wiTitle.getPayload() || {};
 wiTitle.setPayload({ text: "CHAMPIONS", outlineActive: true, outlineWidth: 2 });

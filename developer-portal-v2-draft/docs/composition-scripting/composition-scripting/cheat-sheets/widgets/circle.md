@@ -22,7 +22,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Circle");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Circle");
+
 const wiShape = wiMatches[0];
 const current = wiShape.getPayload() || {};
 wiShape.setPayload({ fillGradient: "orange", startAngle: 0, endAngle: 360, holeSize: 40 });

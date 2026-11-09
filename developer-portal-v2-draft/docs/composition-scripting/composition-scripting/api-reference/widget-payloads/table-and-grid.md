@@ -10,7 +10,7 @@ Fragment inside `init(compCurrent)`; the template must expose a Text control wit
 
 ```javascript
 const wiTable = compCurrent.findWidget("Results Table")[0];
-if (!wiTable) throw new Error("Results Table was not found");
+
 wiTable.setPayload({
   tableContent: JSON.stringify({ content: [
     { label: "First item" },

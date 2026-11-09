@@ -23,7 +23,6 @@ This example uses a separate native Rectangle rather than embedding pixel paddin
     wiBackground.setVisibility(p['Show Background'] === true && text.length > 0);
     const color = tinyColor(p['Background Color']);
     if (!color.isValid()) {
-      console.warn('Background Color is invalid');
       return;
     }
     wiBackground.setPayload({ fillGradient: { type: 'solid', solidColor: color.toRgb() } });
@@ -33,7 +32,6 @@ This example uses a separate native Rectangle rather than embedding pixel paddin
       compStored = compCurrent;
       wiOutput = compCurrent.findWidget('Full name')[0];
       wiBackground = compCurrent.findWidget('Background')[0];
-      if (!wiOutput || !wiBackground) throw new Error('Lower-third widgets are missing');
       tinyColor = context.utils.createTinyColor;
       closed = false;
       compCurrent.addListener('payload_changed', apply);

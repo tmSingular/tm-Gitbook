@@ -16,7 +16,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Web Page");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Web Page");
+
 const wiPage = wiMatches[0];
 const current = wiPage.getPayload() || {};
 wiPage.setPayload({ url: "https://example.com/status", reloadFlag: true, reloadDuration: 30 });

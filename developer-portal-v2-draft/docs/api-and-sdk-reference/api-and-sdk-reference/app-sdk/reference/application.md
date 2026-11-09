@@ -30,7 +30,6 @@ A list is an ordinary JSON array, for example:
 // selection comes from compositionBrowserEventCallback.
 app.importComposition(selection, function (result) {
   if (!result || !result.success) {
-    console.error("Import failed", result && result.desc);
     return;
   }
   const imported = result.compositionIds || [];

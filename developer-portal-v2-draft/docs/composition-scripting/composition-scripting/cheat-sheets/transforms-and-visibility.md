@@ -16,7 +16,7 @@ Use a Metric Text widget named `Title` in an ordinary percentage layout:
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Title");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Title");
+
 const wiTitle = wiMatches[0];
 const oldPosition = { x: wiTitle.getPositionX(), y: wiTitle.getPositionY() };
 wiTitle.setPositionX(0);
@@ -33,7 +33,7 @@ wiTitle.setOpacity(80);
 
 ```javascript
 const grMatches = compCurrent.findGroup("Content");
-if (grMatches.length !== 1) throw new Error("Expected exactly one Content");
+
 const grGroup = grMatches[0];
 const rotation = grGroup.getRotateZ();
 grGroup.setRotateZ(rotation + 15);

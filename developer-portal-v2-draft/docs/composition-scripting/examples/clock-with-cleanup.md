@@ -19,7 +19,6 @@ Add an unlinked Metric Text widget named `Clock`. This example displays wall-clo
   return {
     init: function(compCurrent) {
       wiClock = compCurrent.findWidget('Clock')[0];
-      if (!wiClock) throw new Error('Clock was not found');
       closed = false;
       update();
     },

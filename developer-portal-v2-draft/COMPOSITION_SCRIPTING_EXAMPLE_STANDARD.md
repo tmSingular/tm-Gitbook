@@ -27,7 +27,7 @@ Object/array mutation does not reassign the binding: a `const` widget reference 
 - State whether the code is a fragment inside `init(compCurrent)`, a listener body, or a complete script. Never present placeholders as runnable code.
 - Use the composition-script API. Keep Composer AI authoring commands and host SDK APIs in separately labeled material.
 - Identify the target composition, widget name/type, loaded version, and required Composer setup.
-- Show target lookup with a useful missing/duplicate-name error, or link to a shared lookup example and state the uniqueness assumption.
+- State required target names, IDs, types, and uniqueness as setup preconditions. Keep ordinary examples focused: omit thrown setup errors, try/catch wrappers, and console warning/error branches. Link to the optional reportOnce best-practice example for application diagnostics.
 - Identify the write owner: script, linked Control Node, or native animation. Explain setup needed to avoid competing writers.
 - Document exact keys and value shapes. Distinguish tile transforms, widget payload fields, native effects, and widget-specific visual effects.
 - Give units and ranges explicitly. Do not infer defaults from a renderer fallback.
@@ -118,9 +118,7 @@ Fragment inside `init(compCurrent)`. The owning composition contains exactly one
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Title");
-if (wiMatches.length !== 1) {
-  throw new Error('Expected exactly one widget named "Title"');
-}
+
 const wiTitle = wiMatches[0];
 wiTitle.setPayload({ text: "Hello" });
 ```

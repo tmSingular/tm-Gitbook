@@ -21,10 +21,10 @@ Fragment inside `init(compCurrent)`. Create groups `Reference Style` and `Conten
 
 ```javascript
 const grMatches = compCurrent.findGroup("Reference Style");
-if (grMatches.length !== 1) throw new Error("Expected exactly one Reference Style");
+
 const grReference = grMatches[0];
 const grTargetMatches = compCurrent.findGroup("Content");
-if (grTargetMatches.length !== 1) throw new Error("Expected exactly one Content");
+
 const grTarget = grTargetMatches[0];
 ["Brightness", "Blur", "Contrast", "Grayscale", "Hue", "Invert", "Saturate", "Sepia"].forEach(function(name) {
   grTarget["set" + name](grReference["get" + name]());

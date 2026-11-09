@@ -13,7 +13,6 @@ function singularAppInit(app) {
   const lowerThird = composition &&
     composition.getSubcompositionByName("Lower Third");
   if (!lowerThird) {
-    console.error("Configure Default and its Lower Third child first.");
     return;
   }
   // Use the control ID from the model, not its display title.

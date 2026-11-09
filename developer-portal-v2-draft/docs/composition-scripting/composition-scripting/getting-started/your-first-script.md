@@ -11,7 +11,6 @@
   return {
     init: function(compCurrent, context) {
       const wiMatches = compCurrent.findWidget('Title');
-      if (wiMatches.length !== 1) throw new Error('Expected one Title widget');
       wiMatches[0].setPayload({ text: 'Hello from Singular' });
     },
     close: function() {}

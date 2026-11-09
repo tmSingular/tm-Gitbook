@@ -28,14 +28,13 @@ Use this pattern for a media or font value only after checking that Source Asset
 const fields = compCurrent.getModel() || [];
 function field(id) {
   const matches = fields.filter(function(item) { return item.id === id; });
-  if (matches.length !== 1) throw new Error("Expected one control: " + id);
   return matches[0];
 }
 const from = field("Source Asset");
 const to = field("Destination Asset");
-if (from.type !== to.type) throw new Error("Control types differ");
+
 const values = compCurrent.getPayload2() || {};
-if (!Object.prototype.hasOwnProperty.call(values, from.id)) throw new Error("Source is absent");
+
 const patch = {};
 patch[to.id] = values[from.id];
 compCurrent.setPayload(patch);

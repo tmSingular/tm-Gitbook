@@ -24,7 +24,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Metric Text Animation");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Metric Text Animation");
+
 const wiTitle = wiMatches[0];
 const current = wiTitle.getPayload() || {};
 wiTitle.setPayload({ text: "Breaking update" });

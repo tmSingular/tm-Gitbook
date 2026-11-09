@@ -15,7 +15,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Bodymovin");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Bodymovin");
+
 const wiAnimation = wiMatches[0];
 const current = wiAnimation.getPayload() || {};
 wiAnimation.setPayload({ bodymovinJson: "https://example.com/animation.json" });

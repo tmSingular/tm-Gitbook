@@ -23,7 +23,6 @@ SingularApp.createWithAppInstanceKey(
   "https://app.singular.live/",
   function (app) {
     if (!app) {
-      console.error("App SDK initialization failed; check access and configuration.");
       return;
     }
     singularAppInit(app);

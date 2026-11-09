@@ -19,7 +19,7 @@ Fragment inside `init(compCurrent)`; replace Public Value with the exact public 
 const id = "Public Value";
 const fields = compCurrent.getModel() || [];
 const field = fields.filter(function(item) { return item.id === id; })[0];
-if (!field) throw new Error("Control not found: " + id);
+
 const values = compCurrent.getPayload2() || {};
 const present = Object.prototype.hasOwnProperty.call(values, id);
 const value = present ? values[id] : undefined;

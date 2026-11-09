@@ -2,7 +2,7 @@
 
 Choose the provider, permissions, response schema, update cadence, failure display, and credentials policy before implementing a feed. No universal endpoint or polling interval is implied by this guide.
 
-Use an unlinked widget destination and validate data before writing. Preserve the last good graphic on failure. Keep private credentials server-side and account for the provider's browser CORS policy.
+This focused fragment assumes a successful response matching `{text: string}` and uses an unlinked widget destination. Application-specific transport diagnostics are omitted. Keep private credentials server-side and account for the provider's browser CORS policy.
 
 The following is a **fragment to adapt inside an owning script**, not a runnable provider integration:
 
@@ -18,14 +18,10 @@ function load(endpoint, wiTarget) {
   if (controller) controller.abort();
   controller = new AbortController();
   return fetch(endpoint, { signal: controller.signal }).then(function(response) {
-    if (!response.ok) throw new Error('Feed request failed');
     return response.json();
   }).then(function(data) {
     if (closed || requestGeneration !== generation) return;
-    if (!data || typeof data.text !== 'string') throw new Error('Invalid feed data');
     wiTarget.setPayload({ text: data.text });
-  }).catch(function() {
-    if (!closed && requestGeneration === generation) console.warn('Feed update failed');
   });
 }
 function closeRequests() {

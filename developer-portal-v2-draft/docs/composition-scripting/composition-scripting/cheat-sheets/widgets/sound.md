@@ -17,7 +17,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Sound");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Sound");
+
 const wiSound = wiMatches[0];
 const current = wiSound.getPayload() || {};
 wiSound.setPayload({ file: "https://example.com/sting.mp3", playbackStyle: "in", volume: 80 });

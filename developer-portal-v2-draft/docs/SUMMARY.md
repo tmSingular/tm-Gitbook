@@ -111,6 +111,7 @@
       * [Tickers](composition-scripting/composition-scripting/api-reference/widget-payloads/tickers.md)
   * [Widget payloads and version compatibility](composition-scripting/composition-scripting/widget-payloads-and-version-compatibility.md)
   * [Examples](composition-scripting/composition-scripting/examples/README.md)
+    * [Best practice: report an issue once](composition-scripting/composition-scripting/examples/report-once.md)
     * [Boilerplate Reference](composition-scripting/composition-scripting/examples/boilerplate-reference.md)
     * [Lower-third with dynamic HTML text](composition-scripting/composition-scripting/examples/lower-third-with-dynamic-html-text.md)
     * [Lower-third with conditional background](composition-scripting/composition-scripting/examples/lower-third-with-conditional-background.md)

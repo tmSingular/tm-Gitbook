@@ -33,7 +33,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Metric Text Ticker");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Metric Text Ticker");
+
 const wiTicker = wiMatches[0];
 const current = wiTicker.getPayload() || {};
 wiTicker.setPayload({ text: "First headline\nSecond headline", speed: 20, loopActive: false });

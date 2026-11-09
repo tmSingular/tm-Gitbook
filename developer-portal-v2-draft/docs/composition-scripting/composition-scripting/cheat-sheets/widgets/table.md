@@ -23,7 +23,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Table");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Table");
+
 const wiTable = wiMatches[0];
 const current = wiTable.getPayload() || {};
 wiTable.setPayload({ tableContent: JSON.stringify({ content: [{ label: "First" }, { label: "Second" }] }) });

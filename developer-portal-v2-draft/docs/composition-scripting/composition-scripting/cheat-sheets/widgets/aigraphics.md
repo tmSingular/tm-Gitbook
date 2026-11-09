@@ -15,7 +15,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("AI Graphics");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one AI Graphics");
+
 const wiGraphic = wiMatches[0];
 const current = wiGraphic.getPayload() || {};
 wiGraphic.setPayload({ headline: "Updated", amount: 42 });

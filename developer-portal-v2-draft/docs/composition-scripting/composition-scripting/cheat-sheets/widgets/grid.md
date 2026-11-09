@@ -22,7 +22,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Grid");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Grid");
+
 const wiGrid = wiMatches[0];
 const current = wiGrid.getPayload() || {};
 wiGrid.setPayload({ cols: "2", rows: "2", currentPage: "1", tableContent: JSON.stringify({ content: [{ title: "Alpha" }, { title: "Beta" }] }) });

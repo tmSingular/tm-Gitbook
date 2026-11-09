@@ -16,18 +16,10 @@ Fragment inside `init(compCurrent)`; Settings is an existing input whose consume
 ```javascript
 const values = compCurrent.getPayload2() || {};
 const raw = values.Settings;
-let settings;
-try {
-  settings = typeof raw === "string" ? JSON.parse(raw) : raw;
-} catch (error) {
-  throw new Error("Settings contains invalid JSON");
-}
-if (!settings || typeof settings !== "object" || Array.isArray(settings)) {
-  throw new Error("Settings must decode to an object");
-}
+const settings = typeof raw === "string" ? JSON.parse(raw) : raw;
 ```
 
-**Expected result:** `settings` is a usable object, or a descriptive error is raised. Parsing for local use does not establish a supported Control Node write shape.
+**Expected result:** with valid JSON object input, `settings` is a usable object. This snippet assumes the documented input contract. Parsing for local use does not establish a supported Control Node write shape.
 
 ## Update boundaries
 

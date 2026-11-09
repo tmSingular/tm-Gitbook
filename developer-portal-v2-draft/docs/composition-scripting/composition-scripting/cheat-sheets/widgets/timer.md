@@ -22,7 +22,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Timer widget");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Timer widget");
+
 const wiTimer = wiMatches[0];
 const current = wiTimer.getPayload() || {};
 wiTimer.setPayload({ format: "mm:ss", frequency: "1000", leadingZeros: true });

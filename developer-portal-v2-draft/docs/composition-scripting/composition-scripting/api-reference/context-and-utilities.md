@@ -16,7 +16,7 @@ Variant definitions can contain `name`, nominal `resolution`, and optional `desc
 
 ## Shared helpers: define once and use in several compositions
 
-**Setup:** merge this definition into the existing **Global Script**. It receives `context`, not a composition object. The namespace below is application-defined; it is not a built-in utility. Version it so consumers can reject an incompatible helper contract without replacing unrelated global functions.
+**Setup:** merge this definition into the existing **Global Script**. It receives `context`, not a composition object. The namespace below is application-defined; it is not a built-in utility. The consumer below requires version 1 to be initialized; the version field documents that application contract.
 
 ```javascript
 // Example: global-formatters
@@ -42,17 +42,15 @@ Now add one unlinked Text/Metric Text widget named `Full Name` to each consuming
 ```javascript
 // Example: use-global-formatters (init fragment)
 const helpers = context.global.portalFormattersV1;
-if (!helpers || helpers.version !== 1 || typeof helpers.fullName !== "function") {
-  throw new Error("portalFormattersV1 is unavailable or incompatible");
-}
+
 const wiMatches = compCurrent.findWidget("Full Name");
-if (wiMatches.length !== 1) throw new Error("Expected one Full Name widget");
+
 const wiFullName = wiMatches[0];
 const values = compCurrent.getPayload2() || {};
 wiFullName.setPayload({ text: helpers.fullName(values.Firstname, values.Lastname) });
 ```
 
-**Expected result:** each consumer displays its own input values using the same helper, including correct spacing when a name is empty. The Global Script initializes before composition scripts. This fragment applies once; for live inputs, call the helper from the [reactive input pattern](event-listeners.md#example-initialize-and-react-to-local-inputs) as well.
+**Expected result:** each consumer displays its own input values using the same helper, including correct spacing when a name is empty. The Global Script initializes before composition scripts; the consumer assumes its version 1 helper is installed. This fragment applies once; for live inputs, call the helper from the [reactive input pattern](event-listeners.md#example-initialize-and-react-to-local-inputs) as well.
 
 The namespace is owned by the application’s Global Script. Keep deterministic functions there, rather than per-widget references or one composition’s mutable presentation state. Shared storage is runtime-local, not durable storage or synchronization between independent Players. Extend the existing namespace deliberately instead of overwriting other owners’ helpers.
 
@@ -63,7 +61,7 @@ The namespace is owned by the application’s Global Script. Keep deterministic 
 ```javascript
 // Example: format-start-time (init fragment)
 const wiMatches = compCurrent.findWidget("Start Time");
-if (wiMatches.length !== 1) throw new Error("Expected one Start Time widget");
+
 const wiStartTime = wiMatches[0];
 const timestampMs = (compCurrent.getPayload2() || {})["Start Timestamp"];
 let formatted = "Invalid start time";
@@ -85,7 +83,7 @@ Unix seconds require an explicit conversion to milliseconds before this call. UT
 ```javascript
 // Example: apply-brand-color (init fragment)
 const wiMatches = compCurrent.findWidget("Background");
-if (wiMatches.length !== 1) throw new Error("Expected one Background widget");
+
 const wiBackground = wiMatches[0];
 const input = (compCurrent.getPayload2() || {})["Brand Color"];
 const parsed = context.utils.createTinyColor(input);
@@ -121,9 +119,6 @@ This comparison treats a previously unparseable value, including a structured gr
     init: function(compCurrent, context) {
       const wiTexts = compCurrent.findWidget("Stream Text");
       const wiStatuses = compCurrent.findWidget("Connection Status");
-      if (wiTexts.length !== 1 || wiStatuses.length !== 1) {
-        throw new Error("Expected Stream Text and Connection Status widgets");
-      }
       wiText = wiTexts[0];
       wiStatus = wiStatuses[0];
       active = true;
@@ -186,7 +181,7 @@ if (diagnosticContexts.indexOf(runtimeName) !== -1) {
 ```javascript
 // Example: display-variant (init fragment)
 const wiMatches = compCurrent.findWidget("Variant Info");
-if (wiMatches.length !== 1) throw new Error("Expected one Variant Info widget");
+
 const wiVariantInfo = wiMatches[0];
 const variant = context.utils.getDisplayVariant();
 const label = variant && typeof variant.name === "string" ? variant.name : "No variant";
@@ -206,7 +201,7 @@ The getter returns a copy and does not subscribe. Call it again from an applicat
 ```javascript
 // Example: adaptation-accent (init fragment)
 const wiMatches = compCurrent.findWidget("Accent");
-if (wiMatches.length !== 1) throw new Error("Expected one Accent widget");
+
 const wiAccent = wiMatches[0];
 const globals = context.utils.getAdaptationGlobals() || {};
 const candidate = globals.accentColor;

@@ -56,7 +56,6 @@ Interactive messages use `msg.type` for the interaction type and `msg.params` fo
   return {
     init: function(compCurrent) {
       const wiMatches = compCurrent.findWidget("Full Name");
-      if (wiMatches.length !== 1) throw new Error("Expected one Full Name widget");
       compStored = compCurrent;
       wiFullName = wiMatches[0];
       active = true;
@@ -94,9 +93,6 @@ This example permits parent propagation. It does not filter local synchronizatio
     init: function(compCurrent) {
       const wiStatuses = compCurrent.findWidget("Animation Status");
       const wiStates = compCurrent.findWidget("Settled State");
-      if (wiStatuses.length !== 1 || wiStates.length !== 1) {
-        throw new Error("Expected Animation Status and Settled State widgets");
-      }
       compStored = compCurrent;
       wiStatus = wiStatuses[0];
       wiState = wiStates[0];
@@ -154,7 +150,6 @@ The initial `getState()` returns the logical state, such as `Out`; later state m
   return {
     init: function(compCurrent) {
       const grMatches = compCurrent.findGroup("Details");
-      if (grMatches.length !== 1) throw new Error("Expected one Details group");
       compStored = compCurrent;
       grDetails = grMatches[0];
       active = true;
@@ -189,7 +184,6 @@ To observe the same action at root, use this **complete root script**. It owns t
   return {
     init: function(compCurrent) {
       const compMatches = compCurrent.find("Lower Third");
-      if (compMatches.length !== 1) throw new Error("Expected one Lower Third composition");
       compRoot = compCurrent;
       compLowerThird = compMatches[0];
       active = true;
@@ -241,9 +235,6 @@ Name the child `Lower Third` for this example. With `consumeLocally = false`, th
     init: function(compCurrent) {
       const wiLabels = compCurrent.findWidget("Label");
       const wiClocks = compCurrent.findWidget("Clock");
-      if (wiLabels.length !== 1 || wiClocks.length !== 1) {
-        throw new Error("Expected one Label and one Clock widget");
-      }
       compStored = compCurrent;
       wiLabel = wiLabels[0];
       wiClock = wiClocks[0];

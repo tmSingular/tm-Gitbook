@@ -17,7 +17,6 @@ Create a native Button Control Node with public ID `Toggle`, plus an unlinked Me
     init: function(compCurrent) {
       compStored = compCurrent;
       wiOutput = compCurrent.findWidget('Readout')[0];
-      if (!wiOutput) throw new Error('Readout was not found');
       closed = false;
       compCurrent.addListener('button_clicked', function(event, msg) {
         if (closed || event !== 'button_clicked' || !msg || msg.buttonId !== 'Toggle') return;

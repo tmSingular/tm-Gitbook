@@ -6,7 +6,7 @@ Fragment inside `init(compCurrent)`; `HTML Panel.source` must be script-owned an
 
 ```javascript
 const wiPanel = compCurrent.findWidget("HTML Panel")[0];
-if (!wiPanel) throw new Error("HTML Panel was not found");
+
 wiPanel.setPayload({ source: '<div style="color:white;background:#123456">Updated panel</div>' });
 ```
 

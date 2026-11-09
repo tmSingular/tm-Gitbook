@@ -12,3 +12,5 @@ These examples include explicit composition setup, complete script bodies, clean
 - [Interrupted opacity fade](interrupted-opacity-fade.md)
 
 For a recurring implementation pattern, start with [reactive controls](../how-to-guides/react-to-control-node-changes.md), [native Timer events](../how-to-guides/react-to-timer-events.md), or [widget bounds](../how-to-guides/react-to-widget-bounds.md).
+
+- [Best practice: report an issue once](report-once.md)

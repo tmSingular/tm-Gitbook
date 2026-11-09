@@ -18,7 +18,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Date / Time Countdown");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Date / Time Countdown");
+
 const wiCountdown = wiMatches[0];
 const current = wiCountdown.getPayload() || {};
 const targetTimestampMs = Date.parse("2030-01-01T00:00:00Z");

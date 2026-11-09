@@ -14,7 +14,6 @@ In this setup root owns standalone `Title` input; child `Lower` owns an unlinked
     init: function(compCurrent) {
       compStored = compCurrent;
       wiTitle = compCurrent.findWidget('Title')[0];
-      if (!wiTitle) throw new Error('Title was not found');
       closed = false;
       update = function(value) {
         if (closed) return;
@@ -51,9 +50,6 @@ This example owns root's `payload_changed` slot; merge it into any existing coor
     init: function(compCurrent) {
       compStored = compCurrent;
       const compMatches = compCurrent.find('Lower');
-      if (compMatches.length !== 1 || typeof compMatches[0].updateContent !== 'function') {
-        throw new Error('Lower updateContent is unavailable');
-      }
       compLower = compMatches[0];
       closed = false;
       compCurrent.addListener('payload_changed', apply);

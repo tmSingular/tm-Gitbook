@@ -27,7 +27,6 @@ Use this pattern when a standalone public input needs script interpretation or f
     init: function(compCurrent, context) {
       compStored = compCurrent;
       const wiMatches = compCurrent.findWidget('Output');
-      if (wiMatches.length !== 1) throw new Error('Expected one Output widget');
       wiOutput = wiMatches[0];
       closed = false;
       compCurrent.addListener('payload_changed', apply);

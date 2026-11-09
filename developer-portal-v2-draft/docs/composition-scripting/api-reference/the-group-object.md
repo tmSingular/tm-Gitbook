@@ -20,9 +20,9 @@ Fragment inside a root script's `init(compCurrent)`:
 
 ```javascript
 const compChildren = compCurrent.find("Lower");
-if (compChildren.length !== 1) throw new Error('Expected one "Lower"');
+
 const grGroups = compChildren[0].findGroup("Content");
-if (grGroups.length !== 1) throw new Error('Expected one "Content" group');
+
 grGroups[0].setOpacity(80);
 ```
 

@@ -28,13 +28,11 @@ Each new target starts from current stored opacity, cancels the previous frame h
     const duration = p['Fade duration'] == null ? 300 : numeric(p['Fade duration']);
     if (!Number.isFinite(target) || target < 0 || target > 100 ||
         !Number.isFinite(duration) || duration < 0) {
-      console.warn('Invalid fade input');
       return;
     }
     if (frame !== null && target === lastTarget && duration === lastDuration) return;
     const from = grGroup.getOpacity();
     if (typeof from !== 'number' || !Number.isFinite(from)) {
-      console.warn('Invalid stored opacity');
       return;
     }
     generation += 1;
@@ -64,7 +62,6 @@ Each new target starts from current stored opacity, cancels the previous frame h
     init: function(compCurrent) {
       compStored = compCurrent;
       grGroup = compCurrent.findGroup('Content')[0];
-      if (!grGroup) throw new Error('Content group was not found');
       closed = false;
       compCurrent.addListener('payload_changed', apply);
       apply();

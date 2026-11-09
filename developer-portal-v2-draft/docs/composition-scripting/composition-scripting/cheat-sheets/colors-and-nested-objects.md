@@ -8,10 +8,10 @@ Requires one legacy Text widget named `Title`, with its font unlinked:
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Title");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Title");
+
 const wiTitle = wiMatches[0];
 const current = wiTitle.getPayload() || {};
-if (!current.font || !current.font.fontData) throw new Error("Font is not ready");
+
 const font = Object.assign({}, current.font, { alignment: "center" });
 wiTitle.setPayload({ font: font });
 ```
@@ -22,7 +22,7 @@ wiTitle.setPayload({ font: font });
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Background");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Background");
+
 const wiBackground = wiMatches[0];
 wiBackground.setPayload({ fillGradient: { r: 18, g: 52, b: 86, a: 0.5 } });
 ```

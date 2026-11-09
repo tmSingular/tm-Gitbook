@@ -9,7 +9,7 @@ const values = compCurrent.getPayload2() || {};
 const title = values['Title'];
 const fields = compCurrent.getModel() || [];
 const titleField = fields.filter(function(field) { return field.id === 'Title'; })[0];
-if (!titleField) throw new Error('Title control was not found');
+
 ```
 
 `getPayload()` provides key/value pairs; `getPayload2()` is convenient for named inputs. Model getters are read-only. Normalized Number reads are raw percentages; Timer reads are formatted strings. See [normalized numbers](../api-reference/normalized-numbers.md) and [Timer controls](../api-reference/timer-controls.md).

@@ -13,22 +13,13 @@ Native numeric mapping is `low + (high - low) * percentage / 100`, rounded to th
 
 Read current definitions through `compCurrent.getModel()` using public `id`, or `compCurrent.getControlNode().model.fields` using internal keys. Treat metadata as read-only. Never guess missing ranges, mutate the model, or add a hidden proxy widget by default.
 
-Fragment for a script-owned derived destination; `Scale` must be the inspected public ID:
+Fragment for a script-owned derived destination. Setup: `Scale` is an existing Normalized Number with numeric low/high metadata and a valid 0–100 input; the snippet assumes that contract:
 
 ```javascript
 const fields = compCurrent.getModel() || [];
 const field = fields.filter(function(item) { return item.id === "Scale"; })[0];
 const raw = (compCurrent.getPayload2() || {}).Scale;
-if (!field || field.type !== "normalizednumber" ||
-    typeof field.low !== "number" || !Number.isFinite(field.low) ||
-    typeof field.high !== "number" || !Number.isFinite(field.high) ||
-    raw == null || (typeof raw !== "number" && typeof raw !== "string") ||
-    (typeof raw === "string" &&
-     !/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(raw.trim())) ||
-    !Number.isFinite(Number(raw)) ||
-    Number(raw) < 0 || Number(raw) > 100) {
-  throw new Error('Invalid Scale value or output range');
-}
+
 const mapped = Math.round((field.low + (field.high - field.low) * Number(raw) / 100) * 1000) / 1000;
 ```
 

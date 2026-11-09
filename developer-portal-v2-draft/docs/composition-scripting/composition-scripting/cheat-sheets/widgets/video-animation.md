@@ -18,7 +18,7 @@ Any Default/fallback column describes the source reference, not a guarantee abou
 
 ```javascript
 const wiMatches = compCurrent.findWidget("Video Animation");
-if (wiMatches.length !== 1) throw new Error("Expected exactly one Video Animation");
+
 const wiVideo = wiMatches[0];
 const current = wiVideo.getPayload() || {};
 wiVideo.setPayload({ videoIn: "https://example.com/in.webm", videoOut: "https://example.com/out.webm", loopActive: false, fadeDuration: 0.5, objectFit: "cover", shift: 0 });

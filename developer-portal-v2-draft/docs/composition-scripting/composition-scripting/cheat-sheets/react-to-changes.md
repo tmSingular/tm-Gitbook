@@ -19,7 +19,6 @@ Complete root/sub-composition script. Setup: standalone Text control Title and e
   return {
     init: function(compCurrent) {
       const wiMatches = compCurrent.findWidget("Title Output");
-      if (wiMatches.length !== 1) throw new Error("Expected exactly one Title Output");
       compStored = compCurrent;
       wiOutput = wiMatches[0];
       active = true;
