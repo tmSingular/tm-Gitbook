@@ -1,32 +1,32 @@
 # The composition object
 
-Root and sub-composition scripts receive `comp` in `init(comp, context)`. Its identity and lookup scope belong to the composition carrying that script.
+Root and sub-composition scripts receive `compCurrent` in `init(compCurrent, context)`. Its identity and lookup scope belong to the composition carrying that script.
 
 ## Navigation and identity
 
 | Member | Meaning |
 |---|---|
-| `comp.id`, `comp.name` | Runtime composition ID and name; an ID is not necessarily a UUID |
-| `comp.find(name)` | Array of matching descendant composition objects |
-| `comp.findWidget(name)` | Array of matching widgets in this composition |
-| `comp.findWidget(groupName, widgetName)` | Array of matching widgets scoped to a group |
-| `comp.findGroup(name)` | Array of matching groups in this composition |
-| `comp.getSubcompositionById(id)` | Look up a sub-composition by its actual ID |
-| `comp.listSubcompositions()` | List child composition identities as `{ id, name }` objects |
-| `comp.parent()` | Parent composition; root has no parent composition |
+| `compCurrent.id`, `compCurrent.name` | Runtime composition ID and name; an ID is not necessarily a UUID |
+| `compCurrent.find(name)` | Array of matching descendant composition objects |
+| `compCurrent.findWidget(name)` | Array of matching widgets in this composition |
+| `compCurrent.findWidget(groupName, widgetName)` | Array of matching widgets scoped to a group |
+| `compCurrent.findGroup(name)` | Array of matching groups in this composition |
+| `compCurrent.getSubcompositionById(id)` | Look up a sub-composition by its actual ID |
+| `compCurrent.listSubcompositions()` | List child composition identities as `{ id, name }` objects |
+| `compCurrent.parent()` | Parent composition; root has no parent composition |
 
 `findWidget()` and `findGroup()` do not search the widgets/groups inside child compositions. Resolve the child with `find()` first. Names used by scripts are dependencies: rename the target and its script together while preserving template contracts.
 
-Fragment inside `init(comp, context)`:
+Fragment inside `init(compCurrent, context)`:
 
 ```javascript
-const matches = comp.find("Lower");
-if (matches.length !== 1) {
+const compMatches = compCurrent.find("Lower");
+if (compMatches.length !== 1) {
   throw new Error('Expected exactly one sub-composition named "Lower"');
 }
-const titles = matches[0].findWidget("Title");
-if (titles.length !== 1) throw new Error('Expected one "Title" widget');
-titles[0].setPayload({ text: "Updated title" });
+const wiTitles = compMatches[0].findWidget("Title");
+if (wiTitles.length !== 1) throw new Error('Expected one "Title" widget');
+wiTitles[0].setPayload({ text: "Updated title" });
 ```
 
 ### Regular-expression lookups
@@ -36,8 +36,8 @@ The current lookup family also includes `findRegExp(...names)`, `findWidgetRegEx
 `findRegExp` searches descendants for the first name, then direct children of each match for subsequent names. No arguments return `[]`. Widget/group regex searches stay within the current composition. Use `^` and `$` for full-name matching and `i` for case-insensitive matching. Regex tests start from index zero and preserve the caller's `lastIndex`, including `g`/`y` flags. Invalid name types throw `TypeError`; `findWidgetRegExp` accepts one or two arguments.
 
 ```javascript
-const teams = comp.findRegExp(/^Team /);
-const names = comp.findWidgetRegExp(/^Team /, /^Name$/);
+const compTeams = compCurrent.findRegExp(/^Team /);
+const wiNames = compCurrent.findWidgetRegExp(/^Team /, /^Name$/);
 ```
 
 ## Control Node values and model metadata
@@ -52,9 +52,9 @@ const names = comp.findWidgetRegExp(/^Team /, /^Name$/);
 
 Read public IDs from the model; display titles and internal stable keys are different identities. Do not modify returned models to configure controls. Use `getControlNode().model.fields` only after checking it exists; that structure uses internal keys.
 
-For reactive behavior, reread `comp.getPayload2()` in the handler rather than assuming an event carries a complete payload. [Normalized Number getters return raw 0–100 percentages](normalized-numbers.md). Native [Timer getters return formatted strings](timer-controls.md).
+For reactive behavior, reread `compCurrent.getPayload2()` in the handler rather than assuming an event carries a complete payload. [Normalized Number getters return raw 0–100 percentages](normalized-numbers.md). Native [Timer getters return formatted strings](timer-controls.md).
 
-`comp.setPayload()` is available for an intentional runtime consumer, such as a native Timer command or a documented composition-to-composition control path. It is not a way to update the Control App UI from output code. Prefer direct native links for simple operator inputs and direct unlinked widget writes for fetched/derived presentation. Avoid writing controls from an unguarded `payload_changed` handler that can trigger itself.
+`compCurrent.setPayload()` is available for an intentional runtime consumer, such as a native Timer command or a documented composition-to-composition control path. It is not a way to update the Control App UI from output code. Prefer direct native links for simple operator inputs and direct unlinked widget writes for fetched/derived presentation. Avoid writing controls from an unguarded `payload_changed` handler that can trigger itself.
 
 ## States and animation
 

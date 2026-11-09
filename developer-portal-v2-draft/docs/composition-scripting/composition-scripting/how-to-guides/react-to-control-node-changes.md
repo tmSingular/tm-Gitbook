@@ -10,35 +10,35 @@ Use this pattern when a standalone public input needs script interpretation or f
 
 ```javascript
 (function() {
-  var composition = null;
-  var output = null;
-  var closed = true;
+  let compStored = null;
+  let wiOutput = null;
+  let closed = true;
 
   function apply() {
     if (closed) return;
-    var payload = composition.getPayload2() || {};
-    var value = payload['Public Value'];
-    var text = value == null ? '' : String(value);
-    var current = output.getPayload() || {};
-    if (current.text !== text) output.setPayload({ text: text });
+    const payload = compStored.getPayload2() || {};
+    const value = payload['Public Value'];
+    const text = value == null ? '' : String(value);
+    const current = wiOutput.getPayload() || {};
+    if (current.text !== text) wiOutput.setPayload({ text: text });
   }
 
   return {
-    init: function(comp, context) {
-      composition = comp;
-      var matches = comp.findWidget('Output');
-      if (matches.length !== 1) throw new Error('Expected one Output widget');
-      output = matches[0];
+    init: function(compCurrent, context) {
+      compStored = compCurrent;
+      const wiMatches = compCurrent.findWidget('Output');
+      if (wiMatches.length !== 1) throw new Error('Expected one Output widget');
+      wiOutput = wiMatches[0];
       closed = false;
-      comp.addListener('payload_changed', apply);
+      compCurrent.addListener('payload_changed', apply);
       apply();
     },
     close: function() {
-      var wasActive = !closed;
+      const wasActive = !closed;
       closed = true;
-      if (wasActive && composition) composition.removeListener('payload_changed');
-      composition = null;
-      output = null;
+      if (wasActive && compStored) compStored.removeListener('payload_changed');
+      compStored = null;
+      wiOutput = null;
     }
   };
 })();

@@ -2,15 +2,15 @@
 
 Inspect the owning composition, names, and IDs first. Lookup methods return arrays; handle missing and ambiguous results before calling an object method.
 
-Fragment inside root `init(comp)`:
+Fragment inside root `init(compCurrent)`:
 
 ```javascript
-const lowers = comp.find('Lower');
-if (lowers.length !== 1) throw new Error('Expected one Lower composition');
-const lower = lowers[0];
-const titles = lower.findWidget('Team 1', 'Name');
-if (titles.length !== 1) throw new Error('Expected one Name in Team 1');
-titles[0].setPayload({ text: 'Home' });
+const compLowers = compCurrent.find('Lower');
+if (compLowers.length !== 1) throw new Error('Expected one Lower composition');
+const compLower = compLowers[0];
+const wiTitles = compLower.findWidget('Team 1', 'Name');
+if (wiTitles.length !== 1) throw new Error('Expected one Name in Team 1');
+wiTitles[0].setPayload({ text: 'Home' });
 ```
 
 The group's `Name.text` destination must be script-owned and unlinked. Root widget/group lookup does not descend into child compositions. Names referenced in scripts are dependencies; preserve them or update all callers together.

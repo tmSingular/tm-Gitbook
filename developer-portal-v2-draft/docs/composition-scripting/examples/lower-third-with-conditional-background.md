@@ -8,44 +8,44 @@ This example uses a separate native Rectangle rather than embedding pixel paddin
 
 ```javascript
 (function() {
-  var composition = null;
-  var output = null;
-  var background = null;
-  var tinyColor = null;
-  var closed = true;
+  let compStored = null;
+  let wiOutput = null;
+  let wiBackground = null;
+  let tinyColor = null;
+  let closed = true;
   function apply() {
     if (closed) return;
-    var p = composition.getPayload2() || {};
-    var first = p.Firstname == null ? '' : String(p.Firstname);
-    var last = p.Lastname == null ? '' : String(p.Lastname);
-    var text = (first + ' ' + last).trim();
-    if ((output.getPayload() || {}).text !== text) output.setPayload({ text: text });
-    background.setVisibility(p['Show Background'] === true && text.length > 0);
-    var color = tinyColor(p['Background Color']);
+    const p = compStored.getPayload2() || {};
+    const first = p.Firstname == null ? '' : String(p.Firstname);
+    const last = p.Lastname == null ? '' : String(p.Lastname);
+    const text = (first + ' ' + last).trim();
+    if ((wiOutput.getPayload() || {}).text !== text) wiOutput.setPayload({ text: text });
+    wiBackground.setVisibility(p['Show Background'] === true && text.length > 0);
+    const color = tinyColor(p['Background Color']);
     if (!color.isValid()) {
       console.warn('Background Color is invalid');
       return;
     }
-    background.setPayload({ fillGradient: { type: 'solid', solidColor: color.toRgb() } });
+    wiBackground.setPayload({ fillGradient: { type: 'solid', solidColor: color.toRgb() } });
   }
   return {
-    init: function(comp, context) {
-      composition = comp;
-      output = comp.findWidget('Full name')[0];
-      background = comp.findWidget('Background')[0];
-      if (!output || !background) throw new Error('Lower-third widgets are missing');
+    init: function(compCurrent, context) {
+      compStored = compCurrent;
+      wiOutput = compCurrent.findWidget('Full name')[0];
+      wiBackground = compCurrent.findWidget('Background')[0];
+      if (!wiOutput || !wiBackground) throw new Error('Lower-third widgets are missing');
       tinyColor = context.utils.createTinyColor;
       closed = false;
-      comp.addListener('payload_changed', apply);
+      compCurrent.addListener('payload_changed', apply);
       apply();
     },
     close: function() {
-      var wasActive = !closed;
+      const wasActive = !closed;
       closed = true;
-      if (wasActive && composition) composition.removeListener('payload_changed');
-      composition = null;
-      output = null;
-      background = null;
+      if (wasActive && compStored) compStored.removeListener('payload_changed');
+      compStored = null;
+      wiOutput = null;
+      wiBackground = null;
       tinyColor = null;
     }
   };

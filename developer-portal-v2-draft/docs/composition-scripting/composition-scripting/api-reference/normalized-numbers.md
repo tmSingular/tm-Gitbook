@@ -4,21 +4,21 @@ A `normalizednumber` Control Node has a raw input percentage in **0–100** and 
 
 | Read surface | Value |
 |---|---|
-| `comp.getPayload()` / `getPayload2()` | Raw percentage |
+| `compCurrent.getPayload()` / `getPayload2()` | Raw percentage |
 | A linked numeric widget property after link processing | Mapped value |
-| `widget.getPayload()` | Processed cached widget content; does not recalculate the link |
+| `wiWidget.getPayload()` | Processed cached widget content; does not recalculate the link |
 | A linked layout property | Layout state, not a widget content payload field |
 
 Native numeric mapping is `low + (high - low) * percentage / 100`, rounded to three decimal places. With low 0, high 200, raw 25 maps to 50. Changing high to 400 maps that same raw 25 to 100.
 
-Read current definitions through `comp.getModel()` using public `id`, or `comp.getControlNode().model.fields` using internal keys. Treat metadata as read-only. Never guess missing ranges, mutate the model, or add a hidden proxy widget by default.
+Read current definitions through `compCurrent.getModel()` using public `id`, or `compCurrent.getControlNode().model.fields` using internal keys. Treat metadata as read-only. Never guess missing ranges, mutate the model, or add a hidden proxy widget by default.
 
 Fragment for a script-owned derived destination; `Scale` must be the inspected public ID:
 
 ```javascript
-const fields = comp.getModel() || [];
+const fields = compCurrent.getModel() || [];
 const field = fields.filter(function(item) { return item.id === "Scale"; })[0];
-const raw = (comp.getPayload2() || {}).Scale;
+const raw = (compCurrent.getPayload2() || {}).Scale;
 if (!field || field.type !== "normalizednumber" ||
     typeof field.low !== "number" || !Number.isFinite(field.low) ||
     typeof field.high !== "number" || !Number.isFinite(field.high) ||

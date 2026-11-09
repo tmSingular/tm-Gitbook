@@ -9,10 +9,10 @@
 ```javascript
 (function() {
   return {
-    init: function(comp, context) {
-      var matches = comp.findWidget('Title');
-      if (matches.length !== 1) throw new Error('Expected one Title widget');
-      matches[0].setPayload({ text: 'Hello from Singular' });
+    init: function(compCurrent, context) {
+      const wiMatches = compCurrent.findWidget('Title');
+      if (wiMatches.length !== 1) throw new Error('Expected one Title widget');
+      wiMatches[0].setPayload({ text: 'Hello from Singular' });
     },
     close: function() {}
   };

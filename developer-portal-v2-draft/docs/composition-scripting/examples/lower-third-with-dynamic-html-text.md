@@ -8,9 +8,9 @@ The example escapes input before adding bold markup, initializes from current in
 
 ```javascript
 (function() {
-  var composition = null;
-  var output = null;
-  var closed = true;
+  let compStored = null;
+  let wiOutput = null;
+  let closed = true;
   function escapeText(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
@@ -18,27 +18,27 @@ The example escapes input before adding bold markup, initializes from current in
   }
   function apply() {
     if (closed) return;
-    var p = composition.getPayload2() || {};
-    var first = escapeText(p.Firstname);
-    var last = escapeText(p.Lastname);
-    var html = first || last ? '<html>' + first + ' <b>' + last + '</b></html>' : '';
-    if ((output.getPayload() || {}).text !== html) output.setPayload({ text: html });
+    const p = compStored.getPayload2() || {};
+    const first = escapeText(p.Firstname);
+    const last = escapeText(p.Lastname);
+    const html = first || last ? '<html>' + first + ' <b>' + last + '</b></html>' : '';
+    if ((wiOutput.getPayload() || {}).text !== html) wiOutput.setPayload({ text: html });
   }
   return {
-    init: function(comp) {
-      composition = comp;
-      output = comp.findWidget('Full name')[0];
-      if (!output) throw new Error('Full name widget was not found');
+    init: function(compCurrent) {
+      compStored = compCurrent;
+      wiOutput = compCurrent.findWidget('Full name')[0];
+      if (!wiOutput) throw new Error('Full name widget was not found');
       closed = false;
-      comp.addListener('payload_changed', apply);
+      compCurrent.addListener('payload_changed', apply);
       apply();
     },
     close: function() {
-      var wasActive = !closed;
+      const wasActive = !closed;
       closed = true;
-      if (wasActive && composition) composition.removeListener('payload_changed');
-      composition = null;
-      output = null;
+      if (wasActive && compStored) compStored.removeListener('payload_changed');
+      compStored = null;
+      wiOutput = null;
     }
   };
 })();

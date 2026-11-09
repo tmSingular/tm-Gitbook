@@ -6,12 +6,12 @@ For script-owned content, leave `tableContent` unlinked. Do not add a backing Ta
 
 ## Canonical content format
 
-Fragment inside `init(comp)`; the template must expose a Text control with public ID `label`:
+Fragment inside `init(compCurrent)`; the template must expose a Text control with public ID `label`:
 
 ```javascript
-const table = comp.findWidget("Results Table")[0];
-if (!table) throw new Error("Results Table was not found");
-table.setPayload({
+const wiTable = compCurrent.findWidget("Results Table")[0];
+if (!wiTable) throw new Error("Results Table was not found");
+wiTable.setPayload({
   tableContent: JSON.stringify({ content: [
     { label: "First item" },
     { label: "Second item" }

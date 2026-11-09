@@ -4,22 +4,22 @@ Add an unlinked Metric Text widget named `Clock`. This example displays wall-clo
 
 ```javascript
 (function() {
-  var timer = null;
-  var clock = null;
-  var closed = true;
+  let timer = null;
+  let wiClock = null;
+  let closed = true;
   function update() {
     if (closed) return;
-    var text = new Date().toLocaleTimeString('en-GB', {
+    const text = new Date().toLocaleTimeString('en-GB', {
       timeZone: 'Europe/Berlin', hour12: false,
       hour: '2-digit', minute: '2-digit', second: '2-digit'
     });
-    if ((clock.getPayload() || {}).text !== text) clock.setPayload({ text: text });
+    if ((wiClock.getPayload() || {}).text !== text) wiClock.setPayload({ text: text });
     if (!closed) timer = setTimeout(update, Math.max(25, 1000 - Date.now() % 1000));
   }
   return {
-    init: function(comp) {
-      clock = comp.findWidget('Clock')[0];
-      if (!clock) throw new Error('Clock was not found');
+    init: function(compCurrent) {
+      wiClock = compCurrent.findWidget('Clock')[0];
+      if (!wiClock) throw new Error('Clock was not found');
       closed = false;
       update();
     },
@@ -27,7 +27,7 @@ Add an unlinked Metric Text widget named `Clock`. This example displays wall-clo
       closed = true;
       if (timer !== null) clearTimeout(timer);
       timer = null;
-      clock = null;
+      wiClock = null;
     }
   };
 })();

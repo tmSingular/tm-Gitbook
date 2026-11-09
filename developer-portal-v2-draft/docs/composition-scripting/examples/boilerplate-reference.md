@@ -22,10 +22,10 @@ Use one IIFE for the chosen script type. These are independent templates, not bl
 ```javascript
 (function() {
   return {
-    init: function(comp, context) {
+    init: function(compCurrent, context) {
       // Resolve targets and apply the initial presentation.
     },
-    close: function(comp, context) {
+    close: function(compCurrent, context) {
       // Release only owned listeners, streams, requests, timers, and frames.
     }
   };

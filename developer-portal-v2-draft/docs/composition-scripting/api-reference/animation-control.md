@@ -1,6 +1,6 @@
 # Animation control
 
-Use `comp.playTo("In")` / `comp.playTo("Out")` to run the composition's authored Timeline, or `jumpTo(...)` for immediate state changes. These control composition-level In/Out motion, not individual tile keyframes.
+Use `compCurrent.playTo("In")` / `compCurrent.playTo("Out")` to run the composition's authored Timeline, or `jumpTo(...)` for immediate state changes. These control composition-level In/Out motion, not individual tile keyframes.
 
 | Operation | Observable events |
 |---|---|
@@ -13,7 +13,7 @@ Use `comp.playTo("In")` / `comp.playTo("Out")` to run the composition's authored
 Fragment inside an existing composition-owned timeline handler:
 
 ```javascript
-if (msg && msg.compositionId === comp.id && msg.message) {
+if (msg && msg.compositionId === compCurrent.id && msg.message) {
   if (msg.message.event === "stop" && msg.message.targetState === "In") {
     // The owning composition reached its In endpoint.
   }
@@ -28,7 +28,7 @@ Prefer native Timeline/Update motion when it expresses the design. For script-ow
 // Fragment inside an animation-frame callback; durationMs must be positive.
 const progress = Math.min(1, (timestamp - startTimestamp) / durationMs);
 const opacity = fromOpacity + (toOpacity - fromOpacity) * progress;
-target.setOpacity(opacity);
+wiTarget.setOpacity(opacity);
 ```
 
 Use the frame callback's monotonic timestamp consistently. Keep one frame chain per destination; cancel its handle and invalidate stale callbacks when replacing it or closing the script. Set the exact endpoint, then stop scheduling. Do not layer it onto a linked or native-animated property.

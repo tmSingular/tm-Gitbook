@@ -28,9 +28,9 @@ For a script-owned solid fill, send the complete solid-gradient structure:
 
 ```javascript
 // Fragment inside init(comp), with an unlinked Rectangle named Background.
-const background = comp.findWidget("Background")[0];
-if (!background) throw new Error("Background was not found");
-background.setPayload({
+const wiBackground = compCurrent.findWidget("Background")[0];
+if (!wiBackground) throw new Error("Background was not found");
+wiBackground.setPayload({
   fillGradient: { type: "solid", solidColor: { r: 20, g: 30, b: 40, a: 1 } }
 });
 ```

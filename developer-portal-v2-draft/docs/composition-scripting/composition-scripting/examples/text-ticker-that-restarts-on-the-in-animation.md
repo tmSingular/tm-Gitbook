@@ -8,42 +8,42 @@ The following recipe requests a restart through a temporary speed change at the 
 
 ```javascript
 (function() {
-  var composition = null;
-  var ticker = null;
-  var closed = true;
+  let compStored = null;
+  let wiTicker = null;
+  let closed = true;
   function apply() {
     if (closed) return;
-    var value = (composition.getPayload2() || {}).Messages;
-    var text = value == null ? '' : String(value);
-    if ((ticker.getPayload() || {}).text !== text) ticker.setPayload({ text: text });
+    const value = (compStored.getPayload2() || {}).Messages;
+    const text = value == null ? '' : String(value);
+    if ((wiTicker.getPayload() || {}).text !== text) wiTicker.setPayload({ text: text });
   }
   return {
-    init: function(comp) {
-      composition = comp;
-      ticker = comp.findWidget('Text Ticker')[0];
-      if (!ticker) throw new Error('Text Ticker was not found');
+    init: function(compCurrent) {
+      compStored = compCurrent;
+      wiTicker = compCurrent.findWidget('Text Ticker')[0];
+      if (!wiTicker) throw new Error('Text Ticker was not found');
       closed = false;
-      comp.addListener('payload_changed', apply);
-      comp.addListener('timeline_event', function(event, msg) {
-        if (closed || !msg || msg.compositionId !== comp.id || !msg.message) return;
+      compCurrent.addListener('payload_changed', apply);
+      compCurrent.addListener('timeline_event', function(event, msg) {
+        if (closed || !msg || msg.compositionId !== compCurrent.id || !msg.message) return;
         if (msg.message.event !== 'start' || msg.message.targetState !== 'In') return;
-        var speed = Number((ticker.getPayload() || {}).speed);
+        const speed = Number((wiTicker.getPayload() || {}).speed);
         if (!Number.isFinite(speed) || speed <= 0) return;
-        ticker.setPayload({ speed: 0 });
-        ticker.setPayload({ speed: speed });
+        wiTicker.setPayload({ speed: 0 });
+        wiTicker.setPayload({ speed: speed });
         apply();
       });
       apply();
     },
     close: function() {
-      var wasActive = !closed;
+      const wasActive = !closed;
       closed = true;
-      if (wasActive && composition) {
-        composition.removeListener('payload_changed');
-        composition.removeListener('timeline_event');
+      if (wasActive && compStored) {
+        compStored.removeListener('payload_changed');
+        compStored.removeListener('timeline_event');
       }
-      composition = null;
-      ticker = null;
+      compStored = null;
+      wiTicker = null;
     }
   };
 })();

@@ -11,3 +11,5 @@ Absolute CSS units in embedded markup, such as `px`, `pt`, or `cm`, can reduce r
 Changing an [HTML widget's `source`](../api-reference/widget-payloads/html.md) is a different API and can replace child DOM/playback state. Never use script-tag injection as a substitute for composition scripting.
 
 Test names such as `A&B`, `<Test>`, empty strings, and non-ASCII text. Confirm both literal content and visible styling in the Player.
+
+For activation, renderer differences, and a short escaped-markup example, see [HTML text](../cheat-sheets/html-text.md).

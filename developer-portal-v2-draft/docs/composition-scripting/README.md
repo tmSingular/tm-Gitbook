@@ -10,3 +10,11 @@ Composition scripts run JavaScript inside the Singular Player to interpret data,
 Use ES2017-compatible JavaScript as the conservative authoring target unless your deployment explicitly guarantees a newer engine. This is an authoring baseline, not a browser support guarantee. Inspect the loaded widget version and field schema before writing widget payloads.
 
 The reference separates persisted source, runtime state, rendered appearance, and app delivery. A successful save or payload call alone does not establish all four.
+
+## Object variable names
+
+Use camelCase with `comp` for composition objects, `wi` for widgets, and `gr` for groups: `compCurrent`, `compLowerThird`, `wiTitle`, and `grContent`. This convention applies to script parameters, retained references, and object collections. Composer names and payload IDs remain the exact names configured in the document.
+
+## Variable declarations
+
+Use `const` for bindings that are not reassigned and `let` for bindings that change. Do not use `var`. Mutating an object or array does not require `let`; reassigning or clearing a retained reference does. Apply this convention to all new script examples.

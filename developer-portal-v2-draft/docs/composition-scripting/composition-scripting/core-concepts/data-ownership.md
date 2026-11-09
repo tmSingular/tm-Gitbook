@@ -11,7 +11,7 @@ Give each destination property one writer.
 
 A link/model update can replace a script's value if both target the same field. Correct the competing ownership rather than adding a delayed second write. Do not add hidden backing widgets or controls just to relay script-fetched presentation.
 
-`comp.setPayload()` remains valid for a deliberate runtime consumer, including [Timer actions](../api-reference/timer-controls.md). Explain the reason, preserve one writer, and verify that path in the intended host. Output iframe writes do not synchronize back to the Control App operator UI: a script cannot reset sliders or publish fetch status there through that method.
+`compCurrent.setPayload()` remains valid for a deliberate runtime consumer, including [Timer actions](../api-reference/timer-controls.md). Explain the reason, preserve one writer, and verify that path in the intended host. Output iframe writes do not synchronize back to the Control App operator UI: a script cannot reset sliders or publish fetch status there through that method.
 
 On each relevant update, compare against effective widget content or rewrite the complete derived state idempotently. A cache of last-attempted values can miss a later model update. Preserve current valid color/numeric representation in stored sources while checking numeric or rendered equivalence separately.
 

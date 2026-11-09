@@ -6,34 +6,34 @@ Create a native Button Control Node with public ID `Toggle`, plus an unlinked Me
 
 ```javascript
 (function() {
-  var composition = null;
-  var output = null;
-  var enabled = false;
-  var closed = true;
+  let compStored = null;
+  let wiOutput = null;
+  let enabled = false;
+  let closed = true;
   function apply() {
-    output.setPayload({ text: enabled ? 'Enabled' : 'Disabled' });
+    wiOutput.setPayload({ text: enabled ? 'Enabled' : 'Disabled' });
   }
   return {
-    init: function(comp) {
-      composition = comp;
-      output = comp.findWidget('Readout')[0];
-      if (!output) throw new Error('Readout was not found');
+    init: function(compCurrent) {
+      compStored = compCurrent;
+      wiOutput = compCurrent.findWidget('Readout')[0];
+      if (!wiOutput) throw new Error('Readout was not found');
       closed = false;
-      comp.addListener('button_clicked', function(event, msg) {
+      compCurrent.addListener('button_clicked', function(event, msg) {
         if (closed || event !== 'button_clicked' || !msg || msg.buttonId !== 'Toggle') return;
-        var source = msg.compId || msg.compositionId;
-        if (source !== comp.id) return;
+        const source = msg.compId || msg.compositionId;
+        if (source !== compCurrent.id) return;
         enabled = !enabled;
         apply();
       });
       apply();
     },
     close: function() {
-      var wasActive = !closed;
+      const wasActive = !closed;
       closed = true;
-      if (wasActive && composition) composition.removeListener('button_clicked');
-      composition = null;
-      output = null;
+      if (wasActive && compStored) compStored.removeListener('button_clicked');
+      compStored = null;
+      wiOutput = null;
     }
   };
 })();

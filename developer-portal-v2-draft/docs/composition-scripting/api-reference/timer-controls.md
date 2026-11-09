@@ -10,7 +10,7 @@ Composition-script `getPayload()`, `getPayload2()`, and `getControlNode()` paylo
 
 ## Public action commands
 
-Send one intentional action through `comp.setPayload()` using the Timer's **public payload ID**. These are alternatives, not an initialization sequence:
+Send one intentional action through `compCurrent.setPayload()` using the Timer's **public payload ID**. These are alternatives, not an initialization sequence:
 
 | Command object | Effect |
 |---|---|
@@ -24,7 +24,7 @@ Send one intentional action through `comp.setPayload()` using the Timer's **publ
 Fragment inside an explicitly triggered action:
 
 ```javascript
-comp.setPayload({ "Game Clock": { command: "pause" } });
+compCurrent.setPayload({ "Game Clock": { command: "pause" } });
 ```
 
 `set` and `adjust` preserve effective running/paused state subject to endpoint stopping. Never replay a raw anchor or read-state object as a command. `adjust` and `start` are not idempotent: after an uncertain acknowledgement, inspect authoritative state before retrying.

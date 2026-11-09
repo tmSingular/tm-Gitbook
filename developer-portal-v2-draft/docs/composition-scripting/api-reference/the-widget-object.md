@@ -18,16 +18,16 @@ Resolve a widget through its owning in-script composition. Read the loaded type/
 
 In ordinary percentage layouts, position and size use the immediate parent: a containing group for a grouped tile, otherwise the composition. Pixel-unit layouts need their own inspected units. Getter values describe stored layout, not final bounds after ancestor transforms, clipping, visibility, and animation.
 
-Fragment inside `init(comp)`; `Title` is an unlinked Metric Text or Text widget:
+Fragment inside `init(compCurrent)`; `Title` is an unlinked Metric Text or Text widget:
 
 ```javascript
-const matches = comp.findWidget("Title");
-if (matches.length !== 1) throw new Error('Expected one "Title" widget');
-const title = matches[0];
-title.setPayload({ text: "Hello" });
-title.setSizeX(50);
-title.setSizeY(15);
-title.setOpacity(100);
+const wiMatches = compCurrent.findWidget("Title");
+if (wiMatches.length !== 1) throw new Error('Expected one "Title" widget');
+const wiTitle = wiMatches[0];
+wiTitle.setPayload({ text: "Hello" });
+wiTitle.setSizeX(50);
+wiTitle.setSizeY(15);
+wiTitle.setOpacity(100);
 ```
 
 `setSizeX(50)` changes tile layout width. `setPayload({ width: 50 })` is not equivalent: Rectangle uses payload width for the shape inside the tile; another widget may not support that field.

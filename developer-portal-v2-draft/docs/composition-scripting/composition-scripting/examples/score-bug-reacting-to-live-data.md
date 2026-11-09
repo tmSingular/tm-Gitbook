@@ -12,35 +12,35 @@ The complete script validates nonnegative integer scores, preserves the last goo
 
 ```javascript
 (function() {
-  var stream = null;
-  var home = null;
-  var away = null;
-  var closed = true;
+  let stream = null;
+  let wiHome = null;
+  let wiAway = null;
+  let closed = true;
   function validScore(value) {
     return typeof value === 'number' && Number.isInteger(value) && value >= 0;
   }
-  function write(widget, value) {
-    var text = String(value);
-    if ((widget.getPayload() || {}).text !== text) widget.setPayload({ text: text });
+  function write(wiWidget, value) {
+    const text = String(value);
+    if ((wiWidget.getPayload() || {}).text !== text) wiWidget.setPayload({ text: text });
   }
   return {
-    init: function(comp, context) {
-      home = comp.findWidget('Home score')[0];
-      away = comp.findWidget('Away score')[0];
-      if (!home || !away) throw new Error('Score widgets are missing');
+    init: function(compCurrent, context) {
+      wiHome = compCurrent.findWidget('Home score')[0];
+      wiAway = compCurrent.findWidget('Away score')[0];
+      if (!wiHome || !wiAway) throw new Error('Score widgets are missing');
       closed = false;
-      home.setPayload({ text: '--' });
-      away.setPayload({ text: '--' });
+      wiHome.setPayload({ text: '--' });
+      wiAway.setPayload({ text: '--' });
       stream = context.utils.createDataStream('your-data-stream-public-token', function(status, message) {
         if (closed) return;
         if (status === 'message') {
-          var data = message && message.payload;
+          const data = message && message.payload;
           if (!data || !validScore(data.home) || !validScore(data.away)) {
             console.warn('Invalid score data');
             return;
           }
-          write(home, data.home);
-          write(away, data.away);
+          write(wiHome, data.home);
+          write(wiAway, data.away);
         } else if (status === 'error') {
           console.warn('Score stream error');
         }
@@ -50,8 +50,8 @@ The complete script validates nonnegative integer scores, preserves the last goo
       closed = true;
       if (stream) stream.close();
       stream = null;
-      home = null;
-      away = null;
+      wiHome = null;
+      wiAway = null;
     }
   };
 })();

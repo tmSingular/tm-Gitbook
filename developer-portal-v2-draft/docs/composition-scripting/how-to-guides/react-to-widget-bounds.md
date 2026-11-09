@@ -6,48 +6,48 @@ The script owns local `message` and `payload_changed` slots; merge existing hand
 
 ```javascript
 (function() {
-  var composition = null;
-  var label = null;
-  var readout = null;
-  var closed = true;
+  let compStored = null;
+  let wiLabel = null;
+  let wiReadout = null;
+  let closed = true;
   function apply() {
     if (closed) return;
-    var value = (composition.getPayload2() || {}).Label;
-    var text = value == null ? '' : String(value);
-    if (!text.trim()) readout.setPayload({ text: '' });
-    if ((label.getPayload() || {}).text !== text) label.setPayload({ text: text });
+    const value = (compStored.getPayload2() || {}).Label;
+    const text = value == null ? '' : String(value);
+    if (!text.trim()) wiReadout.setPayload({ text: '' });
+    if ((wiLabel.getPayload() || {}).text !== text) wiLabel.setPayload({ text: text });
   }
   return {
-    init: function(comp) {
-      composition = comp;
-      label = comp.findWidget('Label')[0];
-      readout = comp.findWidget('Width Readout')[0];
-      if (!label || !readout) throw new Error('Bounds example widgets are missing');
+    init: function(compCurrent) {
+      compStored = compCurrent;
+      wiLabel = compCurrent.findWidget('Label')[0];
+      wiReadout = compCurrent.findWidget('Width Readout')[0];
+      if (!wiLabel || !wiReadout) throw new Error('Bounds example widgets are missing');
       closed = false;
-      comp.addListener('message', function(event, msg) {
+      compCurrent.addListener('message', function(event, msg) {
         if (closed || event !== 'message') return;
-        var p = msg && msg.params;
-        var data = p && p.data;
-        if (!p || p.id !== label.id || !data || data.event !== 'bounds' ||
+        const p = msg && msg.params;
+        const data = p && p.data;
+        if (!p || p.id !== wiLabel.id || !data || data.event !== 'bounds' ||
             typeof data.widthPx !== 'number' || !Number.isFinite(data.widthPx)) return;
-        var currentText = (label.getPayload() || {}).text || '';
+        const currentText = (wiLabel.getPayload() || {}).text || '';
         if (!String(currentText).trim()) return;
-        readout.setPayload({ text: data.widthPx.toFixed(1) });
+        wiReadout.setPayload({ text: data.widthPx.toFixed(1) });
       });
-      comp.addListener('payload_changed', apply);
-      label.setPayload({ emitEvents: true });
+      compCurrent.addListener('payload_changed', apply);
+      wiLabel.setPayload({ emitEvents: true });
       apply();
     },
     close: function() {
-      var wasActive = !closed;
+      const wasActive = !closed;
       closed = true;
-      if (wasActive && composition) {
-        composition.removeListener('message');
-        composition.removeListener('payload_changed');
+      if (wasActive && compStored) {
+        compStored.removeListener('message');
+        compStored.removeListener('payload_changed');
       }
-      composition = null;
-      label = null;
-      readout = null;
+      compStored = null;
+      wiLabel = null;
+      wiReadout = null;
     }
   };
 })();

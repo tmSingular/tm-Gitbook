@@ -1,6 +1,6 @@
 # The group object
 
-Groups provide shared layout, visibility, and effects for their contents. `comp.findGroup(name)` searches the current composition; find the owning child composition first when needed.
+Groups provide shared layout, visibility, and effects for their contents. `compCurrent.findGroup(name)` searches the current composition; find the owning child composition first when needed.
 
 | Member | Contract |
 |---|---|
@@ -16,14 +16,14 @@ Groups provide shared layout, visibility, and effects for their contents. `comp.
 
 Slash-separated method names in the table denote separate methods, for example `getPositionX()` and `getPositionY()`.
 
-Fragment inside a root script's `init(comp)`:
+Fragment inside a root script's `init(compCurrent)`:
 
 ```javascript
-const children = comp.find("Lower");
-if (children.length !== 1) throw new Error('Expected one "Lower"');
-const groups = children[0].findGroup("Content");
-if (groups.length !== 1) throw new Error('Expected one "Content" group');
-groups[0].setOpacity(80);
+const compChildren = compCurrent.find("Lower");
+if (compChildren.length !== 1) throw new Error('Expected one "Lower"');
+const grGroups = compChildren[0].findGroup("Content");
+if (grGroups.length !== 1) throw new Error('Expected one "Content" group');
+grGroups[0].setOpacity(80);
 ```
 
 Anchor semantics and stored-versus-rendered geometry follow [The widget object](the-widget-object.md#position-and-anchors). Do not treat 100% of a group as 100% of the root canvas. Check the inspected parent and layout units, particularly with nested geometry.

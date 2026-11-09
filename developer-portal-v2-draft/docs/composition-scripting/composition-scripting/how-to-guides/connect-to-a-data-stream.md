@@ -6,28 +6,28 @@ The callback receives `(status, message)`; published data is in `message.payload
 
 ```javascript
 (function() {
-  var stream = null;
-  var output = null;
-  var closed = true;
-  var PUBLIC_TOKEN = 'your-data-stream-public-token';
+  let stream = null;
+  let wiOutput = null;
+  let closed = true;
+  const PUBLIC_TOKEN = 'your-data-stream-public-token';
 
   return {
-    init: function(comp, context) {
-      var matches = comp.findWidget('Stream Text');
-      if (matches.length !== 1) throw new Error('Expected one Stream Text widget');
-      output = matches[0];
+    init: function(compCurrent, context) {
+      const wiMatches = compCurrent.findWidget('Stream Text');
+      if (wiMatches.length !== 1) throw new Error('Expected one Stream Text widget');
+      wiOutput = wiMatches[0];
       closed = false;
-      output.setPayload({ text: 'Waiting for data' });
+      wiOutput.setPayload({ text: 'Waiting for data' });
       stream = context.utils.createDataStream(PUBLIC_TOKEN, function(status, message) {
         if (closed) return;
         if (status === 'message') {
-          var data = message && message.payload;
+          const data = message && message.payload;
           if (!data || typeof data.text !== 'string') {
             console.warn('Stream message has invalid text');
             return;
           }
-          if ((output.getPayload() || {}).text !== data.text) {
-            output.setPayload({ text: data.text });
+          if ((wiOutput.getPayload() || {}).text !== data.text) {
+            wiOutput.setPayload({ text: data.text });
           }
         } else if (status === 'error') {
           console.warn('Data stream connection error');
@@ -38,7 +38,7 @@ The callback receives `(status, message)`; published data is in `message.payload
       closed = true;
       if (stream) stream.close();
       stream = null;
-      output = null;
+      wiOutput = null;
     }
   };
 })();

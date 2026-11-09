@@ -1,6 +1,6 @@
 # Widget payloads
 
-Select a contract by the widget's actual type and loaded version. A composition script's `widget.setPayload()` is distinct from Composer AI authoring commands and from host SDK Control Node writes.
+Select a contract by the widget's actual type and loaded version. A composition script's `wiWidget.setPayload()` is distinct from Composer AI authoring commands and from host SDK Control Node writes.
 
 | Payload reference | Covered widget IDs |
 |---|---|

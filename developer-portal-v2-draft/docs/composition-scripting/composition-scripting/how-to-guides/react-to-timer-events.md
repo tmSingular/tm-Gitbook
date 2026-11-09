@@ -6,39 +6,39 @@ For a simple formatted readout, a native text link is preferable. This example i
 
 ```javascript
 (function() {
-  var composition = null;
-  var readout = null;
-  var closed = true;
-  var TIMER_KEY = 'replace-with-stable-timer-key';
+  let compStored = null;
+  let wiReadout = null;
+  let closed = true;
+  const TIMER_KEY = 'replace-with-stable-timer-key';
   function write(text) {
-    if (!closed && (readout.getPayload() || {}).text !== text) {
-      readout.setPayload({ text: text });
+    if (!closed && (wiReadout.getPayload() || {}).text !== text) {
+      wiReadout.setPayload({ text: text });
     }
   }
   return {
-    init: function(comp) {
-      composition = comp;
-      readout = comp.findWidget('Timer Readout')[0];
-      if (!readout) throw new Error('Timer Readout was not found');
+    init: function(compCurrent) {
+      compStored = compCurrent;
+      wiReadout = compCurrent.findWidget('Timer Readout')[0];
+      if (!wiReadout) throw new Error('Timer Readout was not found');
       closed = false;
-      comp.addListener('message', function(event, msg) {
+      compCurrent.addListener('message', function(event, msg) {
         if (closed) return;
-        var p = msg && msg.params;
-        var state = p && p.data;
+        const p = msg && msg.params;
+        const state = p && p.data;
         if (event !== 'message' || !msg || msg.event !== 'custom' || !p ||
-            p.type !== 'controlNode' || p.compId !== comp.id || p.id !== TIMER_KEY ||
+            p.type !== 'controlNode' || p.compId !== compCurrent.id || p.id !== TIMER_KEY ||
             !state || state.type !== 'timerChanged' || typeof state.value !== 'string') return;
         write(state.value + (state.overtime ? ' OT' : ''));
       });
-      var value = (comp.getPayload2() || {})['Game Clock'];
+      const value = (compCurrent.getPayload2() || {})['Game Clock'];
       write(value == null ? '' : String(value));
     },
     close: function() {
-      var wasActive = !closed;
+      const wasActive = !closed;
       closed = true;
-      if (wasActive && composition) composition.removeListener('message');
-      composition = null;
-      readout = null;
+      if (wasActive && compStored) compStored.removeListener('message');
+      compStored = null;
+      wiReadout = null;
     }
   };
 })();

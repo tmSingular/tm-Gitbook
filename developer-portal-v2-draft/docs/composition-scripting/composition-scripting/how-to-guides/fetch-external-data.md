@@ -8,13 +8,13 @@ The following is a **fragment to adapt inside an owning script**, not a runnable
 
 ```javascript
 // fetch and AbortController require explicit browser support checks.
-var closed = false;
-var generation = 0;
-var controller = null;
-function load(endpoint, target) {
+let closed = false;
+let generation = 0;
+let controller = null;
+function load(endpoint, wiTarget) {
   if (closed) return Promise.resolve();
   generation += 1;
-  var requestGeneration = generation;
+  const requestGeneration = generation;
   if (controller) controller.abort();
   controller = new AbortController();
   return fetch(endpoint, { signal: controller.signal }).then(function(response) {
@@ -23,7 +23,7 @@ function load(endpoint, target) {
   }).then(function(data) {
     if (closed || requestGeneration !== generation) return;
     if (!data || typeof data.text !== 'string') throw new Error('Invalid feed data');
-    target.setPayload({ text: data.text });
+    wiTarget.setPayload({ text: data.text });
   }).catch(function() {
     if (!closed && requestGeneration === generation) console.warn('Feed update failed');
   });

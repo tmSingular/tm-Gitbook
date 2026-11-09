@@ -6,29 +6,29 @@ In this setup root owns standalone `Title` input; child `Lower` owns an unlinked
 
 ```javascript
 (function() {
-  var composition = null;
-  var title = null;
-  var update = null;
-  var closed = true;
+  let compStored = null;
+  let wiTitle = null;
+  let update = null;
+  let closed = true;
   return {
-    init: function(comp) {
-      composition = comp;
-      title = comp.findWidget('Title')[0];
-      if (!title) throw new Error('Title was not found');
+    init: function(compCurrent) {
+      compStored = compCurrent;
+      wiTitle = compCurrent.findWidget('Title')[0];
+      if (!wiTitle) throw new Error('Title was not found');
       closed = false;
       update = function(value) {
         if (closed) return;
-        title.setPayload({ text: value == null ? '' : String(value) });
+        wiTitle.setPayload({ text: value == null ? '' : String(value) });
       };
-      comp.updateContent = update;
+      compCurrent.updateContent = update;
     },
     close: function() {
       closed = true;
-      if (composition && composition.updateContent === update) {
-        delete composition.updateContent;
+      if (compStored && compStored.updateContent === update) {
+        delete compStored.updateContent;
       }
-      composition = null;
-      title = null;
+      compStored = null;
+      wiTitle = null;
       update = null;
     }
   };
@@ -41,30 +41,30 @@ This example owns root's `payload_changed` slot; merge it into any existing coor
 
 ```javascript
 (function() {
-  var composition = null;
-  var lower = null;
-  var closed = true;
+  let compStored = null;
+  let compLower = null;
+  let closed = true;
   function apply() {
-    if (!closed) lower.updateContent((composition.getPayload2() || {}).Title);
+    if (!closed) compLower.updateContent((compStored.getPayload2() || {}).Title);
   }
   return {
-    init: function(comp) {
-      composition = comp;
-      var matches = comp.find('Lower');
-      if (matches.length !== 1 || typeof matches[0].updateContent !== 'function') {
+    init: function(compCurrent) {
+      compStored = compCurrent;
+      const compMatches = compCurrent.find('Lower');
+      if (compMatches.length !== 1 || typeof compMatches[0].updateContent !== 'function') {
         throw new Error('Lower updateContent is unavailable');
       }
-      lower = matches[0];
+      compLower = compMatches[0];
       closed = false;
-      comp.addListener('payload_changed', apply);
+      compCurrent.addListener('payload_changed', apply);
       apply();
     },
     close: function() {
-      var wasActive = !closed;
+      const wasActive = !closed;
       closed = true;
-      if (wasActive && composition) composition.removeListener('payload_changed');
-      composition = null;
-      lower = null;
+      if (wasActive && compStored) compStored.removeListener('payload_changed');
+      compStored = null;
+      compLower = null;
     }
   };
 })();

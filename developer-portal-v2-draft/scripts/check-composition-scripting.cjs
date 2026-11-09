@@ -10,6 +10,7 @@ function walk(dir) { return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>
 for(const file of walk(root).filter(f=>f.endsWith('.md'))) {
   for(const m of fs.readFileSync(file,'utf8').matchAll(/```javascript\s*\n([\s\S]*?)```/g)) {
     new vm.Script(m[1],{filename:file});parsed++;
+    assert(!/\bvar\s+[A-Za-z_$]/.test(m[1]),'Use const/let instead of var in '+file);
     assert(!/\?\.|\?\?/.test(m[1]),'Post-ES2017 syntax in '+file);
   }
 }
@@ -96,9 +97,9 @@ check('communication: child init before root, initial and live forwarding, owned
 check('normalized values use current metadata and reject nondecimal/invalid values',()=>{
  const source=blocks('api-reference/normalized-numbers.md')[0]+'\nmapped;';
  const field={id:'Scale',type:'normalizednumber',low:0,high:200};const c={getModel(){return[field];},getPayload2(){return{Scale:25};}};
- assert.equal(vm.runInNewContext(source,{comp:c}),50);field.high=400;assert.equal(vm.runInNewContext(source,{comp:c}),100);
- for(const value of ['25.0',' 2.5e1 ',25]){c.getPayload2=()=>({Scale:value});assert.equal(vm.runInNewContext(source,{comp:c}),100);}
- for(const value of ['0x10','25px','',null,true,[],Infinity,-1,101]){c.getPayload2=()=>({Scale:value});assert.throws(()=>vm.runInNewContext(source,{comp:c}),/Invalid/);}
+ assert.equal(vm.runInNewContext(source,{compCurrent:c}),50);field.high=400;assert.equal(vm.runInNewContext(source,{compCurrent:c}),100);
+ for(const value of ['25.0',' 2.5e1 ',25]){c.getPayload2=()=>({Scale:value});assert.equal(vm.runInNewContext(source,{compCurrent:c}),100);}
+ for(const value of ['0x10','25px','',null,true,[],Infinity,-1,101]){c.getPayload2=()=>({Scale:value});assert.throws(()=>vm.runInNewContext(source,{compCurrent:c}),/Invalid/);}
 });
 check('legacy ticker initial/update text, own In filtering, speed request and cleanup',()=>{
  const ticker=widget('ticker',{speed:20}),c=comp({'Text Ticker':ticker},{Messages:'First'});const s=load('examples/text-ticker-that-restarts-on-the-in-animation.md');s.init(c,{});assert.equal(ticker.payload.text,'First');

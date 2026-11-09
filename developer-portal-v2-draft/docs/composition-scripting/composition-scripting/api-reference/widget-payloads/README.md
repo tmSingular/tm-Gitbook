@@ -1,6 +1,6 @@
 # Widget payloads
 
-Select a contract by the widget's actual type and loaded version. A composition script's `widget.setPayload()` is distinct from Composer AI authoring commands and from host SDK Control Node writes.
+Select a contract by the widget's actual type and loaded version. A composition script's `wiWidget.setPayload()` is distinct from Composer AI authoring commands and from host SDK Control Node writes.
 
 | Payload reference | Covered widget IDs |
 |---|---|
@@ -13,3 +13,5 @@ Select a contract by the widget's actual type and loaded version. A composition 
 These pages cover the common widgets used by the scripting guides. They are not an exhaustive widget catalog. For another widget, inspect its loaded schema and use its dedicated runtime contract before writing unfamiliar keys. Do not infer API fields from display labels.
 
 Live schema and version inspection take precedence when a field, type, or supported option differs. Renderer fallbacks are not guaranteed catalog defaults. Preserve unrelated payload fields, fonts, template relationships, and required integration controls.
+
+For per-widget property tables, short update examples, special features, and messages, use the expanded [Widget reference](../../cheat-sheets/widgets/README.md). This existing section retains the original grouped payload contracts.
