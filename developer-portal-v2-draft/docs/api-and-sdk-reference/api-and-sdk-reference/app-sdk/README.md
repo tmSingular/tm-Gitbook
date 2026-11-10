@@ -1,18 +1,30 @@
 # App SDK
 
-Build a custom Singular Control App that manages compositions, edits control fields, animates graphics, and shares application data between operators. The App SDK operates on an app instance and its outputs. Changes to its composition payloads and animation states can affect every output using that composition.
+Build a custom Singular Control App that edits graphics, triggers animations, manages compositions, and shares operator data. The App SDK connects your application UI to a Singular app instance and its outputs.
 
-Use the [Graphics SDK](../graphics-sdk/) to embed and control a Player in your own web page, [REST](../rest/) to control an existing app remotely, or [composition scripting](../../../composition-scripting/composition-scripting/) for logic that runs inside a composition. These APIs have different objects and lifecycle rules.
+Start with a hosted app: Singular supplies the initialized SDK object when the app opens. You can add a local development connection after the hosted workflow is working.
+
+## Choose the right integration
+
+| Your goal | Use |
+| --- | --- |
+| Build a custom Control App inside Singular | App SDK |
+| Embed and control a Player in your own webpage | [Graphics SDK](../graphics-sdk/README.md) |
+| Send remote commands to an existing app | [REST API](../rest/README.md) |
+| Run logic inside a composition | [Composition scripting](../../../composition-scripting/composition-scripting/README.md) |
 
 ## Learn and build
 
-1. [Prepare your environment](prepare-your-environment.md): permissions, CLI, and project files.
-2. [Get started](getting-started.md): create a hosted app with a lower-third control.
-3. [Hosted and local development](hosted-and-local-development.md): choose the correct bootstrap.
-4. [Deploy and manage versions](deployment-and-versioning.md): test development builds before publishing.
+1. [Core concepts](core-concepts.md): understand instances, outputs, composition objects, and payloads.
+2. [Prepare your environment](prepare-your-environment.md): create the project and register a test app.
+3. [Build your first Control App](getting-started.md): deploy a working hosted app and verify its behavior.
+4. [Tutorials and examples](examples/README.md): build the lower-third and native-form apps step by step.
+5. [Working with shared data and events](shared-data-and-events.md): save drafts and observe other operators' changes.
+6. [Hosted and local development](hosted-and-local-development.md): reuse your application logic with a local connection.
+7. [Deploy and manage app versions](deployment-and-versioning.md): distinguish code deployment, publication, and composition revision.
 
-Use the [API reference](reference/) for object ownership, return values, storage, forms, and events. Try the [lower-third](lower-third-app.md) and [native fill-in form](subcomposition-fill-in-form.md) examples.
+Use the [API reference](reference/README.md) while implementing a feature, or [Troubleshooting](troubleshooting.md) when a checkpoint fails.
 
 ## Access and compatibility
 
-This guide improves the repository's App SDK v1 material and checks method signatures against the public App SDK **1.0.0** JavaScript library. It is not a declaration of a new SDK release or a current browser/Node support matrix. Developer permissions and App Manager access are required for the hosted workflow. For account eligibility, use the [published App SDK access page](https://developer.singular.live/software-development-kits/app-sdk).
+You need a Singular account with developer permissions and App Manager access. This documentation targets App SDK **1.0.0**; “Developer Portal v2” identifies the documentation edition. See [Compatibility](compatibility.md) for the reference baseline and verification limits.

@@ -31,13 +31,13 @@ Use field **IDs** from the model, preserve each field's value type, and handle m
 
 ## Children and animation
 
-`listSubcompositions()` returns direct children as `{name, id}` records. `getSubcompositionById(id)` and `getSubcompositionByName(name)` look up a direct child; traverse the hierarchy one parent at a time. Check the list before looking up an ID. `find(...)` is also exported in 1.0.0, but its positional search contract is not specified here; use explicit traversal for predictable lookup.
+`listSubcompositions()` returns direct children as `{name, id}` records. `getSubcompositionById(id)` and `getSubcompositionByName(name)` look up a direct child; traverse the hierarchy one parent at a time. Check the list before looking up an ID. Use explicit hierarchy traversal for predictable lookup; see [Compatibility](../compatibility.md) for legacy/search interfaces.
 
 `playTo("In")` / `playTo("Out")` animate to the requested state. `jumpTo("In")` / `jumpTo("Out")` change state without playing the transition. These commands do not return the animation state. `getState()` returns `"In"`, `"Out"`, or `undefined` when unavailable; internally stored `Out1` and `Out2` are reported as `Out` by this getter.
 
 ## Events
 
-`composition.on(event, callback)` assigns one callback slot per event on this composition object. Registering another callback for the same event replaces it. `composition.off(event)` clears that slot. A subcomposition object has no equivalent `on` / `off` export in the inspected library; observe its parent composition and filter by ID.
+`composition.on(event, callback)` assigns one callback slot per event on this composition object. Registering another callback for the same event replaces it. `composition.off(event)` clears that slot. A subcomposition object has no equivalent `on` / `off` export in the reference baseline; observe its parent composition and filter by ID.
 
 | Event | Callback data |
 | --- | --- |
@@ -65,4 +65,62 @@ Give a single UI component ownership of each event slot so its cleanup does not 
 
 `getCompositionInfo(callback)` asynchronously requests source metadata. `getUISettings()` and `getDisplayVariants()` expose extract metadata in 1.0.0. `remove(callback)` removes this imported composition and clears its associated output assignments; it is not a UI cleanup method. Its completion callback has no result argument.
 
-`getSequencer()` is commented out of the 1.0.0 exported composition and subcomposition objects. Do not use it as an App SDK method merely because another Singular SDK exposes a sequencer. Internal `_setOutput` / `_removeOutput` helpers are not application integration points.
+See [Compatibility](../compatibility.md) for legacy interfaces and sequencer availability. Internal `_setOutput` / `_removeOutput` helpers are not application integration points.
+
+## getControlNode() and getModel()
+
+Both methods take no arguments. `getControlNode()` returns the native form's combined model/payload description, or `undefined`. `getModel()` returns an array of field descriptors, or `undefined`. Do not assume the nested model inside the control-node object is itself that descriptor array.
+
+This shortened illustrative control node shows the distinction between the internal field-record key, control ID, and display title:
+
+```json
+{
+  "id": "controlNode",
+  "model": {
+    "fields": {
+      "FIELD_RECORD_KEY": {
+        "id": "Name",
+        "title": "Presenter name",
+        "type": "text",
+        "defaultValue": ""
+      }
+    }
+  },
+  "payload": { "Name": "Alex Morgan" }
+}
+```
+
+The corresponding field descriptor in `getModel()` is:
+
+```json
+[
+  { "id": "Name", "title": "Presenter name", "type": "text", "defaultValue": "" }
+]
+```
+
+Use `Name` as the payload key. Preserve other field types when building a custom UI. The [native-form tutorial](../subcomposition-fill-in-form.md) uses the complete control-node object to render the built-in field editors.
+
+## getPayload(), getPayload2(), and setPayload(payload)
+
+The getters take no arguments. `getPayload()` returns key/value pairs; `getPayload2()` returns an object keyed by field ID. Both can be unavailable. `setPayload(payload)` accepts a field-update object and has no synchronous result or completion Promise.
+
+```javascript
+const values = composition.getPayload2() || {};
+const currentName = values.Name == null ? "" : String(values.Name);
+// Inside an explicit Apply action:
+composition.setPayload({ Name: currentName });
+```
+
+Read operations and payload events can update your UI. Sending a command does not prove that a viewer has rendered it. Inspect the same instance's output when verifying a change.
+
+## Reset scope
+
+`resetPayload()` resets the current node to its model defaults. Root-only `resetAllPayloads()` resets payloads throughout the imported composition. Neither is a way to clear an unsent UI draft. Put reset commands behind explicit operator actions and make their scope visible in the UI.
+
+## Event callback contracts
+
+For `payload_changed`, `event.payload` is the changed node's payload data. For `state_changed`, `event.state` is the runtime state. Both include the node and composition identifiers shown in the event table. Filter by `compId` before updating a selected child's UI.
+
+There is one callback slot per event on a composition object. `on` replaces that slot; `off(event)` clears it. It does not take the storage API's `(key, callback)` arguments. The reference does not establish a fixed schema for `animation_state`; validate it against your actual runtime before depending on additional fields.
+
+For draft handling, see [Working with shared data and events](../shared-data-and-events.md).

@@ -1,41 +1,50 @@
-# Get started with the App SDK
+# Build your first Control App
 
-Create a hosted Control App that edits one text field and animates a lower third. Complete [environment setup](prepare-your-environment.md) first: the test instance must have an output named `Default`, an assigned composition, and a direct child named `Lower Third` with a text field ID `Name`.
+Deploy a hosted app that reads lower-third text, applies an edit on command, and plays In/Out animations. Complete [environment setup](prepare-your-environment.md), including the tutorial composition, first.
 
-## Add the application UI
+## 1. Add the complete application
 
-Use the complete [lower-third example](lower-third-app.md) as `source/app.html`. The hosted runtime supplies an SDK instance to the global function `singularAppInit(app)`. Resolve objects in this order:
+Download the [lower-third example](lower-third-app.md), extract its HTML, and save it as `mySingularApp/source/app.html`, replacing the generated boilerplate. The tutorial also shows the complete source inline.
 
-```javascript
-function singularAppInit(app) {
-  const output = app.getOutputByName("Default");
-  const composition = output && output.getComposition();
-  const lowerThird = composition &&
-    composition.getSubcompositionByName("Lower Third");
-  if (!lowerThird) {
-    return;
-  }
-  // Use the control ID from the model, not its display title.
-  lowerThird.setPayload({ Name: "Alex Morgan" });
-  lowerThird.playTo("In");
-}
-```
+This is a hosted application. Opening the HTML directly does not initialize the SDK. Its global `singularAppInit(app)` receives the connected application object from Singular when you open the deployed app.
 
-This short snippet writes immediately on initialization. The complete example waits for an operator to press Apply or In. These writes affect the app instance's assigned composition; an output iframe is a view of that output, not an isolated sandbox.
+The application follows this order:
 
-## Deploy and verify
+1. Disable its command buttons while checking configuration.
+2. Find `Default`, its assigned composition, and the direct child `Lower Third`.
+3. Confirm the child has a text control with ID `Name`.
+4. Read the current payload into the input without writing to the composition.
+5. Connect Apply, In, and Out, then enable the buttons.
 
-From the project folder's parent, run:
+Apply sends the input's draft to the child with `setPayload`. In and Out call `playTo` separately. Initialization and typing leave the output unchanged.
+
+## 2. Deploy the code
+
+From the project folder's **parent directory**, run:
 
 ```sh
 singular deployapp mySingularApp
 ```
 
-Enable development versions in Dashboard, create/open the development app instance, and check:
+Check the terminal for a successful upload. If it fails, verify the project path, `source/app.html`, and `deploykey.json`.
 
-1. The UI reports an explicit configuration error when the output or child is missing.
-2. Editing the input alone does not alter the composition.
-3. Apply updates the `Name` field; In and Out animate the selected child.
-4. Reopening the app reads the current payload instead of resetting it.
+## 3. Open a development instance
 
-If initialization never runs, verify you opened the deployed hosted app. Opening the HTML directly needs the separate [local bootstrap](hosted-and-local-development.md).
+In Dashboard, use the **New → Control App** workflow. In the App Browser, enable **Show Dev Versions**, choose your app, and create/open its development instance. If your account presents different labels, select the development version associated with the upload you just made.
+
+Open that instance's output alongside the app so you can observe the graphics. The output and the UI must belong to the same test instance.
+
+## 4. Verify the result
+
+| Action | Expected result |
+| --- | --- |
+| Open the app | Status reports ready; input reads the child's current `Name` value |
+| Type a new name | Input changes; output keeps its existing text |
+| Press Apply | The child's `Name` payload changes; the bound text widget updates |
+| Press In | The lower third plays its entrance animation |
+| Press Out | The lower third plays its exit animation |
+| Reload the app | Input reads the applied value without resetting the output |
+
+If a checkpoint fails, use [Troubleshooting](troubleshooting.md). For missing output, child, or control configuration, the complete app keeps its command buttons disabled and shows a status message.
+
+Next: [Build the lower-third app step by step](lower-third-app.md), or continue to the [native-form tutorial](subcomposition-fill-in-form.md).

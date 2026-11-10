@@ -55,3 +55,18 @@ Official references:
 ## CodePen preview update
 
 The user confirmed that synchronization succeeded after switching the downloads to ZIP archives. At the user's request, the Graphics SDK dynamic-form page now uses the existing repository's `@iframe-embed/iframe-embed` integration syntax to embed their CodePen preview and links to their CodePen editor. Removed the Graphics SDK ZIP download and its extraction instructions; the two separate hosted App SDK example downloads remain unchanged. The original Graphics HTML source remains available for the existing local syntax checks.
+
+## App SDK learning-path update (2026-11-10)
+
+Expanded setup, the hosted first run, both step-by-step tutorials, local development, versioning, and object references. Added core concepts, shared-data/event guidance with a Save/Apply recipe, compatibility, an examples index, and troubleshooting. Complete hosted HTML appears inline and matches the existing downloads after normalizing LF/CRLF line endings. The download archives and source assets are unchanged.
+
+### Source of truth
+
+Author pages under `docs/api-and-sdk-reference/app-sdk/`. Run `node scripts/sync-app-sdk.cjs` to update the nested GitBook navigation tree. The sync preserves the existing published lower-third/native-form paths and rewrites local links for that layout. `SUMMARY.md` remains the navigation source; the root-level `app-sdk.md` is a compatibility entry point. Both trees remain available because the repository currently contains inbound links to both layouts. Do not edit the generated nested App SDK pages independently.
+
+### Verification limits
+
+No new App Manager screenshots were invented or presented as current. The setup now identifies UI checkpoints explicitly. The public SDK host could not be resolved from the editing environment on this pass; existing reviewed contracts were retained. Current account access, local authentication, browser/Node support, lifecycle transitions, and asset-browser schemas still require live/service-owner verification. The compatibility page makes those boundaries visible without interrupting the tutorials.
+
+Run `node scripts/check-app-sdk.cjs` for syntax, links, navigation, mirror consistency, download/source parity, and isolated UI behavior. Run `node scripts/sync-app-sdk.cjs --check` to verify generated pages without writing. Live output rendering and GitBook import/preview remain separate acceptance checks.
+

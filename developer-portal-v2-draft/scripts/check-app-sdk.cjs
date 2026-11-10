@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const assert = require('node:assert/strict');
+const cp = require('node:child_process');
 const docs = process.argv[2] || path.resolve(__dirname, '../docs');
 const assets = path.join(docs, '.gitbook/assets');
 function walk(dir) {
@@ -18,12 +19,16 @@ const allMarkdown = walk(docs).filter(p => p.endsWith('.md'));
 const summary = fs.readFileSync(path.join(docs,'SUMMARY.md'),'utf8');
 const nav = [...summary.matchAll(/\]\(([^)]+\.md)\)/g)].map(m=>m[1]);
 assert.equal(new Set(nav).size,nav.length,'Duplicate navigation paths');
-for (const file of allMarkdown) {
+const published = 'api-and-sdk-reference/api-and-sdk-reference/app-sdk/';
+const sdkNav = nav.filter(href => href.startsWith(published));
+for (const file of allMarkdown.filter(file => file.startsWith(path.join(docs, published)))) {
   const relative = path.relative(docs,file).split(path.sep).join('/');
-  if (relative !== 'SUMMARY.md') assert(nav.includes(relative), `Page absent from SUMMARY: ${relative}`);
+  assert(sdkNav.includes(relative), `App SDK page absent from SUMMARY: ${relative}`);
 }
+for (const href of sdkNav) assert(fs.existsSync(path.join(docs, href)), `Missing navigation target: ${href}`);
+cp.execFileSync(process.execPath, [path.join(__dirname, 'sync-app-sdk.cjs'), '--check'], {stdio:'inherit'});
 let links=0, snippets=0;
-const changedDocs = allMarkdown.filter(f => /app-sdk|graphics-sdk/.test(f));
+const changedDocs = allMarkdown.filter(f => /(?:^|\/)app-sdk(?:\/|\.md$)/.test(path.relative(docs,f).replaceAll('\\','/')));
 for (const file of changedDocs) {
   const text=fs.readFileSync(file,'utf8');
   const targets=[...text.matchAll(/\]\(([^)]+)\)/g)].map(m=>m[1])
@@ -31,14 +36,36 @@ for (const file of changedDocs) {
   for (const href of targets) {
     if (/^(https?:|#)/.test(href)) continue;
     const target = decodeURIComponent(href.split('#')[0]);
-    assert(fs.existsSync(path.resolve(path.dirname(file),target)),`${file}: missing ${href}`);
+    const resolved = path.resolve(path.dirname(file),target);
+    assert(fs.existsSync(resolved),`${file}: missing ${href}`);
+    if (href.includes('#') && resolved.endsWith('.md')) {
+      const slug = decodeURIComponent(href.split('#')[1]);
+      const body = fs.readFileSync(resolved, 'utf8').replace(/```[\s\S]*?```/g,'');
+      const headings = [...body.matchAll(/^#{1,6}\s+(.+)$/gm)].map(m=>m[1].trim().toLowerCase().replace(/[`*]/g,'').replace(/[^\p{L}\p{N}\s_-]/gu,'').replace(/\s/g,'-'));
+      assert(headings.includes(slug) || body.includes(`id="${slug}"`), `${file}: missing anchor ${href}`);
+    }
     links++;
   }
   assert.equal((text.match(/\{% file /g)||[]).length,(text.match(/\{% endfile %\}/g)||[]).length);
+  const blocks=[];
+  for (const match of text.replace(/```[\s\S]*?```/g,'').matchAll(/\{%\s*(\w+)\b[^%]*%\}/g)) {
+    const tag=match[1];
+    if (tag.startsWith('end')) assert.equal(blocks.pop(),tag.slice(3),`Unbalanced GitBook block in ${file}`);
+    else if (['stepper','step','tabs','tab','hint','file','code'].includes(tag)) blocks.push(tag);
+  }
+  assert.equal(blocks.length,0,`Unclosed GitBook blocks in ${file}`);
   for (const block of text.matchAll(/```(javascript|json)\r?\n([\s\S]*?)```/g)) {
-    if (block[1]==='json') JSON.parse(block[2]); else new vm.Script(block[2],{filename:file});
+    if (block[1]==='json') JSON.parse(block[2]); else new vm.Script('(function () {\n'+block[2]+'\n})',{filename:file});
     snippets++;
   }
+  for (const block of text.matchAll(/```html\r?\n([\s\S]*?)```/g)) {
+    for (const script of scripts(block[1])) new vm.Script(script,{filename:file});
+  }
+}
+for(const [page,asset] of [['lower-third-app.md','app-sdk-lower-third.html'],['subcomposition-fill-in-form.md','app-sdk-native-form.html']]) {
+  const text=fs.readFileSync(path.join(docs,'api-and-sdk-reference/app-sdk/examples',page),'utf8');
+  const complete=[...text.matchAll(/```html\r?\n([\s\S]*?)```/g)].at(-1)[1].trim();
+  assert.equal(complete,fs.readFileSync(path.join(assets,asset),'utf8').trim(),`Inline/download source mismatch: ${page}`);
 }
 let htmlScripts=0;
 for (const file of fs.readdirSync(assets).filter(f=>f.endsWith('.html'))) {
@@ -123,4 +150,25 @@ eventCallback({compId:'B',payload:{Name:'Wrong'}});assert.deepEqual(rendered,{Na
 eventCallback({compId:'A',payload:{Name:'Live'}});assert.deepEqual(rendered,{Name:'Live'});
 stopObserve();assert.equal(offEvent,'payload_changed');
 console.log('PASS reference logic: storage null/default and callback identity, initial child payload, ID filtering and event cleanup');
+const sharedText=fs.readFileSync(path.join(docs,'api-and-sdk-reference/app-sdk/shared-data-and-events.md'),'utf8');
+const sharedCode=[...sharedText.matchAll(/```javascript\r?\n([\s\S]*?)```/g)].find(m=>m[1].includes('function connectSharedDraft'))[1];
+const draftElements=new Map();
+const draftDocument={getElementById(id){if(!draftElements.has(id))draftElements.set(id,new Element());return draftElements.get(id);}};
+const draftContext=vm.createContext({document:draftDocument});
+vm.runInContext(sharedCode,draftContext);
+let sharedListener,stored,saveDone,detached=false;
+const draftApp={storage:{on(key,callback){sharedListener=callback;},off(key,callback){assert.equal(callback,sharedListener);detached=true;},set(key,value,callback){stored=JSON.parse(JSON.stringify(value));saveDone=callback;}}};
+const stopDraft=draftContext.connectSharedDraft(draftApp,a);
+const input=draftDocument.getElementById('name');
+const save=draftDocument.getElementById('save-draft');
+const draftApply=draftDocument.getElementById('apply');
+sharedListener({Name:'Saved elsewhere'});assert.equal(input.value,'Saved elsewhere');assert.equal(writes.length,0);
+input.value='Local unsaved';input.oninput();sharedListener({Name:'Incoming conflict'});assert.equal(input.value,'Local unsaved');
+save.onclick();assert.deepEqual(stored,{Name:'Local unsaved'});assert.equal(writes.length,0);
+input.value='New edit during save';input.oninput();saveDone();sharedListener({Name:'Another edit'});assert.equal(input.value,'New edit during save');
+save.onclick();saveDone();sharedListener({Name:'Updated shared draft'});assert.equal(input.value,'Updated shared draft');
+draftApply.onclick();assert.deepEqual(writes.pop(),{id:'A',payload:{Name:'Updated shared draft'}});
+stopDraft();assert(detached);assert(save.disabled);assert.equal(input.oninput,null);assert.equal(draftApply.onclick,null);
+sharedListener({Name:'Late notification'});assert.equal(input.value,'Updated shared draft');
+console.log('PASS shared-draft recipe: separate save/apply, unsaved-edit preservation, edits during save, cleanup and late notifications');
 console.log(JSON.stringify({navigationPages:nav.length,localLinks:links,codeBlocks:snippets,htmlScripts,scope:'Static and mock checks; no live service acceptance'},null,2));

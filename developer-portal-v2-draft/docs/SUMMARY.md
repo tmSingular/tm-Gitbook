@@ -168,10 +168,16 @@
   * [Overlay SDK](api-and-sdk-reference/api-and-sdk-reference/overlay-sdk.md)
   * [Widget SDK](api-and-sdk-reference/api-and-sdk-reference/widget-sdk.md)
   * [App SDK](api-and-sdk-reference/api-and-sdk-reference/app-sdk/README.md)
+    * [Core concepts](api-and-sdk-reference/api-and-sdk-reference/app-sdk/core-concepts.md)
     * [Prepare your environment](api-and-sdk-reference/api-and-sdk-reference/app-sdk/prepare-your-environment.md)
-    * [Get started with the App SDK](api-and-sdk-reference/api-and-sdk-reference/app-sdk/getting-started.md)
+    * [Build your first Control App](api-and-sdk-reference/api-and-sdk-reference/app-sdk/getting-started.md)
     * [Hosted and local development](api-and-sdk-reference/api-and-sdk-reference/app-sdk/hosted-and-local-development.md)
+    * [Tutorials and examples](api-and-sdk-reference/api-and-sdk-reference/app-sdk/examples/README.md)
+      * [Lower-third Control App](api-and-sdk-reference/api-and-sdk-reference/app-sdk/lower-third-app.md)
+      * [Subcomposition selection and native fill-in form](api-and-sdk-reference/api-and-sdk-reference/app-sdk/subcomposition-fill-in-form.md)
+    * [Working with shared data and events](api-and-sdk-reference/api-and-sdk-reference/app-sdk/shared-data-and-events.md)
     * [Deploy and manage app versions](api-and-sdk-reference/api-and-sdk-reference/app-sdk/deployment-and-versioning.md)
+    * [Compatibility](api-and-sdk-reference/api-and-sdk-reference/app-sdk/compatibility.md)
     * [App SDK reference](api-and-sdk-reference/api-and-sdk-reference/app-sdk/reference/README.md)
       * [Application object](api-and-sdk-reference/api-and-sdk-reference/app-sdk/reference/application.md)
       * [Storage object](api-and-sdk-reference/api-and-sdk-reference/app-sdk/reference/storage.md)
@@ -180,8 +186,7 @@
       * [App SDK subcomposition object](api-and-sdk-reference/api-and-sdk-reference/app-sdk/reference/subcomposition.md)
       * [ServerDate object](api-and-sdk-reference/api-and-sdk-reference/app-sdk/reference/server-date.md)
       * [Forms and asset browsers](api-and-sdk-reference/api-and-sdk-reference/app-sdk/reference/forms-and-browsers.md)
-    * [Lower-third Control App](api-and-sdk-reference/api-and-sdk-reference/app-sdk/lower-third-app.md)
-    * [Subcomposition selection and native fill-in form](api-and-sdk-reference/api-and-sdk-reference/app-sdk/subcomposition-fill-in-form.md)
+    * [Troubleshooting](api-and-sdk-reference/api-and-sdk-reference/app-sdk/troubleshooting.md)
 
 ## Operate and troubleshoot
 

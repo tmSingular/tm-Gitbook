@@ -19,4 +19,10 @@ This reference targets the public 1.0.0 library. Synchronous lookups can return 
 
 IDs returned by `app.listCompositions()` identify imported composition extracts. IDs returned by `composition.listSubcompositions()` identify children within that extract. Field payload keys are control IDs. Output IDs, composition extract IDs, child IDs, field IDs, and composition reference IDs are not interchangeable.
 
-Use explicit `ById` / `ByName` methods. Older aliases such as application `getComposition(id)`, `getOutput(id)`, and composition `getSubcomposition(id)` remain in the inspected source but are marked for deprecation there. `output.getComposition()` remains the correct getter for an output's assigned composition.
+Use explicit `ById` / `ByName` methods. See [Compatibility](../compatibility.md) for legacy aliases and unsupported interfaces. `output.getComposition()` remains the correct getter for an output's assigned composition.
+
+## Use this reference
+
+Start with [Core concepts](../core-concepts.md) for object ownership and identifiers. Method tables summarize the interface; detailed sections give parameter, callback, and data-shape examples for implementation. Snippets with `app` assume an initialized application object. Other named objects or UI elements are identified in their surrounding explanation.
+
+For working applications, follow the [tutorials](../examples/README.md). For failure diagnosis, use [Troubleshooting](../troubleshooting.md).
