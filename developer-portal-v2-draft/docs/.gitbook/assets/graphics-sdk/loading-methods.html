@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Graphics SDK — loading methods</title>
+  <script src="https://app.singular.live/libs/singulargraphics/1.0.0/singulargraphics.js"></script>
+</head>
+<body>
+  <h1>Choose a loading method</h1>
+  <label>Method <select id="method">
+    <option value="url">Extracted composition JSON URL</option>
+    <option value="token">Composition token</option>
+    <option value="appComposition">Composition URL read from Control App REST</option>
+    <option value="appOutput">App output using a shared app reference</option>
+    <option value="object">Fetch JSON and render its object</option>
+  </select></label>
+  <label>Reference / token / URL <input id="reference" type="text" size="70" autocomplete="off"></label>
+  <label>API origin for the REST option <input id="apiOrigin" value="https://app.singular.live"></label>
+  <button id="load" type="button">Load</button>
+  <p id="status" role="status">Enter the reference for your selected method.</p>
+  <iframe id="SingularOverlay" title="Graphic preview" style="width:100%;height:450px;border:0"
+    src="https://app.singular.live/singularplayer/client"></iframe>
+  <script>
+    (function() {
+      const graphics = SingularGraphics("SingularOverlay");
+      const elLoad = document.getElementById("load");
+      const elStatus = document.getElementById("status");
+
+      function onLoaded(result) {
+        elLoad.disabled = false;
+        elStatus.textContent = result.success ? "Loaded. Root ID: " + graphics.getMainComposition().id : "Load did not complete.";
+      }
+
+      function requestUnavailable() {
+        elLoad.disabled = false;
+        elStatus.textContent = "The read request did not complete; check origin, access, and the response.";
+      }
+
+      elLoad.addEventListener("click", function() {
+        const method = document.getElementById("method").value;
+        const reference = document.getElementById("reference").value.trim();
+        if (!reference || elLoad.disabled) return;
+        elLoad.disabled = true;
+        if (method === "url" || method === "token") graphics.loadComposition(reference, onLoaded);
+        else if (method === "appOutput") graphics.renderAppOutput(reference, null, onLoaded);
+        else {
+          const origin = document.getElementById("apiOrigin").value.replace(/\/$/, "");
+          const url = method === "appComposition" ? origin + "/apiv2/controlapps/" + encodeURIComponent(reference) : reference;
+          fetch(url).then(function(response) {
+            if (!response.ok) { requestUnavailable(); return null; }
+            return response.json();
+          }, requestUnavailable).then(function(data) {
+            if (!data) return;
+            if (method === "appComposition") graphics.loadComposition(data.compositionJson, onLoaded);
+            else graphics.renderComposition(data, onLoaded);
+          }, requestUnavailable);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

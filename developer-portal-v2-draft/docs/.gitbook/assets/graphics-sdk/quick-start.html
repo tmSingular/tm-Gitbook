@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Graphics SDK — first graphic</title>
+  <script src="https://app.singular.live/libs/singulargraphics/1.0.0/singulargraphics.js"></script>
+</head>
+<body>
+  <label>Extracted composition JSON URL <input id="compositionUrl" type="url" size="70"></label>
+  <button id="load" type="button">Load</button>
+  <label>Title <input id="title" value="Hello from the Graphics SDK"></label>
+  <button id="send" type="button" disabled>Send</button>
+  <button id="in" type="button" disabled>In</button>
+  <button id="out" type="button" disabled>Out</button>
+  <p id="status" role="status">Choose a composition URL.</p>
+  <iframe id="SingularOverlay" title="Graphic preview" style="width:100%;height:450px;border:0"
+    src="https://app.singular.live/singularplayer/client"></iframe>
+  <script>
+    (function() {
+      const graphics = SingularGraphics("SingularOverlay");
+      const elLoad = document.getElementById("load");
+      const elSend = document.getElementById("send");
+      const elIn = document.getElementById("in");
+      const elOut = document.getElementById("out");
+      const elStatus = document.getElementById("status");
+      let compLowerThird = null;
+  
+      elLoad.addEventListener("click", function() {
+        elLoad.disabled = true;
+        elSend.disabled = elIn.disabled = elOut.disabled = true;
+        const compositionUrl = document.getElementById("compositionUrl").value.trim();
+        graphics.loadComposition(compositionUrl, function(result) {
+          elLoad.disabled = false;
+          elStatus.textContent = result.success ? "Composition loaded." : "Composition did not load.";
+          if (!result.success) return;
+          const compMain = graphics.getMainComposition();
+          compLowerThird = compMain.find("Lower Third")[0];
+          elSend.disabled = elIn.disabled = elOut.disabled = false;
+        });
+      });
+      elSend.addEventListener("click", function() {
+        compLowerThird.setPayload({ Title: document.getElementById("title").value });
+      });
+      elIn.addEventListener("click", function() { compLowerThird.playTo("In"); });
+      elOut.addEventListener("click", function() { compLowerThird.playTo("Out"); });
+    })();
+  </script>
+</body>
+</html>

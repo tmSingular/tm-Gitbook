@@ -1,13 +1,13 @@
 # Graphics SDK
 
-Embed and control Singular output from a host web page.
+Embed and control a local Singular Player from a host webpage.
 
-- [Getting started](https://developer.singular.live/software-development-kits/graphics-sdk/getting-started)
-- [SDK functions](https://developer.singular.live/software-development-kits/graphics-sdk/reference/sdk-functions)
-- [Composition object](https://developer.singular.live/software-development-kits/graphics-sdk/reference/composition-object)
-- [Sequencer object](https://developer.singular.live/software-development-kits/graphics-sdk/reference/sequencer-object)
-- [Guides and examples](https://developer.singular.live/software-development-kits/graphics-sdk/guides-and-examples)
-
-## Local preview example
-
-Try [Local preview with a dynamic control form](graphics-sdk/examples/local-preview-dynamic-form.md) to load a composition from a Control App, generate inputs from its model, and send edits to an embedded Player. Includes an interactive CodePen preview, a link to the source code, a walkthrough, and known field-type limitations.
+- [Overview](graphics-sdk/README.md)
+- [Getting started](graphics-sdk/getting-started.md)
+- [Loading methods](graphics-sdk/loading-methods.md)
+- [SDK instance](graphics-sdk/reference/sdk-instance.md)
+- [Composition object](graphics-sdk/reference/composition-object.md)
+- [Events and messages](graphics-sdk/reference/events.md)
+- [Sequencer](graphics-sdk/reference/sequencer.md)
+- [Examples](graphics-sdk/examples/README.md)
+- [Dynamic control form](graphics-sdk/local-preview-dynamic-form.md)

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Graphics SDK — dynamic local preview</title>
+  <script src="https://app.singular.live/libs/singulargraphics/1.0.0/singulargraphics.js"></script>
+  <script src="preview-fields.js"></script>
+  <style>
+    body { font: 15px system-ui, sans-serif; margin: 24px; color: #172333; }
+    main { display: grid; grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); gap: 24px; }
+    label { display: block; margin: 12px 0; }
+    input:not([type=checkbox]), textarea, select { display: block; width: 100%; box-sizing: border-box; padding: 7px; }
+    button { margin: 5px 5px 5px 0; padding: 7px 12px; }
+    iframe { width: 100%; height: 65vh; border: 1px solid #ccd4df; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f3f5f8; padding: 8px; }
+    @media(max-width: 760px) { main { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Local graphic preview</h1>
+  <main>
+    <section>
+      <label>Composition JSON URL <input id="compositionUrl" type="url"></label>
+      <button id="loadUrl" type="button">Load URL</button>
+      <details><summary>Read the composition URL from a Control App</summary>
+        <label>API origin <input id="apiOrigin" type="url" value="https://app.singular.live"></label>
+        <label>Control App REST token <input id="appToken" type="password" autocomplete="off"></label>
+        <button id="loadApp" type="button">Read app and load</button>
+      </details>
+      <p id="status" role="status">Choose a source.</p>
+      <label>Composition <select id="composition" disabled></select></label>
+      <div id="fields"></div>
+      <button id="send" type="button" disabled>Send changed fields</button>
+      <button id="refresh" type="button" disabled>Discard selected drafts</button>
+      <button id="in" type="button" disabled>In</button>
+      <button id="out" type="button" disabled>Out</button>
+    </section>
+    <section><iframe id="SingularOverlay" title="Local preview"
+      src="https://app.singular.live/singularplayer/client?interactive=1"></iframe></section>
+  </main>
+  <script src="dynamic-preview.js"></script>
+</body>
+</html>
