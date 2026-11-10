@@ -3,20 +3,24 @@
 ## Setup
 
 1. Add a sub-composition with a Metric Text widget named `Title`.
-2. Leave `Title.text` unlinked while this script owns it.
+2. Leave the text property of the `Title` widget unlinked while this script owns it.
 3. Open the Composition Script editor and select that sub-composition's script.
 
 ```javascript
 (function() {
   return {
     init: function(compCurrent, context) {
-      const wiMatches = compCurrent.findWidget('Title');
-      wiMatches[0].setPayload({ text: 'Hello from Singular' });
+      const wiTitle = compCurrent.findWidget('Title')[0];
+      wiTitle.setPayload({ text: 'Hello from Singular' });
     },
     close: function() {}
   };
 })();
 ```
+
+`compCurrent.findWidget('Title')` returns an array of matching widgets. JavaScript arrays start at index `0`, so `[0]` selects the first matching widget and stores that widget object in `wiTitle`. The next line updates its text.
+
+Use unique, descriptive widget names within each composition and unique composition names within the scope you search. This helps avoid errors and confusion about which object a script targets. For this example, use exactly one widget named `Title` in the selected sub-composition.
 
 Save the script, take the sub-composition In, and check `Hello from Singular` in the output preview. Its font should remain the inspected native font. This example has no ongoing resources; its empty cleanup function is intentional.
 
