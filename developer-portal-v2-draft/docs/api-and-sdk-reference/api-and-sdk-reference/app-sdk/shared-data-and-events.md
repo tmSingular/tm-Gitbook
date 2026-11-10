@@ -4,18 +4,18 @@ Use local state for an unsent edit, storage for app-instance UI data, and compos
 
 ## Choose where a value belongs
 
-| Need | Mechanism | Changes the composition? |
-| --- | --- | --- |
-| Edit text before applying it | Input element / local variable | No |
-| Restore a draft or share it with another UI of the same instance | `app.storage` | No |
-| Change a graphic's text or other fields | Target's `setPayload()` | Yes |
-| Display current composition values | Initial payload read plus composition events | Reading does not write |
+| Need                                                             | Mechanism                                    | Changes the composition? |
+| ---------------------------------------------------------------- | -------------------------------------------- | ------------------------ |
+| Edit text before applying it                                     | Input element / local variable               | No                       |
+| Restore a draft or share it with another UI of the same instance | `app.storage`                                | No                       |
+| Change a graphic's text or other fields                          | Target's `setPayload()`                      | Yes                      |
+| Display current composition values                               | Initial payload read plus composition events | Reading does not write   |
 
 Storage is scoped to the app instance. Two UIs connected to that instance can see its shared data; do not assume separate instances share the same storage. An input populated from a storage listener should not automatically write back on every received value.
 
 ## Recipe: save a shared draft and apply it separately
 
-Adapt the [lower-third app](lower-third-app.md). Add these elements beside its input:
+Adapt the [lower-third app](examples/lower-third-app.md). Add these elements beside its input:
 
 ```html
 <button id="save-draft" disabled>Save shared draft</button>

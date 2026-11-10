@@ -4,7 +4,7 @@ Deploy a hosted app that reads lower-third text, applies an edit on command, and
 
 ## 1. Add the complete application
 
-Download the [lower-third example](lower-third-app.md), extract its HTML, and save it as `mySingularApp/source/app.html`, replacing the generated boilerplate. The tutorial also shows the complete source inline.
+Download the [lower-third example](examples/lower-third-app.md), extract its HTML, and save it as `mySingularApp/source/app.html`, replacing the generated boilerplate. The tutorial also shows the complete source inline.
 
 This is a hosted application. Opening the HTML directly does not initialize the SDK. Its global `singularAppInit(app)` receives the connected application object from Singular when you open the deployed app.
 
@@ -36,15 +36,15 @@ Open that instance's output alongside the app so you can observe the graphics. T
 
 ## 4. Verify the result
 
-| Action | Expected result |
-| --- | --- |
-| Open the app | Status reports ready; input reads the child's current `Name` value |
-| Type a new name | Input changes; output keeps its existing text |
-| Press Apply | The child's `Name` payload changes; the bound text widget updates |
-| Press In | The lower third plays its entrance animation |
-| Press Out | The lower third plays its exit animation |
-| Reload the app | Input reads the applied value without resetting the output |
+| Action          | Expected result                                                    |
+| --------------- | ------------------------------------------------------------------ |
+| Open the app    | Status reports ready; input reads the child's current `Name` value |
+| Type a new name | Input changes; output keeps its existing text                      |
+| Press Apply     | The child's `Name` payload changes; the bound text widget updates  |
+| Press In        | The lower third plays its entrance animation                       |
+| Press Out       | The lower third plays its exit animation                           |
+| Reload the app  | Input reads the applied value without resetting the output         |
 
 If a checkpoint fails, use [Troubleshooting](troubleshooting.md). For missing output, child, or control configuration, the complete app keeps its command buttons disabled and shows a status message.
 
-Next: [Build the lower-third app step by step](lower-third-app.md), or continue to the [native-form tutorial](subcomposition-fill-in-form.md).
+Next: [Build the lower-third app step by step](examples/lower-third-app.md), or continue to the [native-form tutorial](examples/subcomposition-fill-in-form.md).

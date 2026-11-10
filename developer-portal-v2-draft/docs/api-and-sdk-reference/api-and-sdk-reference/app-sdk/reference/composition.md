@@ -4,18 +4,18 @@ A composition object represents one imported extract in an app instance. Obtain 
 
 ## Control data
 
-| Method | Result / behavior |
-| --- | --- |
-| `getControlNode()` | Control node object containing `model` and `payload`, or `undefined`. |
-| `getModel()` | Array of field descriptor objects, or `undefined` when no data is available. |
-| `getModelGroups()` | Model group data; empty array when unavailable. |
-| `getPayload()` | Array of `{key, value}` pairs, or `undefined`. |
-| `getPayload2()` | Payload object keyed by field ID, or `undefined`. |
-| `setPayload(payload)` | Send field updates keyed by control ID; no synchronous result. |
-| `resetPayload()` | Reset this node's fields to model defaults. |
-| `resetAllPayloads()` | Reset payloads throughout the imported composition. |
-| `getLogicLayer()` | Read the node's logic-layer data. |
-| `getProp(prop)` | Read the named composition property. |
+| Method                | Result / behavior                                                            |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `getControlNode()`    | Control node object containing `model` and `payload`, or `undefined`.        |
+| `getModel()`          | Array of field descriptor objects, or `undefined` when no data is available. |
+| `getModelGroups()`    | Model group data; empty array when unavailable.                              |
+| `getPayload()`        | Array of `{key, value}` pairs, or `undefined`.                               |
+| `getPayload2()`       | Payload object keyed by field ID, or `undefined`.                            |
+| `setPayload(payload)` | Send field updates keyed by control ID; no synchronous result.               |
+| `resetPayload()`      | Reset this node's fields to model defaults.                                  |
+| `resetAllPayloads()`  | Reset payloads throughout the imported composition.                          |
+| `getLogicLayer()`     | Read the node's logic-layer data.                                            |
+| `getProp(prop)`       | Read the named composition property.                                         |
 
 The payload getters have different shapes:
 
@@ -39,10 +39,10 @@ Use field **IDs** from the model, preserve each field's value type, and handle m
 
 `composition.on(event, callback)` assigns one callback slot per event on this composition object. Registering another callback for the same event replaces it. `composition.off(event)` clears that slot. A subcomposition object has no equivalent `on` / `off` export in the reference baseline; observe its parent composition and filter by ID.
 
-| Event | Callback data |
-| --- | --- |
-| `payload_changed` | `{compId, compositionId, compName, compositionName, payload}` |
-| `state_changed` | `{compId, compositionId, compName, compositionName, state}` |
+| Event             | Callback data                                                                        |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| `payload_changed` | `{compId, compositionId, compName, compositionName, payload}`                        |
+| `state_changed`   | `{compId, compositionId, compName, compositionName, state}`                          |
 | `animation_state` | Composition animation-state data from the runtime; no fixed schema established here. |
 
 For the root node, the event's `compId` is the extract ID; for a child it is the child ID. Payload/state change subscriptions suppress their initial database snapshot in 1.0.0: read initial values explicitly before waiting for changes. Treat subsequent event `state` as runtime data; it is not normalized through `getState()`.
@@ -98,7 +98,7 @@ The corresponding field descriptor in `getModel()` is:
 ]
 ```
 
-Use `Name` as the payload key. Preserve other field types when building a custom UI. The [native-form tutorial](../subcomposition-fill-in-form.md) uses the complete control-node object to render the built-in field editors.
+Use `Name` as the payload key. Preserve other field types when building a custom UI. The [native-form tutorial](../examples/subcomposition-fill-in-form.md) uses the complete control-node object to render the built-in field editors.
 
 ## getPayload(), getPayload2(), and setPayload(payload)
 

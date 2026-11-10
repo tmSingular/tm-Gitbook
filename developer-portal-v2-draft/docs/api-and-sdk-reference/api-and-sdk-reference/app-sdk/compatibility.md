@@ -4,13 +4,13 @@ This documentation targets the public App SDK **1.0.0** interface. Developer Por
 
 ## Reference baseline
 
-| Component | Documentation baseline |
-| --- | --- |
-| App SDK | Public `singularapp/1.0.0/singularapp.js` interface |
-| Hosted examples | Runtime supplies `singularAppInit(app)` |
-| Local connection | App SDK 1.0.0 with the documented Firebase 4.9.0 dependency |
-| CLI | `singular createapp` and `singular deployapp`; verify installed commands with `singular help` |
-| Node.js / browser versions | No current supported range established by this documentation |
+| Component                  | Documentation baseline                                                                        |
+| -------------------------- | --------------------------------------------------------------------------------------------- |
+| App SDK                    | Public `singularapp/1.0.0/singularapp.js` interface                                           |
+| Hosted examples            | Runtime supplies `singularAppInit(app)`                                                       |
+| Local connection           | App SDK 1.0.0 with the documented Firebase 4.9.0 dependency                                   |
+| CLI                        | `singular createapp` and `singular deployapp`; verify installed commands with `singular help` |
+| Node.js / browser versions | No current supported range established by this documentation                                  |
 
 The [public SDK distribution](https://app.singular.live/libs/singularapp/1.0.0/singularapp.js) and [official CLI repository](https://github.com/singularlive/singular-cli) are the primary technical sources. The earlier source review is recorded in the repository's `APP_SDK_REVIEW.md`. It established method signatures and local mock behavior, rather than live service acceptance.
 
@@ -30,6 +30,6 @@ Earlier App Manager documentation used the lifecycle label **depreciated**. Trea
 
 ## Storage backend migration
 
-For an existing app or data-node backend, see [Migrate Apps from Firebase to Datastore](../../../releases-and-compatibility/releases-and-compatibility/migrate-apps-from-firebase-to-datastore.md). A storage migration does not by itself replace the local bootstrap or establish compatible dependency upgrades.
+For an existing app or data-node backend, see [Migrate Apps from Firebase to Datastore](../../../releases-and-compatibility/releases-and-compatibility/deprecations-and-migrations/migrate-apps-from-firebase-to-datastore.md). A storage migration does not by itself replace the local bootstrap or establish compatible dependency upgrades.
 
-Return to [App SDK](README.md).
+Return to [App SDK](./).

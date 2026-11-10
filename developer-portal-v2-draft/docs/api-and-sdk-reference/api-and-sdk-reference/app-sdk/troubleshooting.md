@@ -42,7 +42,7 @@ Use the test instance and output from [Getting started](getting-started.md). Che
 
 **Check:** Does the selected object have a control node and model? Does the container have nonzero height/width? Are there iframe-loading errors in browser developer tools?
 
-**Fix:** Select a node with editable controls, pass its `getControlNode()` result, and give the container a visible size. Destroy the old form when changing targets. The [native-form tutorial](subcomposition-fill-in-form.md) demonstrates these checks.
+**Fix:** Select a node with editable controls, pass its `getControlNode()` result, and give the container a visible size. Destroy the old form when changing targets. The [native-form tutorial](examples/subcomposition-fill-in-form.md) demonstrates these checks.
 
 ## Another operator's changes do not appear
 
@@ -54,7 +54,7 @@ Use the test instance and output from [Getting started](getting-started.md). Che
 
 **Check:** Does reinitialization attach additional listeners? Does form selection retain the previous draft or accept a delayed callback from an old form?
 
-**Fix:** Dispose old subscriptions, destroy forms, clear drafts, and reject stale callbacks. Storage cleanup needs the same key and function; composition cleanup clears an event slot. Use the [native-form lifecycle](subcomposition-fill-in-form.md#6-handle-selection-changes-and-late-callbacks).
+**Fix:** Dispose old subscriptions, destroy forms, clear drafts, and reject stale callbacks. Storage cleanup needs the same key and function; composition cleanup clears an event slot. Use the [native-form lifecycle](examples/subcomposition-fill-in-form.md#6-handle-selection-changes-and-late-callbacks).
 
 ## Gather useful diagnostics
 

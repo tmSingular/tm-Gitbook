@@ -85,4 +85,4 @@ The script waits for the SDK load callback before resolving composition objects.
 
 The basic iframe uses the non-interactive Player URL. To enable Player interaction, use `https://app.singular.live/singularplayer/client?interactive=1` as the iframe’s `src`. Create the iframe before calling `SingularGraphics("SingularOverlay")`; the argument identifies that existing iframe, not a div to replace.
 
-Continue with [loading methods](loading-methods.md) or [the composition API](reference/composition-object.md).
+Continue with [loading methods](loading-methods.md) or [the composition API](composition-object.md).
