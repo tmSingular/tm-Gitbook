@@ -6,7 +6,9 @@ description: Network access for Singular interfaces, output, and real-time conne
 
 Use this guide to configure outbound firewall and web-proxy access for Dashboard, Composer, Overlays.uno, control apps, and browser outputs. Apply the relevant rules on each operator, authoring, and rendering machine. A control workstation and a separate output renderer each need access to their own dependencies.
 
-The baseline below was assessed on **10 November 2026**, using authenticated Dashboard and Composer sessions, Studio and Uno control apps, an output, and the public Overlays.uno portal. The Singular pages inspected used `beta.singular.live`. Use the actual page origin in your deployment and validate production separately. Account settings, storage backends, widgets, media, and application releases can change the destinations required.
+**`app.singular.live` is the primary Singular hostname for production use.** Allow it for Dashboard, Composer, Singular control apps, outputs, and hosted libraries used by the selected workflow. Production URL patterns include `https://app.singular.live/dashboard`, `https://app.singular.live/compositions/<composition-id>/edit`, `https://app.singular.live/control/<app-token>`, and `https://app.singular.live/output/<output-token>/<output-name>`.
+
+The baseline below was assessed on **10 November 2026**, using authenticated Dashboard and Composer sessions, Studio and Uno control apps, an output, and the public Overlays.uno portal. The original Singular inspection used a development environment; the rules below name the production hostname. Confirm backend, asset, and integration destinations in the production workflow. Account settings, storage backends, widgets, media, and application releases can change the destinations required.
 
 ## Ports and network policy
 
@@ -31,7 +33,7 @@ All connections in this table use outbound TCP 443. Replace placeholders with th
 | Datastore app state | `datastore.singular.live`; HTTPS initial state at `/v1/<app-datastore-id>`. | `wss://datastore.singular.live/socket.io/?EIO=4&transport=websocket&ds=<app-datastore-id>` | `ds` is the app's Datastore identifier. Use the value assigned to that app. |
 | Datastore composition state | `datastore.singular.live`; HTTPS initial state at `/v1/<composition-datastore-id>`. | `wss://datastore.singular.live/socket.io/?EIO=4&transport=websocket&ds=<composition-datastore-id>` | `ds` is the composition's Datastore identifier. It can differ from the control app's identifier. |
 | Firebase authentication | `identitytoolkit.googleapis.com`, including `/v1/accounts:signInWithCustomToken` and `/v1/accounts:lookup`; `securetoken.googleapis.com` for refresh at `/v1/token`. | These authentication requests use HTTPS rather than WebSockets. | No database or socket ID applies. The refresh endpoint is defined in the SDK; refresh was not observed during the short inspection. |
-| Composer AI when enabled | The Composer page origin; `beta.singular.live` in the inspected environment. | `wss://<composer-origin>/<returned-socket-path>` | The pairing API returns the path/session. No permanent path or session ID was established. |
+| Composer AI when enabled | The Composer page origin, `app.singular.live` for production. | `wss://app.singular.live/<returned-socket-path>` | The pairing API returns the path/session. No permanent path or session ID was established. |
 | Overlays.uno portal and SDKs | `https://overlays.uno/`, `https://app.overlays.uno/`, and API routes under `/apiv2/`. | No independent portal WebSocket endpoint was established. A launched control app uses its selected backend. | Use the launched app's database or Datastore identifier. |
 
 ### Database identifiers and socket session IDs
@@ -48,8 +50,8 @@ Use these groups as implementation building blocks. Within the content and embed
 
 | Group | Domains | Protocol and purpose |
 | --- | --- | --- |
-| A Shared interface | `beta.singular.live`, `cdnjs.cloudflare.com`, `stackpath.bootstrapcdn.com`, `fonts.googleapis.com`, `fonts.gstatic.com` | HTTPS for the inspected pages, libraries, styles, and fonts. Use the actual page origin in other environments. Add WSS on the page origin for optional Composer AI. |
-| B Singular content | `assets.singular.live`, `image.singular.live`, `apptemplates.singular.live`, `widgets.singular.live`, `app.singular.live`, `libs.singular.live`, `preview.singular.live` | HTTPS for composition assets, thumbnails, app-template/widget catalogs, renderer SDKs, and preview inventory. |
+| A Shared interface | `app.singular.live`, `cdnjs.cloudflare.com`, `stackpath.bootstrapcdn.com`, `fonts.googleapis.com`, `fonts.gstatic.com` | HTTPS for production pages, APIs, hosted libraries, styles, and fonts. Add WSS on `app.singular.live` for optional Composer AI. |
+| B Singular content | `assets.singular.live`, `image.singular.live`, `apptemplates.singular.live`, `widgets.singular.live`, `libs.singular.live`, `preview.singular.live` | HTTPS for composition assets, thumbnails, app-template/widget catalogs, renderer SDKs, and preview inventory. Hosted resources on `app.singular.live` are covered by group A. |
 | C Firebase authentication | `identitytoolkit.googleapis.com`, `securetoken.googleapis.com` | HTTPS for sign-in, account lookup, and token renewal. |
 | D Firebase database | `*.firebaseio.com` | HTTPS and WSS for logical database and routed backend hosts. |
 | E Singular Datastore | `datastore.singular.live` | HTTPS initial-state requests and WSS live synchronization. The inspected client explicitly requires WebSockets. |
@@ -72,7 +74,7 @@ For simpler maintenance, `*.singular.live` can replace individual Singular subdo
 
 ### Dashboard
 
-Allow the page origin and its normal HTTPS APIs, Firebase authentication, thumbnails from `image.singular.live`, and template icons from `apptemplates.singular.live`. Include `assets.singular.live` when browsing or opening assets. An exact minimum database policy was not proven for all Dashboard workflows.
+Allow `app.singular.live` and its normal HTTPS APIs, Firebase authentication, thumbnails from `image.singular.live`, and template icons from `apptemplates.singular.live`. Include `assets.singular.live` when browsing or opening assets. An exact minimum database policy was not proven for all Dashboard workflows.
 
 Preserve sessions, cookies, and authorization headers. If single sign-on is used, add the actual identity-provider hosts in the organization's redirect chain; see [Configure Singular SSO](configure-singular-sso.md).
 
