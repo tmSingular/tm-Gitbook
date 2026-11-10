@@ -8,3 +8,5 @@ Choose a guide by the task you want to complete.
 - [Embed graphics and integrate video](embed-graphics-and-integrate-video.md)
 - [Build custom widgets](build-custom-widgets.md)
 - [Work with Composer AI](work-with-composer-ai.md)
+
+- [Embed control apps](embed-control-apps/README.md) — integrate Studio or Uno operator interfaces.

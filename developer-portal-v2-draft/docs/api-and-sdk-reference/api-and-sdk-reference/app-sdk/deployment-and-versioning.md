@@ -24,3 +24,5 @@ The v1 guide describes development, published, archived, and a terminal state sp
 * Record the app version and composition revision separately so a failure can be reproduced.
 
 For composition lifecycle terminology, see [Save, extract, publish, and output behavior](../../../operate-and-troubleshoot/operate-and-troubleshoot/save-extract-publish-and-output-behavior.md).
+
+For changing an existing app or data node backend, see [Migrate Apps from Firebase to Datastore](../../../releases-and-compatibility/releases-and-compatibility/migrate-apps-from-firebase-to-datastore.md). A storage migration does not by itself replace the SDK bootstrap or its bundled dependencies.

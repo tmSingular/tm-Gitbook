@@ -14,13 +14,34 @@ Use camelCase object variables with a type prefix and a descriptive name:
 | Widget | `wiName` | `wiTitle`, `wiHomeScore` |
 | Group | `grName` | `grContent`, `grBackground` |
 
-Use the same convention for parameters and retained references. Collections keep the prefix, for example `wiTitles` or `grMatches`. Keep distinct references named distinctly, such as `compCurrent` for the init parameter and `compStored` for the retained composition. These are JavaScript variable names; preserve Composer object names, public Control Node IDs, payload keys, and API method names.
+Use the same convention for parameters and retained references. Collections keep the prefix, for example `wiTitles` or `grMatches`. These are JavaScript variable names; preserve Composer object names, public Control Node IDs, payload keys, and API method names.
 
 ## Variable declarations
 
 Use `const` when a binding is not reassigned, and `let` when it is reassigned. Do not use `var` in script examples. This rule applies to all future examples, including callbacks and lifecycle cleanup.
 
 Object/array mutation does not reassign the binding: a `const` widget reference can call setters, and a `const` array can receive items. A reference initialized to `null`, assigned in `init()`, and cleared in `close()` requires `let`. Use `const` for callback-local payloads, lookup results, fixed settings, and cleanup snapshots. Prefer a single initialized `const` when a value can be calculated directly; use `let` for counters, changing state, handles, and branch-assigned values.
+
+## Complete script structure
+
+Use an IIFE that returns an object containing `init` and `close`. Put widget/group lookups, local state, settings, and helper functions inside `init`; callbacks capture these local values. Do not retain a second composition reference or initialize widget references to null outside `init`. Ordinary examples use `close: function() {}`.
+
+Use `init(compCurrent)` for root/sub-composition scripts, adding `context` only when used. Global Scripts use `init(context)`; Overlay scripts preserve their SDK arguments. Short fragments remain explicitly labeled as excerpts inside `init` or a callback rather than pretending to be complete scripts.
+
+Resource-owning examples still need cleanup. Keep the state inside `init` and expose an explicitly application-defined `compCurrent.releaseResources` closure for `close(compCurrent)` to invoke. This pattern is needed for subscriptions, timers, animation frames, and requests; do not add it to ordinary local-listener examples.
+
+Standard root/sub-composition template:
+
+```javascript
+(function() {
+  return {
+    init: function(compCurrent) {
+      // Resolve targets, define local helpers, and register callbacks here.
+    },
+    close: function() {}
+  };
+})();
+```
 
 ## Required conventions
 

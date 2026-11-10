@@ -6,20 +6,18 @@ Create a native Button Control Node with public ID `Toggle`, plus an unlinked Me
 
 ```javascript
 (function() {
-  let compStored = null;
-  let wiOutput = null;
-  let enabled = false;
-  let closed = true;
-  function apply() {
-    wiOutput.setPayload({ text: enabled ? 'Enabled' : 'Disabled' });
-  }
   return {
     init: function(compCurrent) {
-      compStored = compCurrent;
-      wiOutput = compCurrent.findWidget('Readout')[0];
-      closed = false;
+      let enabled = false;
+
+      const wiOutput = compCurrent.findWidget('Readout')[0];
+
+      function apply() {
+        wiOutput.setPayload({ text: enabled ? 'Enabled' : 'Disabled' });
+      }
+
       compCurrent.addListener('button_clicked', function(event, msg) {
-        if (closed || event !== 'button_clicked' || !msg || msg.buttonId !== 'Toggle') return;
+        if (event !== 'button_clicked' || !msg || msg.buttonId !== 'Toggle') return;
         const source = msg.compId || msg.compositionId;
         if (source !== compCurrent.id) return;
         enabled = !enabled;
@@ -27,13 +25,7 @@ Create a native Button Control Node with public ID `Toggle`, plus an unlinked Me
       });
       apply();
     },
-    close: function() {
-      const wasActive = !closed;
-      closed = true;
-      if (wasActive && compStored) compStored.removeListener('button_clicked');
-      compStored = null;
-      wiOutput = null;
-    }
+    close: function() {}
   };
 })();
 ```

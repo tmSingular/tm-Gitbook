@@ -7,3 +7,5 @@ Use the [Graphics SDK](../api-and-sdk-reference/graphics-sdk.md) to embed and co
 - [Overlay SDK examples](https://developer.singular.live/software-development-kits/overlay-sdk/use-case-examples)
 
 Confirm which integration supports the controls and scripts your use case needs. Host SDK methods and in-script methods are distinct; see [Host boundaries](../composition-scripting/core-concepts/host-boundaries.md).
+
+To embed the Studio or Uno operator interface, see [Embed control apps](guides/embed-control-apps/README.md).

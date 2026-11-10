@@ -1,3 +1,4 @@
+const { withScriptLifecycle } = require('./example-runtime-fixture.cjs');
 const assert = require('assert/strict');
 const fs = require('fs');
 const path = require('path');
@@ -33,21 +34,21 @@ assert.equal(new Set(nav.map(m=>m[2])).size,nav.length,'Duplicate navigation pat
 for(const m of nav) {const file=path.join(docs,m[2]);assert(fs.existsSync(file),'Navigation target missing');assert.equal(fs.readFileSync(file,'utf8').split('\n')[0],'# '+m[1]);}
 function widget(id,initial={}) {return {id,payload:{...initial},getPayload(){return {...this.payload};},setPayload(p){Object.assign(this.payload,p);}};}
 function composition(widgets,payload={}) {return {id:'local',payload,handlers:{},removed:[],findWidget(n){return widgets[n]?[widgets[n]]:[];},getPayload2(){return {...this.payload};},addListener(e,cb){this.handlers[e]=cb;},removeListener(e){this.removed.push(e);delete this.handlers[e];},emit(e,m){if(this.handlers[e])this.handlers[e](e,m,{stopPropagation(){throw new Error('Unexpected stop');}});}};}
-function load(file,globals={}) {return vm.runInNewContext(blocks(file)[0],globals);}
+function load(file,globals={}) {return withScriptLifecycle(vm.runInNewContext(blocks(file)[0],globals));}
 function check(name,fn){fn();fixtures++;console.log('PASS '+name);}
-check('bounds listener precedes synchronous activation; filters source; late callbacks stop',()=>{
+check('bounds listener precedes synchronous activation; filters source; uninstall clears local handlers',()=>{
  const label=widget('label');const c=composition({Label:label});const output=[];
  function message(patch={}) {return {event:'custom',params:{type:'widget',id:'label',compId:'local',data:{event:'bounds',widthPx:42},...patch}};}
  const original=label.setPayload;label.setPayload=function(p){original.call(this,p);c.emit('message',message());};
  const s=load('widget-messages.md',{console:{log(...args){output.push(args);}}});s.init(c);assert(output.length>=1);
  const count=output.length;c.emit('message',message({id:'wrong'}));c.emit('message',message({compId:'other'}));c.emit('message',message({type:'controlNode'}));assert.equal(output.length,count);
- const cb=c.handlers.message;s.close();cb('message',message());assert.equal(output.length,count);assert.deepEqual(c.removed,['message']);
+ s.close();c.emit('message',message());assert.equal(output.length,count);assert(!c.handlers['message']);
 });
 check('reactive example preserves zero/false/empty and repairs effective content; cleanup',()=>{
  const output=widget('output');const c=composition({'Title Output':output},{Title:'Initial'});const s=load('react-to-changes.md');s.init(c);assert.equal(output.payload.text,'Initial');
  for(const [input,expected] of [[0,'0'],[false,'false'],['','']]) {c.payload.Title=input;c.emit('payload_changed',{compositionId:'different'});assert.equal(output.payload.text,expected);}
  c.payload.Title='Current';output.payload.text='External replacement';c.emit('payload_changed',{});assert.equal(output.payload.text,'Current');
- const cb=c.handlers.payload_changed;s.close();c.payload.Title='Late';cb();assert.equal(output.payload.text,'Current');assert.deepEqual(c.removed,['payload_changed']);
+ s.close();c.payload.Title='Late';c.emit('payload_changed',{});assert.equal(output.payload.text,'Current');assert(!c.handlers['payload_changed']);
 });
 check('HTML snippet escapes dynamic characters without erasing font data',()=>{
  const title=widget('title',{font:{required:'preserve'}});const c=composition({Title:title});vm.runInNewContext(blocks('html-text.md')[0],{compCurrent:c});assert.equal(title.payload.text,'<html>Hello <b>Ada &amp; team</b></html>');assert.equal(title.payload.font.required,'preserve');
@@ -55,9 +56,9 @@ check('HTML snippet escapes dynamic characters without erasing font data',()=>{
 check('button example filters source and handles repeated presses and closure',()=>{
  const output=widget('readout');const c=composition({Readout:output});
  // First block is the Selection fragment; the complete script is second.
- const script=vm.runInNewContext(blocks('controls/selection-and-buttons.md')[1]);script.init(c);
+ const script=withScriptLifecycle(vm.runInNewContext(blocks('controls/selection-and-buttons.md')[1]));script.init(c);
  c.emit('button_clicked',{buttonId:'Toggle',compId:'other'});assert.equal(output.payload.text,'Disabled');
  c.emit('button_clicked',{buttonId:'Toggle',compId:'local'});assert.equal(output.payload.text,'Enabled');
- c.emit('button_clicked',{buttonId:'Toggle',compId:'local'});assert.equal(output.payload.text,'Disabled');script.close();assert.deepEqual(c.removed,['button_clicked']);
+ c.emit('button_clicked',{buttonId:'Toggle',compId:'local'});assert.equal(output.payload.text,'Disabled');script.close();assert(!c.handlers['button_clicked']);
 });
 console.log(JSON.stringify({pages:pages.length,navigationEntries:nav.length,javascriptBlocks:parsed,relativeLinks:links,behaviorFixtures:fixtures,scope:'Static checks and mocked composition logic; not live Player acceptance'},null,2));

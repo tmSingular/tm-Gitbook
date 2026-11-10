@@ -109,19 +109,18 @@ This comparison treats a previously unparseable value, including a structured gr
 ```javascript
 // Example: stream-with-status
 (function() {
-  let stream = null;
-  let wiText = null;
-  let wiStatus = null;
-  let active = false;
-  const publicToken = "your-data-stream-public-token";
-
   return {
     init: function(compCurrent, context) {
+      const publicToken = "your-data-stream-public-token";
+
+      let stream = null;
+      let active = true;
+
       const wiTexts = compCurrent.findWidget("Stream Text");
       const wiStatuses = compCurrent.findWidget("Connection Status");
-      wiText = wiTexts[0];
-      wiStatus = wiStatuses[0];
-      active = true;
+      const wiText = wiTexts[0];
+      const wiStatus = wiStatuses[0];
+
       wiText.setPayload({ text: "Waiting for data" });
       wiStatus.setPayload({ text: "Connecting" });
       stream = context.utils.createDataStream(publicToken, function(status, message) {
@@ -143,19 +142,21 @@ This comparison treats a previously unparseable value, including a structured gr
           wiStatus.setPayload({ text: "Connection: " + status });
         }
       });
+
+      compCurrent.releaseResources = function() {
+        active = false;
+        if (stream) stream.close();
+        stream = null;
+      };
     },
-    close: function() {
-      active = false;
-      if (stream) stream.close();
-      stream = null;
-      wiText = null;
-      wiStatus = null;
+    close: function(compCurrent) {
+      compCurrent.releaseResources();
     }
   };
 })();
 ```
 
-**Try it:** publish First, then Second in one running Player. Send an invalid body, then an empty text string. Invalid messages and connection errors preserve content; valid empty text clears it. Closing releases the handle, and late callbacks do nothing.
+**Try it:** publish First, then Second in one running Player. Send an invalid body, then an empty text string. Invalid messages and connection errors preserve content; valid empty text clears it. Closing releases the handle, and late stream callbacks do nothing.
 
 Connection status and content freshness are different: an open connection does not prove new data has arrived. This example does not implement a retry schedule, stale-data timeout, or replay guarantee. Define those policies for your application rather than opening another subscription on every error. The public read token belongs in the consumer; never place the private publishing token in it. See the [Data Stream guide](../how-to-guides/connect-to-a-data-stream.md).
 
@@ -218,3 +219,7 @@ Changing the returned object does not change the composition or adaptation confi
 ## Verification
 
 These examples use the reviewed utility contracts. Static and mocked checks do not establish behavior in every deployed runtime. Verify actual date/color library behavior, initial and later application inputs, stream delivery and closure, and configured variant/adaptation values in the target Player. The one-time utility fragments need an explicit refresh path if their inputs change after initialization.
+
+### Resource cleanup structure
+
+This resource-owning example keeps its state and helper functions inside `init`. Its application-defined `compCurrent.releaseResources` function closes over those local values; the lifecycle `close(compCurrent)` invokes it. `releaseResources` is a custom function owned by this example, not a built-in Singular method. Reserve that name for the script’s cleanup and merge resource cleanup when combining examples.

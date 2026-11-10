@@ -12,22 +12,23 @@ The complete script validates nonnegative integer scores, preserves the last goo
 
 ```javascript
 (function() {
-  let stream = null;
-  let wiHome = null;
-  let wiAway = null;
-  let closed = true;
-  function validScore(value) {
-    return typeof value === 'number' && Number.isInteger(value) && value >= 0;
-  }
-  function write(wiWidget, value) {
-    const text = String(value);
-    if ((wiWidget.getPayload() || {}).text !== text) wiWidget.setPayload({ text: text });
-  }
   return {
     init: function(compCurrent, context) {
-      wiHome = compCurrent.findWidget('Home score')[0];
-      wiAway = compCurrent.findWidget('Away score')[0];
-      closed = false;
+      let stream = null;
+      let closed = false;
+
+      const wiHome = compCurrent.findWidget('Home score')[0];
+      const wiAway = compCurrent.findWidget('Away score')[0];
+
+      function validScore(value) {
+        return typeof value === 'number' && Number.isInteger(value) && value >= 0;
+      }
+
+      function write(wiWidget, value) {
+        const text = String(value);
+        if ((wiWidget.getPayload() || {}).text !== text) wiWidget.setPayload({ text: text });
+      }
+
       wiHome.setPayload({ text: '--' });
       wiAway.setPayload({ text: '--' });
       stream = context.utils.createDataStream('your-data-stream-public-token', function(status, message) {
@@ -41,13 +42,15 @@ The complete script validates nonnegative integer scores, preserves the last goo
           write(wiAway, data.away);
         }
       });
+
+      compCurrent.releaseResources = function() {
+        closed = true;
+        if (stream) stream.close();
+        stream = null;
+      };
     },
-    close: function() {
-      closed = true;
-      if (stream) stream.close();
-      stream = null;
-      wiHome = null;
-      wiAway = null;
+    close: function(compCurrent) {
+      compCurrent.releaseResources();
     }
   };
 })();
@@ -56,3 +59,7 @@ The complete script validates nonnegative integer scores, preserves the last goo
 ## Verify
 
 Send 0–0, 2–1, and a later score in one running Player. Confirm exact text, preservation after invalid/string/negative scores, and no late writes after closure. Define stale-feed presentation and provider recovery for your application separately. Add score-triggered animation only under its own explicit state/ownership contract.
+
+### Resource cleanup structure
+
+This resource-owning example keeps its state and helper functions inside `init`. Its application-defined `compCurrent.releaseResources` function closes over those local values; the lifecycle `close(compCurrent)` invokes it. `releaseResources` is a custom function owned by this example, not a built-in Singular method. Reserve that name for the script’s cleanup and merge resource cleanup when combining examples.

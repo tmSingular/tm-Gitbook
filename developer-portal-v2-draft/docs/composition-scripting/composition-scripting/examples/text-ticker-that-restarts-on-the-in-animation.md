@@ -8,23 +8,19 @@ The following recipe requests a restart through a temporary speed change at the 
 
 ```javascript
 (function() {
-  let compStored = null;
-  let wiTicker = null;
-  let closed = true;
-  function apply() {
-    if (closed) return;
-    const value = (compStored.getPayload2() || {}).Messages;
-    const text = value == null ? '' : String(value);
-    if ((wiTicker.getPayload() || {}).text !== text) wiTicker.setPayload({ text: text });
-  }
   return {
     init: function(compCurrent) {
-      compStored = compCurrent;
-      wiTicker = compCurrent.findWidget('Text Ticker')[0];
-      closed = false;
+      const wiTicker = compCurrent.findWidget('Text Ticker')[0];
+
+      function apply() {
+        const value = (compCurrent.getPayload2() || {}).Messages;
+        const text = value == null ? '' : String(value);
+        if ((wiTicker.getPayload() || {}).text !== text) wiTicker.setPayload({ text: text });
+      }
+
       compCurrent.addListener('payload_changed', apply);
       compCurrent.addListener('timeline_event', function(event, msg) {
-        if (closed || !msg || msg.compositionId !== compCurrent.id || !msg.message) return;
+        if (!msg || msg.compositionId !== compCurrent.id || !msg.message) return;
         if (msg.message.event !== 'start' || msg.message.targetState !== 'In') return;
         const speed = Number((wiTicker.getPayload() || {}).speed);
         if (!Number.isFinite(speed) || speed <= 0) return;
@@ -34,16 +30,7 @@ The following recipe requests a restart through a temporary speed change at the 
       });
       apply();
     },
-    close: function() {
-      const wasActive = !closed;
-      closed = true;
-      if (wasActive && compStored) {
-        compStored.removeListener('payload_changed');
-        compStored.removeListener('timeline_event');
-      }
-      compStored = null;
-      wiTicker = null;
-    }
+    close: function() {}
   };
 })();
 ```

@@ -8,37 +8,28 @@ The example escapes input before adding bold markup, initializes from current in
 
 ```javascript
 (function() {
-  let compStored = null;
-  let wiOutput = null;
-  let closed = true;
-  function escapeText(value) {
-    return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
-    });
-  }
-  function apply() {
-    if (closed) return;
-    const p = compStored.getPayload2() || {};
-    const first = escapeText(p.Firstname);
-    const last = escapeText(p.Lastname);
-    const html = first || last ? '<html>' + first + ' <b>' + last + '</b></html>' : '';
-    if ((wiOutput.getPayload() || {}).text !== html) wiOutput.setPayload({ text: html });
-  }
   return {
     init: function(compCurrent) {
-      compStored = compCurrent;
-      wiOutput = compCurrent.findWidget('Full name')[0];
-      closed = false;
+      const wiOutput = compCurrent.findWidget('Full name')[0];
+
+      function escapeText(value) {
+        return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+        });
+      }
+
+      function apply() {
+        const p = compCurrent.getPayload2() || {};
+        const first = escapeText(p.Firstname);
+        const last = escapeText(p.Lastname);
+        const html = first || last ? '<html>' + first + ' <b>' + last + '</b></html>' : '';
+        if ((wiOutput.getPayload() || {}).text !== html) wiOutput.setPayload({ text: html });
+      }
+
       compCurrent.addListener('payload_changed', apply);
       apply();
     },
-    close: function() {
-      const wasActive = !closed;
-      closed = true;
-      if (wasActive && compStored) compStored.removeListener('payload_changed');
-      compStored = null;
-      wiOutput = null;
-    }
+    close: function() {}
   };
 })();
 ```

@@ -6,32 +6,21 @@ Complete root/sub-composition script. Setup: standalone Text control Title and e
 
 ```javascript
 (function() {
-  let compStored = null;
-  let wiOutput = null;
-  let active = false;
-  function apply() {
-    if (!active) return;
-    const values = compStored.getPayload2() || {};
-    const value = values.Title;
-    const text = value == null ? "" : String(value);
-    if ((wiOutput.getPayload() || {}).text !== text) wiOutput.setPayload({ text: text });
-  }
   return {
     init: function(compCurrent) {
-      const wiMatches = compCurrent.findWidget("Title Output");
-      compStored = compCurrent;
-      wiOutput = wiMatches[0];
-      active = true;
+      const wiOutput = compCurrent.findWidget("Title Output")[0];
+
+      function apply() {
+        const values = compCurrent.getPayload2() || {};
+        const value = values.Title;
+        const text = value == null ? "" : String(value);
+        if ((wiOutput.getPayload() || {}).text !== text) wiOutput.setPayload({ text: text });
+      }
+
       compCurrent.addListener("payload_changed", apply);
       apply();
     },
-    close: function() {
-      const owned = active;
-      active = false;
-      if (owned && compStored) compStored.removeListener("payload_changed");
-      compStored = null;
-      wiOutput = null;
-    }
+    close: function() {}
   };
 })();
 ```
@@ -40,6 +29,6 @@ Complete root/sub-composition script. Setup: standalone Text control Title and e
 
 This handler recomputes local presentation even if a child event bubbles up; it intentionally does not gate on `msg.compositionId`, which can suppress same-composition editor updates. Preserve propagation unless the integration explicitly owns and needs to stop it. For cross-composition aggregation, design source routing separately.
 
-One handler exists per composition/event pair. Registering on another composition can replace its owner’s handler; cleanup deletes a slot, not one callback subscription. Remove only registrations owned by this script. A failed widget lookup installs no handler.
+One handler exists per composition/event pair. Registering on another composition can replace its owner’s handler; cleanup deletes a slot, not one callback subscription. Remove only registrations owned by this script. The documented widget setup is a precondition.
 
 Reference-backed; verify initial/live/empty/zero values, unrelated updates, and teardown in Player. See [lifecycle](../core-concepts/lifecycle.md), [event API](../api-reference/event-listeners.md), and the [existing reactive how-to](../how-to-guides/react-to-control-node-changes.md).

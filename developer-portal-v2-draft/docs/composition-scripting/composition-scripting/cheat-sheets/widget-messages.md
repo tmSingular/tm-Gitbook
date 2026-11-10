@@ -37,17 +37,12 @@ Complete root/sub-composition script. Setup: exactly one Metric Text-family widg
 
 ```javascript
 (function() {
-  let compStored = null;
-  let wiLabel = null;
-  let active = false;
   return {
     init: function(compCurrent) {
-      const wiMatches = compCurrent.findWidget("Label");
-      compStored = compCurrent;
-      wiLabel = wiMatches[0];
-      active = true;
+      const wiLabel = compCurrent.findWidget("Label")[0];
+
       compCurrent.addListener("message", function(event, msg) {
-        if (!active || event !== "message" || !msg || msg.event !== "custom") return;
+        if (event !== "message" || !msg || msg.event !== "custom") return;
         const p = msg.params;
         const data = p && p.data;
         if (!p || p.type !== "widget" || p.compId !== compCurrent.id || p.id !== wiLabel.id ||
@@ -58,13 +53,7 @@ Complete root/sub-composition script. Setup: exactly one Metric Text-family widg
       wiLabel.setPayload({ emitEvents: true });
       wiLabel.setPayload({ text: "Hello" });
     },
-    close: function() {
-      const owned = active;
-      active = false;
-      if (owned && compStored) compStored.removeListener("message");
-      compStored = null;
-      wiLabel = null;
-    }
+    close: function() {}
   };
 })();
 ```

@@ -9,5 +9,8 @@
 | Preview works but app output differs | [Save, extract, publish, and output behavior](save-extract-publish-and-output-behavior.md) |
 | Motion or playback is slow | [Performance diagnostics](performance-and-browser-diagnostics.md) |
 | Widget content or geometry differs after an upgrade | [Widget compatibility](../composition-scripting/widget-payloads-and-version-compatibility.md) |
+| App or output requests are blocked, or live connections fail | [Firewall and network requirements](operate-and-troubleshoot/firewall-and-network-requirements.md) |
+| Account SSO sign-in fails | [Configure Singular SSO](operate-and-troubleshoot/configure-singular-sso.md) |
+| Updates stop after changing storage | [Datastore migration reload and reconnection steps](../releases-and-compatibility/releases-and-compatibility/migrate-apps-from-firebase-to-datastore.md) |
 
 When requesting help, include the tested host, reproduction steps, expected result, observed result, and relevant versions. Remove credentials and sensitive payloads.

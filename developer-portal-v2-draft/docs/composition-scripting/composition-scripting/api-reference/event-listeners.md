@@ -38,44 +38,31 @@ Interactive messages use `msg.type` for the interaction type and `msg.params` fo
 ```javascript
 // Example: local-inputs
 (function() {
-  let compStored = null;
-  let wiFullName = null;
-  let active = false;
-
-  function applyName() {
-    if (!active) return;
-    const values = compStored.getPayload2() || {};
-    const first = values.Firstname == null ? "" : String(values.Firstname);
-    const last = values.Lastname == null ? "" : String(values.Lastname);
-    const fullName = (first.trim() + " " + last.trim()).trim();
-    if ((wiFullName.getPayload() || {}).text !== fullName) {
-      wiFullName.setPayload({ text: fullName });
-    }
-  }
-
   return {
     init: function(compCurrent) {
-      const wiMatches = compCurrent.findWidget("Full Name");
-      compStored = compCurrent;
-      wiFullName = wiMatches[0];
-      active = true;
+      const wiFullName = compCurrent.findWidget("Full Name")[0];
+
+      function applyName() {
+        const values = compCurrent.getPayload2() || {};
+        const first = values.Firstname == null ? "" : String(values.Firstname);
+        const last = values.Lastname == null ? "" : String(values.Lastname);
+        const fullName = (first.trim() + " " + last.trim()).trim();
+        if ((wiFullName.getPayload() || {}).text !== fullName) {
+          wiFullName.setPayload({ text: fullName });
+        }
+      }
+
       compCurrent.addListener("payload_changed", applyName);
       applyName();
     },
-    close: function() {
-      const owned = active;
-      active = false;
-      if (owned && compStored) compStored.removeListener("payload_changed");
-      wiFullName = null;
-      compStored = null;
-    }
+    close: function() {}
   };
 })();
 ```
 
 **Try it:** start with Ada / Lovelace, change the last name, then clear both controls. The output initializes immediately, updates without restarting the Player, and finally clears. The handler rereads complete current inputs instead of assuming the event contains a full payload. Null checks preserve zero/false if an integration supplies them; production inputs should still match their declared types.
 
-This example permits parent propagation. It does not filter local synchronization by `msg.compositionId`, which can suppress editor updates, and it never writes back to the controls that triggered it. Closing disables late callbacks and removes only the slot this script installed.
+This example permits parent propagation. It does not filter local synchronization by `msg.compositionId`, which can suppress editor updates, and it never writes back to the controls that triggered it. The handler belongs to the script’s own composition; normal script uninstallation clears that composition’s event slots.
 
 ## Example: animation start, completion, jump, and settled state
 
@@ -84,24 +71,18 @@ This example permits parent propagation. It does not filter local synchronizatio
 ```javascript
 // Example: animation-events
 (function() {
-  let compStored = null;
-  let wiStatus = null;
-  let wiState = null;
-  let active = false;
-
   return {
     init: function(compCurrent) {
       const wiStatuses = compCurrent.findWidget("Animation Status");
       const wiStates = compCurrent.findWidget("Settled State");
-      compStored = compCurrent;
-      wiStatus = wiStatuses[0];
-      wiState = wiStates[0];
-      active = true;
+      const wiStatus = wiStatuses[0];
+      const wiState = wiStates[0];
+
       wiStatus.setPayload({ text: "Waiting for a timeline action" });
       wiState.setPayload({ text: compCurrent.getState() });
 
       compCurrent.addListener("timeline_event", function(event, msg) {
-        if (!active || event !== "timeline_event" || !msg ||
+        if (event !== "timeline_event" || !msg ||
             msg.compositionId !== compCurrent.id || !msg.message) return;
         const action = msg.message.event;
         const targetState = msg.message.targetState;
@@ -110,22 +91,12 @@ This example permits parent propagation. It does not filter local synchronizatio
       });
 
       compCurrent.addListener("state_changed", function(event, msg) {
-        if (!active || event !== "state_changed" || !msg ||
+        if (event !== "state_changed" || !msg ||
             msg.compositionId !== compCurrent.id || typeof msg.state !== "string") return;
         wiState.setPayload({ text: msg.state });
       });
     },
-    close: function() {
-      const owned = active;
-      active = false;
-      if (owned && compStored) {
-        compStored.removeListener("timeline_event");
-        compStored.removeListener("state_changed");
-      }
-      wiStatus = null;
-      wiState = null;
-      compStored = null;
-    }
+    close: function() {}
   };
 })();
 ```
@@ -141,32 +112,20 @@ The initial `getState()` returns the logical state, such as `Out`; later state m
 ```javascript
 // Example: child-button
 (function() {
-  let compStored = null;
-  let grDetails = null;
-  let active = false;
-  // Choose true only when this child must consume the action exclusively.
-  const consumeLocally = false;
-
   return {
     init: function(compCurrent) {
-      const grMatches = compCurrent.findGroup("Details");
-      compStored = compCurrent;
-      grDetails = grMatches[0];
-      active = true;
+      const consumeLocally = false;
+
+      const grDetails = compCurrent.findGroup("Details")[0];
+
       compCurrent.addListener("button_clicked", function(event, msg, propagationEvent) {
-        if (!active || event !== "button_clicked" || !msg ||
+        if (event !== "button_clicked" || !msg ||
             msg.compId !== compCurrent.id || msg.buttonId !== "Toggle Details") return;
         grDetails.setVisibility(!grDetails.getVisibility());
         if (consumeLocally) propagationEvent.stopPropagation();
       });
     },
-    close: function() {
-      const owned = active;
-      active = false;
-      if (owned && compStored) compStored.removeListener("button_clicked");
-      grDetails = null;
-      compStored = null;
-    }
+    close: function() {}
   };
 })();
 ```
@@ -178,29 +137,19 @@ To observe the same action at root, use this **complete root script**. It owns t
 ```javascript
 // Example: root-button-route
 (function() {
-  let compRoot = null;
-  let compLowerThird = null;
-  let active = false;
   return {
     init: function(compCurrent) {
       const compMatches = compCurrent.find("Lower Third");
-      compRoot = compCurrent;
-      compLowerThird = compMatches[0];
-      active = true;
-      compRoot.addListener("button_clicked", function(event, msg) {
-        if (active && event === "button_clicked" && msg &&
+      const compLowerThird = compMatches[0];
+
+      compCurrent.addListener("button_clicked", function(event, msg) {
+        if (event === "button_clicked" && msg &&
             msg.compId === compLowerThird.id && msg.buttonId === "Toggle Details") {
           console.log("Root observed the Lower Third action");
         }
       });
     },
-    close: function() {
-      const owned = active;
-      active = false;
-      if (owned && compRoot) compRoot.removeListener("button_clicked");
-      compRoot = null;
-      compLowerThird = null;
-    }
+    close: function() {}
   };
 })();
 ```
@@ -214,33 +163,27 @@ Name the child `Lower Third` for this example. With `consumeLocally = false`, th
 ```javascript
 // Example: widget-message-router
 (function() {
-  let compStored = null;
-  let wiLabel = null;
-  let wiClock = null;
-  let active = false;
-
-  function handleBounds(source, data) {
-    if (source.id !== wiLabel.id || !data || data.event !== "bounds" ||
-        typeof data.widthPx !== "number" || !Number.isFinite(data.widthPx)) return;
-    console.log("Label width:", data.widthPx);
-  }
-
-  function handleClock(source, data) {
-    if (source.id !== wiClock.id || !data || data.type !== "timeChanged" ||
-        typeof data.time !== "number" || !Number.isFinite(data.time)) return;
-    console.log("Clock elapsed seconds:", data.time);
-  }
-
   return {
     init: function(compCurrent) {
       const wiLabels = compCurrent.findWidget("Label");
       const wiClocks = compCurrent.findWidget("Clock");
-      compStored = compCurrent;
-      wiLabel = wiLabels[0];
-      wiClock = wiClocks[0];
-      active = true;
+      const wiLabel = wiLabels[0];
+      const wiClock = wiClocks[0];
+
+      function handleBounds(source, data) {
+        if (source.id !== wiLabel.id || !data || data.event !== "bounds" ||
+            typeof data.widthPx !== "number" || !Number.isFinite(data.widthPx)) return;
+        console.log("Label width:", data.widthPx);
+      }
+
+      function handleClock(source, data) {
+        if (source.id !== wiClock.id || !data || data.type !== "timeChanged" ||
+            typeof data.time !== "number" || !Number.isFinite(data.time)) return;
+        console.log("Clock elapsed seconds:", data.time);
+      }
+
       compCurrent.addListener("message", function(event, msg) {
-        if (!active || event !== "message" || !msg || msg.event !== "custom") return;
+        if (event !== "message" || !msg || msg.event !== "custom") return;
         const source = msg.params;
         if (!source || source.type !== "widget" || source.compId !== compCurrent.id) return;
         handleBounds(source, source.data);
@@ -249,14 +192,7 @@ Name the child `Lower Third` for this example. With `consumeLocally = false`, th
       wiLabel.setPayload({ emitEvents: true });
       wiLabel.setPayload({ text: "Hello" });
     },
-    close: function() {
-      const owned = active;
-      active = false;
-      if (owned && compStored) compStored.removeListener("message");
-      wiLabel = null;
-      wiClock = null;
-      compStored = null;
-    }
+    close: function() {}
   };
 })();
 ```

@@ -37,3 +37,5 @@ Use a dedicated test instance and a local HTTP server. Do not distribute an HTML
 ## Initialization and cleanup
 
 Keep UI state separate from shared storage and output payloads. If initialization runs again, dispose your previous UI subscriptions before attaching new ones. Remove each storage subscription with the same key and callback identity. Destroy a native form before replacing its target. See [Storage](reference/storage.md), [composition events](reference/composition.md#events), and [fill-in forms](reference/forms-and-browsers.md).
+
+For changing an existing app or data node backend, see [Migrate Apps from Firebase to Datastore](../../../releases-and-compatibility/releases-and-compatibility/migrate-apps-from-firebase-to-datastore.md). A storage migration does not by itself replace the SDK bootstrap or its bundled dependencies.

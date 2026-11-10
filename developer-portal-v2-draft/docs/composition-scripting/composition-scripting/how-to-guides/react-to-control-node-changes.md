@@ -10,35 +10,22 @@ Use this pattern when a standalone public input needs script interpretation or f
 
 ```javascript
 (function() {
-  let compStored = null;
-  let wiOutput = null;
-  let closed = true;
-
-  function apply() {
-    if (closed) return;
-    const payload = compStored.getPayload2() || {};
-    const value = payload['Public Value'];
-    const text = value == null ? '' : String(value);
-    const current = wiOutput.getPayload() || {};
-    if (current.text !== text) wiOutput.setPayload({ text: text });
-  }
-
   return {
     init: function(compCurrent, context) {
-      compStored = compCurrent;
-      const wiMatches = compCurrent.findWidget('Output');
-      wiOutput = wiMatches[0];
-      closed = false;
+      const wiOutput = compCurrent.findWidget('Output')[0];
+
+      function apply() {
+        const payload = compCurrent.getPayload2() || {};
+        const value = payload['Public Value'];
+        const text = value == null ? '' : String(value);
+        const current = wiOutput.getPayload() || {};
+        if (current.text !== text) wiOutput.setPayload({ text: text });
+      }
+
       compCurrent.addListener('payload_changed', apply);
       apply();
     },
-    close: function() {
-      const wasActive = !closed;
-      closed = true;
-      if (wasActive && compStored) compStored.removeListener('payload_changed');
-      compStored = null;
-      wiOutput = null;
-    }
+    close: function() {}
   };
 })();
 ```

@@ -12,3 +12,7 @@ Existing v2 scripting page paths are retained in this navigation. When moving a 
 * [Supported environments](supported-environments.md)
 * [Widget compatibility](../../composition-scripting/composition-scripting/widget-payloads-and-version-compatibility.md)
 * [Verification](../../composition-scripting/composition-scripting/debugging-verification-and-deployment/verification.md)
+
+## Storage migration
+
+[Migrate Apps from Firebase to Datastore](migrate-apps-from-firebase-to-datastore.md) covers backend detection, control apps, shared data nodes, account defaults, and output reconnection after switching storage.

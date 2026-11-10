@@ -19,6 +19,9 @@
   * [Control overlays through REST](guides/guides/control-overlays-through-rest.md)
   * [Connect live data](guides/guides/connect-live-data.md)
   * [Embed graphics and integrate video](guides/guides/embed-graphics-and-integrate-video.md)
+  * [Embed control apps](guides/guides/embed-control-apps/README.md)
+    * [Integrate and embed Singular Studio](guides/guides/embed-control-apps/singular-studio.md)
+    * [Integrate and embed Uno Apps](guides/guides/embed-control-apps/uno-apps.md)
   * [Build custom widgets](guides/guides/build-custom-widgets.md)
   * [Work with Composer AI](guides/guides/work-with-composer-ai.md)
 
@@ -164,6 +167,8 @@
 
 * [Operate and troubleshoot](operate-and-troubleshoot/operate-and-troubleshoot/README.md)
   * [Tokens and access](operate-and-troubleshoot/operate-and-troubleshoot/tokens-and-access.md)
+  * [Firewall and network requirements](operate-and-troubleshoot/operate-and-troubleshoot/firewall-and-network-requirements.md)
+  * [Configure Singular SSO](operate-and-troubleshoot/operate-and-troubleshoot/configure-singular-sso.md)
   * [Save, extract, publish, and output behavior](operate-and-troubleshoot/operate-and-troubleshoot/save-extract-publish-and-output-behavior.md)
   * [Performance and browser diagnostics](operate-and-troubleshoot/operate-and-troubleshoot/performance-and-browser-diagnostics.md)
   * [Troubleshooting by symptom](operate-and-troubleshoot/operate-and-troubleshoot/troubleshooting-by-symptom.md)
@@ -175,3 +180,4 @@
   * [Supported environments](releases-and-compatibility/releases-and-compatibility/supported-environments.md)
   * [Changelog](releases-and-compatibility/releases-and-compatibility/changelog.md)
   * [Deprecations and migrations](releases-and-compatibility/releases-and-compatibility/deprecations-and-migrations.md)
+    * [Migrate Apps from Firebase to Datastore](releases-and-compatibility/releases-and-compatibility/migrate-apps-from-firebase-to-datastore.md)

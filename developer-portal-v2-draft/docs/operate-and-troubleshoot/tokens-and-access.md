@@ -13,3 +13,5 @@ Use credentials only for their intended role and destination.
 - [Locate shared app tokens](https://developer.singular.live/singular-basics/managing-overlays-in-the-dashboard/how-to-find-an-apps-shared-app-token-and-shared-api-url)
 
 Keep private write credentials out of client-side scripts, logs, and shared examples. Use the product's supported access-management workflow when a token must be replaced.
+
+For account authentication through an identity provider, see [Configure Singular SSO](operate-and-troubleshoot/configure-singular-sso.md). For shared control URLs, see [Embed control apps](../guides/guides/embed-control-apps/README.md).

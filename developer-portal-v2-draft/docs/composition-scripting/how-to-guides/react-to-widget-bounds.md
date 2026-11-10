@@ -6,25 +6,20 @@ The script owns local `message` and `payload_changed` slots; merge existing hand
 
 ```javascript
 (function() {
-  let compStored = null;
-  let wiLabel = null;
-  let wiReadout = null;
-  let closed = true;
-  function apply() {
-    if (closed) return;
-    const value = (compStored.getPayload2() || {}).Label;
-    const text = value == null ? '' : String(value);
-    if (!text.trim()) wiReadout.setPayload({ text: '' });
-    if ((wiLabel.getPayload() || {}).text !== text) wiLabel.setPayload({ text: text });
-  }
   return {
     init: function(compCurrent) {
-      compStored = compCurrent;
-      wiLabel = compCurrent.findWidget('Label')[0];
-      wiReadout = compCurrent.findWidget('Width Readout')[0];
-      closed = false;
+      const wiLabel = compCurrent.findWidget('Label')[0];
+      const wiReadout = compCurrent.findWidget('Width Readout')[0];
+
+      function apply() {
+        const value = (compCurrent.getPayload2() || {}).Label;
+        const text = value == null ? '' : String(value);
+        if (!text.trim()) wiReadout.setPayload({ text: '' });
+        if ((wiLabel.getPayload() || {}).text !== text) wiLabel.setPayload({ text: text });
+      }
+
       compCurrent.addListener('message', function(event, msg) {
-        if (closed || event !== 'message') return;
+        if (event !== 'message') return;
         const p = msg && msg.params;
         const data = p && p.data;
         if (!p || p.id !== wiLabel.id || !data || data.event !== 'bounds' ||
@@ -37,17 +32,7 @@ The script owns local `message` and `payload_changed` slots; merge existing hand
       wiLabel.setPayload({ emitEvents: true });
       apply();
     },
-    close: function() {
-      const wasActive = !closed;
-      closed = true;
-      if (wasActive && compStored) {
-        compStored.removeListener('message');
-        compStored.removeListener('payload_changed');
-      }
-      compStored = null;
-      wiLabel = null;
-      wiReadout = null;
-    }
+    close: function() {}
   };
 })();
 ```

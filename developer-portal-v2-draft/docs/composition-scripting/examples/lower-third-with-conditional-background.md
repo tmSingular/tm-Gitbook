@@ -8,44 +8,30 @@ This example uses a separate native Rectangle rather than embedding pixel paddin
 
 ```javascript
 (function() {
-  let compStored = null;
-  let wiOutput = null;
-  let wiBackground = null;
-  let tinyColor = null;
-  let closed = true;
-  function apply() {
-    if (closed) return;
-    const p = compStored.getPayload2() || {};
-    const first = p.Firstname == null ? '' : String(p.Firstname);
-    const last = p.Lastname == null ? '' : String(p.Lastname);
-    const text = (first + ' ' + last).trim();
-    if ((wiOutput.getPayload() || {}).text !== text) wiOutput.setPayload({ text: text });
-    wiBackground.setVisibility(p['Show Background'] === true && text.length > 0);
-    const color = tinyColor(p['Background Color']);
-    if (!color.isValid()) {
-      return;
-    }
-    wiBackground.setPayload({ fillGradient: { type: 'solid', solidColor: color.toRgb() } });
-  }
   return {
     init: function(compCurrent, context) {
-      compStored = compCurrent;
-      wiOutput = compCurrent.findWidget('Full name')[0];
-      wiBackground = compCurrent.findWidget('Background')[0];
-      tinyColor = context.utils.createTinyColor;
-      closed = false;
+      const wiOutput = compCurrent.findWidget('Full name')[0];
+      const wiBackground = compCurrent.findWidget('Background')[0];
+      const tinyColor = context.utils.createTinyColor;
+
+      function apply() {
+        const p = compCurrent.getPayload2() || {};
+        const first = p.Firstname == null ? '' : String(p.Firstname);
+        const last = p.Lastname == null ? '' : String(p.Lastname);
+        const text = (first + ' ' + last).trim();
+        if ((wiOutput.getPayload() || {}).text !== text) wiOutput.setPayload({ text: text });
+        wiBackground.setVisibility(p['Show Background'] === true && text.length > 0);
+        const color = tinyColor(p['Background Color']);
+        if (!color.isValid()) {
+          return;
+        }
+        wiBackground.setPayload({ fillGradient: { type: 'solid', solidColor: color.toRgb() } });
+      }
+
       compCurrent.addListener('payload_changed', apply);
       apply();
     },
-    close: function() {
-      const wasActive = !closed;
-      closed = true;
-      if (wasActive && compStored) compStored.removeListener('payload_changed');
-      compStored = null;
-      wiOutput = null;
-      wiBackground = null;
-      tinyColor = null;
-    }
+    close: function() {}
   };
 })();
 ```

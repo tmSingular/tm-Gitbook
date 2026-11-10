@@ -27,3 +27,5 @@ function watchDraft(app, render) {
 ```
 
 Keep the returned disposer and call it when replacing the UI or reinitializing the app. A new arrow function passed to `off` will not remove the original callback. This signature differs from [composition.off(event)](composition.md#events), which clears an event slot without a callback argument.
+
+For changing an existing app or data node backend, see [Migrate Apps from Firebase to Datastore](../../../../releases-and-compatibility/releases-and-compatibility/migrate-apps-from-firebase-to-datastore.md). A storage migration does not by itself replace the SDK bootstrap or its bundled dependencies.

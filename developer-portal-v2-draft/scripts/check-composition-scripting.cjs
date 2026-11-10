@@ -1,3 +1,4 @@
+const { withScriptLifecycle } = require('./example-runtime-fixture.cjs');
 const assert = require('assert/strict');
 const fs = require('fs');
 const path = require('path');
@@ -10,6 +11,9 @@ function walk(dir) { return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>
 for(const file of walk(root).filter(f=>f.endsWith('.md'))) {
   for(const m of fs.readFileSync(file,'utf8').matchAll(/```javascript\s*\n([\s\S]*?)```/g)) {
     new vm.Script(m[1],{filename:file});parsed++;
+    if (/^\s*(?:\/\/[^\n]*\n\s*)*\(function\s*\(\)\s*\{/.test(m[1])) {
+      assert(/^\s*(?:\/\/[^\n]*\n\s*)*\(function\s*\(\)\s*\{\s*return\s*\{/.test(m[1]),'Complete scripts must return init/close directly: '+file);
+    }
     assert(!/\bvar\s+[A-Za-z_$]/.test(m[1]),'Use const/let instead of var in '+file);
     assert(!/\bthrow\s|console\.(?:warn|error)\s*\(|\.catch\s*\(|\bcatch\s*\(/.test(m[1]),'Keep explicit error handling out of focused examples: '+file);
     assert(!/\?\.|\?\?/.test(m[1]),'Post-ES2017 syntax in '+file);
@@ -29,16 +33,16 @@ function comp(widgets={},payload={},id='local',groups={},children={}) {
     emit(event,message={}){if(this.handlers[event])this.handlers[event](event,message,{stopPropagation(){throw new Error('Unexpected propagation suppression');}});}
   };
 }
-function load(file,index=0,globals={}) {return vm.runInNewContext(blocks(file)[index],{console:silent,...globals});}
+function load(file,index=0,globals={}) {return withScriptLifecycle(vm.runInNewContext(blocks(file)[index],{console:silent,...globals}));}
 function check(name,fn) {fn();checks++;console.log('PASS '+name);}
 
-check('reactive input: initial, live, empty, effective-state repair and late cleanup',()=>{
+check('reactive input: initial, live, empty, effective-state repair and uninstall cleanup',()=>{
  const output=widget('output'),c=comp({Output:output},{'Public Value':'Initial'});
  const s=load('how-to-guides/react-to-control-node-changes.md');s.init(c,{});assert.equal(output.payload.text,'Initial');
  c.payload['Public Value']=0;c.emit('payload_changed',{compositionId:'different-editor-envelope'});assert.equal(output.payload.text,'0');
  output.payload.text='Reapplied model';c.emit('payload_changed');assert.equal(output.payload.text,'0');
  c.payload['Public Value']='';c.emit('payload_changed');assert.equal(output.payload.text,'');
- const old=c.handlers.payload_changed;s.close();old();assert.equal(output.payload.text,'');assert.deepEqual(c.removed,['payload_changed']);
+ s.close();c.emit('payload_changed');assert.equal(output.payload.text,'');assert(!c.handlers['payload_changed']);
 });
 check('stream message envelope, invalid input, second update and late callback',()=>{
  const output=widget('stream'),c=comp({'Stream Text':output});let callback,closed=0;
@@ -58,7 +62,7 @@ check('score feed retains valid zero and rejects invalid scores',()=>{
 check('HTML escaping, empty state and payload updates',()=>{
  const output=widget('name'),c=comp({'Full name':output},{Firstname:'A&B',Lastname:'<Test>"\''});const s=load('examples/lower-third-with-dynamic-html-text.md');s.init(c,{});
  assert.equal(output.payload.text,'<html>A&amp;B <b>&lt;Test&gt;&quot;&#39;</b></html>');
- c.payload={Firstname:'',Lastname:''};c.emit('payload_changed');assert.equal(output.payload.text,'');s.close();assert.deepEqual(c.removed,['payload_changed']);
+ c.payload={Firstname:'',Lastname:''};c.emit('payload_changed');assert.equal(output.payload.text,'');s.close();assert(!c.handlers['payload_changed']);
 });
 check('background toggles, empty input, valid color mapping and invalid-color preservation',()=>{
  const output=widget('name'),background=widget('rect'),c=comp({'Full name':output,Background:background},{Firstname:'Ada',Lastname:'Lovelace','Show Background':true,'Background Color':{r:1,g:2,b:3,a:0.4}});
@@ -72,7 +76,7 @@ check('Timer formatted initialization, source/key filters, overtime and cleanup'
  const message={event:'custom',params:{type:'controlNode',id:'replace-with-stable-timer-key',compId:c.id,data:{type:'timerChanged',value:'-00:01.2',overtime:true}}};
  c.emit('message',{...message,params:{...message.params,compId:'other'}});assert.equal(output.payload.text,'02:15.3');
  c.emit('message',{...message,params:{...message.params,id:'other'}});assert.equal(output.payload.text,'02:15.3');
- c.emit('message',message);assert.equal(output.payload.text,'-00:01.2 OT');const callback=c.handlers.message;s.close();callback('message',message);assert.equal(output.payload.text,'-00:01.2 OT');
+ c.emit('message',message);assert.equal(output.payload.text,'-00:01.2 OT');s.close();c.emit('message',message);assert.equal(output.payload.text,'-00:01.2 OT');
 });
 check('bounds route by tile ID and explicitly clear dependent text',()=>{
  const label=widget('label',{text:'Old'}),output=widget('readout'),c=comp({Label:label,'Width Readout':output},{Label:'New'});const s=load('how-to-guides/react-to-widget-bounds.md');s.init(c,{});

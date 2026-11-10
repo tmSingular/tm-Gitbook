@@ -9,21 +9,22 @@ This complete composition script demonstrates a missing-target warning and a sam
 ```javascript
 // Example: report-once
 (function() {
-  const diagnosticsEnabled = true;
-  const colorWarn = "#b36b00";
-  const colorError = "#c62828";
-  const reportedIssues = new Set();
-
-  function reportOnce(key, message, level = "warn") {
-    if (!diagnosticsEnabled || reportedIssues.has(key)) return;
-    reportedIssues.add(key);
-    const color = level === "error" ? colorError : colorWarn;
-    console.log("%c[Title example] " + message, "color: " + color);
-  }
-
   return {
     init: function(compCurrent) {
+      const diagnosticsEnabled = true;
+      const colorWarn = "#b36b00";
+      const colorError = "#c62828";
+      const reportedIssues = new Set();
+
       const wiTitles = compCurrent.findWidget("Title");
+
+      function reportOnce(key, message, level = "warn") {
+        if (!diagnosticsEnabled || reportedIssues.has(key)) return;
+        reportedIssues.add(key);
+        const color = level === "error" ? colorError : colorWarn;
+        console.log("%c[Title example] " + message, "color: " + color);
+      }
+
       if (wiTitles.length !== 1) {
         reportOnce("titleLookup", "Expected one Title widget; update skipped.");
         return;

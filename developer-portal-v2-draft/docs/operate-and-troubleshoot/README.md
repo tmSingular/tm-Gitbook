@@ -7,3 +7,6 @@ Follow the delivery path, protect access tokens, and diagnose the behavior in th
 - [Performance and browser diagnostics](performance-and-browser-diagnostics.md)
 - [Troubleshooting by symptom](troubleshooting-by-symptom.md)
 - [Support and service status](support-and-service-status.md)
+
+- [Firewall and network requirements](operate-and-troubleshoot/firewall-and-network-requirements.md)
+- [Configure Singular SSO](operate-and-troubleshoot/configure-singular-sso.md)

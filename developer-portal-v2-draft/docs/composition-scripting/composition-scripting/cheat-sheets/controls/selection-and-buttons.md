@@ -22,31 +22,21 @@ Complete root/sub-composition script. Setup: an existing Button with public ID T
 
 ```javascript
 (function() {
-  let compStored = null;
-  let wiReadout = null;
-  let active = false;
-  let enabled = false;
   return {
     init: function(compCurrent) {
-      const wiMatches = compCurrent.findWidget("Readout");
-      compStored = compCurrent;
-      wiReadout = wiMatches[0];
-      active = true;
+      let enabled = false;
+
+      const wiReadout = compCurrent.findWidget("Readout")[0];
+
       wiReadout.setPayload({ text: "Disabled" });
       compCurrent.addListener("button_clicked", function(event, msg) {
-        if (!active || event !== "button_clicked" || !msg ||
+        if (event !== "button_clicked" || !msg ||
             msg.buttonId !== "Toggle" || msg.compId !== compCurrent.id) return;
         enabled = !enabled;
         wiReadout.setPayload({ text: enabled ? "Enabled" : "Disabled" });
       });
     },
-    close: function() {
-      const owned = active;
-      active = false;
-      if (owned && compStored) compStored.removeListener("button_clicked");
-      compStored = null;
-      wiReadout = null;
-    }
+    close: function() {}
   };
 })();
 ```

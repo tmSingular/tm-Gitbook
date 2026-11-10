@@ -1,6 +1,6 @@
 # Boilerplate Reference
 
-Use one IIFE for the chosen script type. These are independent templates, not blocks to combine verbatim. `init` is required; include `close` whenever resources need cleanup. Use ES2017-compatible source unless a newer engine is guaranteed.
+Use one IIFE for the chosen script type. These are independent templates, not blocks to combine verbatim. Every complete example returns `init` and `close`; leave `close` empty when no explicit resource cleanup is needed. Use ES2017-compatible source unless a newer engine is guaranteed.
 
 ## Global script
 
@@ -10,9 +10,7 @@ Use one IIFE for the chosen script type. These are independent templates, not bl
     init: function(context) {
       // Merge shared helpers into an intentional versioned namespace.
     },
-    close: function() {
-      // Release resources this Global Script owns.
-    }
+    close: function() {}
   };
 })();
 ```
@@ -22,12 +20,10 @@ Use one IIFE for the chosen script type. These are independent templates, not bl
 ```javascript
 (function() {
   return {
-    init: function(compCurrent, context) {
+    init: function(compCurrent) {
       // Resolve targets and apply the initial presentation.
     },
-    close: function(compCurrent, context) {
-      // Release only owned listeners, streams, requests, timers, and frames.
-    }
+    close: function() {}
   };
 })();
 ```
@@ -41,9 +37,7 @@ Use one IIFE for the chosen script type. These are independent templates, not bl
       // SDK objects for the advanced host/video integration.
       // overlay can be absent; check it before use.
     },
-    close: function() {
-      // Use that SDK's documented cleanup contract for owned resources.
-    }
+    close: function() {}
   };
 })();
 ```

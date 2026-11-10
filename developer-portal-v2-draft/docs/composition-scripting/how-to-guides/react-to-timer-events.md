@@ -6,22 +6,19 @@ For a simple formatted readout, a native text link is preferable. This example i
 
 ```javascript
 (function() {
-  let compStored = null;
-  let wiReadout = null;
-  let closed = true;
-  const TIMER_KEY = 'replace-with-stable-timer-key';
-  function write(text) {
-    if (!closed && (wiReadout.getPayload() || {}).text !== text) {
-      wiReadout.setPayload({ text: text });
-    }
-  }
   return {
     init: function(compCurrent) {
-      compStored = compCurrent;
-      wiReadout = compCurrent.findWidget('Timer Readout')[0];
-      closed = false;
+      const TIMER_KEY = 'replace-with-stable-timer-key';
+
+      const wiReadout = compCurrent.findWidget('Timer Readout')[0];
+
+      function write(text) {
+        if ((wiReadout.getPayload() || {}).text !== text) {
+          wiReadout.setPayload({ text: text });
+        }
+      }
+
       compCurrent.addListener('message', function(event, msg) {
-        if (closed) return;
         const p = msg && msg.params;
         const state = p && p.data;
         if (event !== 'message' || !msg || msg.event !== 'custom' || !p ||
@@ -32,13 +29,7 @@ For a simple formatted readout, a native text link is preferable. This example i
       const value = (compCurrent.getPayload2() || {})['Game Clock'];
       write(value == null ? '' : String(value));
     },
-    close: function() {
-      const wasActive = !closed;
-      closed = true;
-      if (wasActive && compStored) compStored.removeListener('message');
-      compStored = null;
-      wiReadout = null;
-    }
+    close: function() {}
   };
 })();
 ```
