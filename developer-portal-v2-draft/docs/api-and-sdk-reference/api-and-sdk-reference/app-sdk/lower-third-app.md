@@ -2,6 +2,8 @@
 
 Build an operator UI that reads the existing text, lets you edit a local draft, applies it on command, and animates the graphic independently. This tutorial explains the complete app used in [Getting started](getting-started.md).
 
+<figure><img src="../../../.gitbook/assets/appSDK-ex1-app-example.avif" alt="Lower Third App"><figcaption><p>Lower Third App</p></figcaption></figure>
+
 {% file src="../../../.gitbook/assets/app-sdk-lower-third.zip" %}
 Download the complete hosted app HTML.
 {% endfile %}
@@ -119,6 +121,7 @@ The app reads the current payload on initialization. It does not subscribe to la
 Save this file as `source/app.html`. It is the same source included in the ZIP.
 
 <details>
+
 <summary>Complete app.html</summary>
 
 ```html

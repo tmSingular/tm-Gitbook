@@ -2,6 +2,8 @@
 
 Build a selector for the composition root and its direct children, render the selected node's native form, and send changes only when the operator presses Apply. Then add cleanup that prevents an old form's draft from reaching a new selection.
 
+<figure><img src="../../../.gitbook/assets/appSDK-ex2-app-example.avif" alt=""><figcaption><p>Subcompositions and Fill-in Form</p></figcaption></figure>
+
 {% file src="../../../.gitbook/assets/app-sdk-native-form.zip" %}
 Download the complete hosted app HTML.
 {% endfile %}
@@ -148,6 +150,7 @@ The app does not synchronize other operators' changes, implement custom button a
 Save this file as `source/app.html`. It is the same source included in the ZIP.
 
 <details>
+
 <summary>Complete app.html</summary>
 
 ```html
