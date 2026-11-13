@@ -188,6 +188,20 @@
       * [Forms and asset browsers](api-and-sdk-reference/api-and-sdk-reference/app-sdk/reference/forms-and-browsers.md)
     * [Troubleshooting](api-and-sdk-reference/api-and-sdk-reference/app-sdk/troubleshooting.md)
 
+## Advanced partner integrations
+
+* [Advanced partner integrations](advanced-partner-integrations/README.md)
+  * [Pair an application with overlays.uno](advanced-partner-integrations/pair-an-application-with-overlays-uno.md)
+  * [Optimize CEF integration](advanced-partner-integrations/optimize-cef-integration.md)
+  * [Integrating with CEF version 103](advanced-partner-integrations/integrating-with-cef-103.md)
+  * [Singular Broadcast Output](advanced-partner-integrations/broadcast-output.md)
+  * [Configure Singular SSO](advanced-partner-integrations/configure-singular-sso.md)
+  * [Select control apps and load a local preview](advanced-partner-integrations/control-app-selection-and-preview.md)
+  * [Integrate Singular Sign-In](advanced-partner-integrations/singular-sign-in.md)
+  * [Render image sequences with Singular Reframe](advanced-partner-integrations/singular-reframe.md)
+  * [Render poster frames](advanced-partner-integrations/poster-frame-rendering.md)
+  * [Migrate Apps from Firebase to Datastore](advanced-partner-integrations/migrate-apps-from-firebase-to-datastore.md)
+
 ## Operate and troubleshoot
 
 * [Operate and troubleshoot](operate-and-troubleshoot/operate-and-troubleshoot/README.md)

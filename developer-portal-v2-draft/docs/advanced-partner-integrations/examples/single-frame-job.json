@@ -1,0 +1,93 @@
+{
+  "url": "https://app.singular.live/reframe/singleframe.html",
+  "composition": "https://assets.example.com/composition-revision.json",
+  "sequence": {
+    "SUBCOMPOSITION_ID_1": [
+      {
+        "beginTime": 1,
+        "endTime": 6,
+        "controlNode": {
+          "payload": {
+            "Image": "https://assets.example.com/example-image.svg",
+            "Image Size": "100",
+            "Title": "Example poster title"
+          }
+        }
+      }
+    ],
+    "SUBCOMPOSITION_ID_2": [
+      {
+        "beginTime": 2,
+        "endTime": 5,
+        "controlNode": {
+          "payload": {
+            "Text": "On Stream"
+          }
+        }
+      },
+      {
+        "beginTime": 6,
+        "endTime": 9,
+        "controlNode": {
+          "payload": {
+            "Text": "On Demand"
+          }
+        }
+      },
+      {
+        "beginTime": 10,
+        "endTime": 13,
+        "controlNode": {
+          "payload": {
+            "Text": "On Device"
+          }
+        }
+      }
+    ],
+    "SUBCOMPOSITION_ID_3": [
+      {
+        "beginTime": 2,
+        "endTime": 13,
+        "controlNode": {
+          "payload": {
+            "Text": "Singular.live"
+          }
+        }
+      }
+    ],
+    "SUBCOMPOSITION_ID_4": [
+      {
+        "beginTime": 7,
+        "endTime": 10,
+        "controlNode": {
+          "payload": {
+            "Image": "https://assets.example.com/example-image.svg",
+            "Image Size": "100",
+            "Title": "Example poster title"
+          }
+        }
+      },
+      {
+        "beginTime": 11,
+        "endTime": 14,
+        "controlNode": {
+          "payload": {
+            "Image": "https://assets.example.com/example-image.svg",
+            "Image Size": "90",
+            "Title": "Example poster title"
+          }
+        }
+      }
+    ]
+  },
+  "format": {
+    "width": 480,
+    "height": 270,
+    "frameRate": 60,
+    "requestedTime": 3
+  },
+  "output": {
+    "folder": "C:/Reframe/output",
+    "file": "%05d.png"
+  }
+}

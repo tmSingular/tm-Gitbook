@@ -15,4 +15,4 @@ Existing v2 scripting page paths are retained in this navigation. When moving a 
 
 ## Storage migration
 
-[Migrate Apps from Firebase to Datastore](migrate-apps-from-firebase-to-datastore.md) covers backend detection, control apps, shared data nodes, account defaults, and output reconnection after switching storage.
+[Migrate Apps from Firebase to Datastore](../../../advanced-partner-integrations/migrate-apps-from-firebase-to-datastore.md) in Advanced partner integrations covers backend detection, control apps, shared data nodes, account defaults, and output reconnection after switching storage.
