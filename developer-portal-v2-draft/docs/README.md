@@ -8,10 +8,10 @@ Last modified: **2026-11-13 10:52 CET (Europe/Berlin)**
 
 Build graphics in Composer, connect data, add runtime logic, and integrate overlays with your applications. Start with the integration chooser, or go directly to the guides and reference you need.
 
-* [Start here](start-here/start-here/)
+* [Start here](start-here/start-here.md)
 * [Guides](guides/guides/)
 * [Composition scripting](composition-scripting/composition-scripting/)
 * [API and SDK reference](api-and-sdk-reference/api-and-sdk-reference/)
-* [Advanced partner integrations](advanced-partner-integrations/README.md)
+* [Advanced partner integrations](advanced-partner-integrations/)
 * [Operate and troubleshoot](operate-and-troubleshoot/operate-and-troubleshoot/)
 * [Releases and compatibility](releases-and-compatibility/releases-and-compatibility/)

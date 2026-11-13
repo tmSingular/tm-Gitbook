@@ -4,13 +4,13 @@
 
 ## Start here
 
-* [Start here](start-here/start-here/README.md)
-  * [What you can build](start-here/start-here/what-you-can-build.md)
-  * [Choose an integration](start-here/start-here/choose-an-integration.md)
-  * [Architecture, terminology, and data flow](start-here/start-here/architecture-terminology-and-data-flow.md)
-  * [First overlay](start-here/start-here/first-overlay.md)
-  * [First REST integration](start-here/start-here/first-rest-integration.md)
-  * [First composition script](start-here/start-here/first-composition-script.md)
+* [Start here](start-here/start-here.md)
+* [What you can build](start-here/what-you-can-build.md)
+* [Choose an integration](start-here/choose-an-integration.md)
+* [Architecture, terminology, and data flow](start-here/architecture-terminology-and-data-flow.md)
+* [First overlay](start-here/first-overlay.md)
+* [First REST integration](start-here/first-rest-integration.md)
+* [First composition script](start-here/first-composition-script.md)
 
 ## Guides
 
