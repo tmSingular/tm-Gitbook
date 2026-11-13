@@ -113,3 +113,9 @@ The four-page supplied `Moving to Singular Datastore.pdf` was text-extracted and
 The guide preserves backend detection, all four migration endpoint directions, the historical May 2024 rollout note, shared data-node dependencies, mandatory UI/output reloads, Output Manager reattachment, and account-default coordination. The source's mislabeled reverse data-node direction remains corrected. Optional links outside the partner folder were replaced by self-contained guidance, so the section remains portable. No account settings or storage backend was changed.
 
 If this section moves to a restricted partner site, review the old migration bridge, its sidebar entry, and the migrations-overview link alongside the existing SSO bridge to avoid unwanted public discovery.
+
+## Pairing detail restoration
+
+Re-read `done/splitcam-pairing.md` and restored its environment table, complete beta exchange pattern, mandatory partner `source` parameters on launch and exchange, Connections links, explicit beta listing/refresh examples, and automatic/manual return behavior. Partner names, callback identity, device names, and code values remain generic placeholders. The callback code placeholder remains `<your-pair-code>`.
+
+The source distinguishes the table's beta API base (`https://beta.singular.live`) from the concrete request examples (`https://beta.overlays.uno`). The guide records both without asserting host equivalence. A production exchange URL is not specified in the source and must be assigned during onboarding. Existing code/token lifetimes, error text, independent disconnection, and non-revocation behavior remain intact. No API request was executed.

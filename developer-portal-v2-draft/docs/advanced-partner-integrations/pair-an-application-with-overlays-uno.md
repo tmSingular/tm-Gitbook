@@ -8,7 +8,7 @@ When a user chooses **Connect to overlays.uno** in your application, open the as
 
 ## Before you start
 
-Ask Singular to enable the integration and supply its configuration for each environment. Do not derive a new endpoint by replacing another application's name in a URL.
+Ask Singular to enable the integration and supply its configuration for each environment. The URL patterns below use `<partner-id>` in place of the assigned partner identifier. That identifier must be registered by Singular; choosing a new name does not create an integration or enable its endpoints.
 
 | Configuration | Purpose |
 | --- | --- |
@@ -24,50 +24,71 @@ Pairing pages and API endpoints can use different origins. Use each assigned URL
 The URLs and identifiers for an individual integration are supplied during onboarding. Placeholder values in this guide are not usable endpoints. Confirm the response format and token policy for your assigned integration before release.
 {% endhint %}
 
-## 1. Start pairing
+## 1. Start pairing from your application or the Connections page
 
-### From your application
+### Environments
 
-Open the complete pairing launch URL in your webview. Preserve its required query parameters on the initial navigation. They identify the integration and can enable the automatic return to your application.
+| Environment | URL to open in your application's webview | API base for the same environment |
+| --- | --- | --- |
+| Production | `https://overlays.uno/connections/<partner-id>?source=<partner-id>` | `https://app.overlays.uno` |
+| Beta | `https://beta.overlays.uno/connections/<partner-id>?source=<partner-id>` | `https://beta.singular.live` |
+
+Replace both occurrences of `<partner-id>` with the identifier assigned to your integration. The `source` query parameter identifies which partner is pairing; it is required in both the initial launch URL and the code-exchange URL.
+
+The source's beta exchange, overlay-listing, and refresh examples use `https://beta.overlays.uno`, while its environment table identifies `https://beta.singular.live` as the beta API base. Both details are retained below. Use the complete endpoint URLs supplied for your integration; do not assume the hosts are interchangeable or rewrite the pairing exchange onto the API base. The source does not give a complete production exchange URL, so obtain that URL during onboarding.
+
+### From your application (automatic return after sign-in)
+
+Open the complete pairing launch URL in your webview. **Include `?source=<partner-id>` on the initial URL**, with the assigned partner identifier substituted. This identifies the integration and enables the application-initiated return flow.
+
+For beta testing, open `https://beta.overlays.uno/connections/<partner-id>?source=<partner-id>` in the webview and sign in with any verified overlays.uno account.
 
 The user signs in with a verified overlays.uno account. Once the code is ready, the page redirects to the registered HTTPS callback. An existing signed-in session can complete this flow without another sign-in prompt.
 
-Your application receives the code directly, so this flow does not require QR scanning or polling. If automatic navigation is blocked, the pairing page can offer a return action for the configured application.
+Your application receives the code directly, so the user can skip the QR scan and the application can skip polling. If the webview blocks automatic navigation, the user can select the **Return to** action labeled with your registered application name.
 
-### From the overlays.uno website
+### From the overlays.uno website (manual pairing)
 
 For integrations enabled on the **Connections** page:
 
-1. The user signs in to overlays.uno and opens **Connections** in the matching environment.
-2. On your application's connection card, the user selects **Connect**. The page displays a pairing code and a QR code. An existing pairing shows the connected device.
-3. The user enters the displayed code in your application or follows the QR pairing flow. Your application redeems the code using the same exchange described below.
+1. Sign in to overlays.uno in a browser and open **Connections**. Use [Beta Connections](https://beta.overlays.uno/connections) for testing or [Production Connections](https://overlays.uno/connections) for production.
+2. On your application's connection card, select **Connect**. The page displays a **six-character code** and a QR code. If the application is already paired, the card shows the connected device.
+3. Enter the displayed code in your application or scan the QR code with a phone. Your application exchanges the code as described in step 3 below.
 
 ## 2. Handle the HTTPS callback
 
-The callback is configured for your integration. Do not pass an arbitrary callback URL in the launch link.
+overlays.uno uses a fixed callback registered for your integration. **Do not pass a callback URL in the launch link.** Both the production and beta flow return to that registered callback.
 
 The return navigation has this shape; the domain and path below are illustrative:
 
 ```text
-https://partner.example/auth/overlays?pair_code=K7M4QF
+https://partner.example/auth/overlays?pair_code=<your-pair-code>
 ```
 
 In your webview navigation handler:
 
-1. Parse the URL and match the **exact registered HTTPS origin and path**. Do not use substring or domain-suffix matching.
+1. Parse the URL and match the **exact registered HTTPS origin and path**. For the illustrative URL above, these are `https://partner.example` and `/auth/overlays`. Substitute your registered values; do not use substring or domain-suffix matching.
 2. Read the decoded `pair_code` query parameter. Reject a missing or empty value.
 3. Send its entire value as `code` in the token exchange. Treat it as an opaque string.
 4. Handle each callback once to avoid duplicate exchanges.
 
-The current pairing flow uses six uppercase letters or digits. The displayed code, copied code, and QR callback carry the same value. A code expires after **10 minutes**, can be exchanged **once**, and is replaced if the user generates a new one.
+Codes currently contain six uppercase letters or digits, using the same display format as other supported application integrations. The displayed code, copied code, and QR callback carry the same value. A code expires after **10 minutes**, can be exchanged **once**, and is replaced if the user generates a new one.
 
 ## 3. Exchange the code for tokens
 
-POST JSON to the assigned token exchange URL for the environment where pairing started. Preserve any required source parameters on this URL as well as on the launch URL. Do not send a Bearer header for this exchange.
+POST JSON to the assigned token exchange URL for the environment where pairing started. **Include `?source=<partner-id>` on the exchange URL as well as the launch URL.** Here it tells the API to look up a code belonging to your integration. Do not send a Bearer header for this exchange.
 
-Set `deviceName` to a useful device label that the user will recognize on the Connections page.
+Set `deviceName` to the device name the user should see on the Connections page.
 
-In the shell examples, set `TOKEN_EXCHANGE_URL` to the complete assigned exchange URL and `API_BASE_URL` to the assigned API base without a trailing slash. Set `PAIR_CODE` to the received code. These variables are local example configuration, not additional API fields.
+The source gives this complete **beta exchange pattern**. Replace `<partner-id>` with the assigned identifier and `<your-pair-code>` with the full decoded code received from the callback or manual entry:
+
+```sh
+curl 'https://beta.overlays.uno/auth/pairing/partners/validate?source=<partner-id>' \
+  -H 'Content-Type: application/json' \
+  --data '{"code":"<your-pair-code>","deviceName":"<your-device-name>"}'
+```
+
+For reusable application configuration, set `TOKEN_EXCHANGE_URL` to the complete assigned exchange URL, including its `source` parameter, and `API_BASE_URL` to the assigned API base without a trailing slash. Set `PAIR_CODE` to the received code. These variables are local example configuration, not additional API fields.
 
 ```sh
 curl "$TOKEN_EXCHANGE_URL" \
@@ -100,7 +121,14 @@ curl "$API_BASE_URL/apiv2/unooverlays/folder/root/items" \
   -H "Authorization: Bearer $ACCESS_TOKEN"
 ```
 
-For a picker that includes overlays across folders, use `/apiv2/unooverlays/folder/all/items` instead.
+The source's concrete beta request uses this URL:
+
+```sh
+curl 'https://beta.overlays.uno/apiv2/unooverlays/folder/root/items' \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+For a picker that includes overlays across folders, use `/apiv2/unooverlays/folder/all/items` instead. For example, the source's beta host gives `https://beta.overlays.uno/apiv2/unooverlays/folder/all/items`.
 
 Read overlays from the response's `data` array. For the selected overlay:
 
@@ -115,6 +143,14 @@ In the current pairing flow, the initial access token and refresh token each exp
 
 ```sh
 curl "$API_BASE_URL/apiv2/users/refreshtoken" \
+  -H 'Content-Type: application/json' \
+  --data '{"refreshToken":"<refreshToken>"}'
+```
+
+The source's concrete beta refresh example is:
+
+```sh
+curl 'https://beta.overlays.uno/apiv2/users/refreshtoken' \
   -H 'Content-Type: application/json' \
   --data '{"refreshToken":"<refreshToken>"}'
 ```
@@ -138,3 +174,5 @@ Disconnecting the connection does not revoke tokens already issued. If your appl
 ## Verify before release
 
 Check both application-initiated and manual pairing, signed-in and signed-out sessions, callback interception, duplicate callbacks, expired and reused codes, and environment matching. Verify overlay listing, graphics output, control links, refresh before expiry, re-pairing after refresh expiry, and local token cleanup on disconnect.
+
+Source: supplied `splitcam-pairing.md`, adapted for partner-neutral documentation. Production/beta environment values and the concrete beta request hosts are retained from that document; partner identifiers, the callback origin/path, and device labels are placeholders. Individual integrations require assigned configuration. No live pairing, exchange, or refresh requests were made while preparing this guide.
